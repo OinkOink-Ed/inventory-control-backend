@@ -1,15 +1,23 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from './baseEntity';
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class User extends BaseEntity {
+    @Column({
+        nullable: false
+    })
+    @IsNotEmpty()
+    name: string
+
+    @IsNotEmpty()
+    @Column({
+        nullable: false
+    })
+    surname: string
 
     @Column()
-    firstName: string;
-
-    @Column()
-    lastName: string;
+    patronimyc: string
 
     @Column({ default: true })
     isActive: boolean;
