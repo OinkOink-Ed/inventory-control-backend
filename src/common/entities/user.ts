@@ -7,17 +7,18 @@ export class User extends BaseEntity {
     @Column({
         nullable: false
     })
+
     @IsNotEmpty()
-    name: string
+    name: string;
 
     @IsNotEmpty()
     @Column({
         nullable: false
     })
-    surname: string
+    surname: string;
 
     @Column()
-    patronimyc: string
+    patronimyc: string;
 
     @Column({ default: true })
     isActive: boolean;

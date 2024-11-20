@@ -1,9 +1,14 @@
 services:
-  mysql:
-    image: mysql:8
+  db:
+    image: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
     ports:
       - "3306:3306"
+    volumes:
+      - cartridge_db:/var/lib/mysql
+
+volumes:
+  cartridge_db:

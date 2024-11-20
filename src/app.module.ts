@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RegistrationModule } from './Modules/registration/registration.module';
+import { RegistrationModule } from './Modules/createUser/createUser.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
@@ -22,6 +22,7 @@ import { User } from './common/entities/user';
           username: configService.get<string>('database.user'),
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.name'),
+          synchronize: true,
           entities: [
             User
           ],
