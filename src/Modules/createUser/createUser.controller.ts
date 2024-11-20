@@ -9,12 +9,7 @@ export class CreateUserController {
 
   @Post()
   async create(@Body() createDto: CreateUserDto): Promise<CreateOK> {
-    try {
-      await this.createUserService.create(createDto) as unknown as Promise<CreateUserDto>;
-
-      return { message: "Пользователь успешно создан", status: HttpStatus.OK }
-    } catch (error: any) {
-      throw new HttpException(error.sqlMessage, HttpStatus.NOT_ACCEPTABLE)
-    };
+    await this.createUserService.create(createDto) as unknown as Promise<CreateUserDto>;
+    return { message: "Пользователь успешно создан", status: HttpStatus.OK }
   };
 };
