@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './Modules/users/users.module';
+import { UserModule } from './Modules/users/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
-import { CartridgesModule } from './Modules/cartridges/cartridges.module';
+import { CartridgeModule } from './Modules/cartridges/cartridge.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { CartridgesModule } from './Modules/cartridges/cartridges.module';
       inject: [ConfigService],
     }),
     UserModule,
-    CartridgesModule
+    CartridgeModule
   ],
 })
 export class AppModule { }
