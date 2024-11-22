@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './Modules/users/user.module';
+import { UsersModule } from './Modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
 import { CartridgeModule } from './Modules/cartridges/cartridge.module';
+import { AuthModule } from './Modules/auth/auth.module';
+import { AuthGuard } from './common/guards/AuthGuard';
 
 @Module({
   imports: [
@@ -31,8 +33,15 @@ import { CartridgeModule } from './Modules/cartridges/cartridge.module';
       },
       inject: [ConfigService],
     }),
-    UserModule,
-    CartridgeModule
+    UsersModule,
+    CartridgeModule,
+    AuthModule
   ],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard
+    }
+  ]
 })
 export class AppModule { }

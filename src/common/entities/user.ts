@@ -1,8 +1,7 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { BaseEntity } from './baseEntity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Cartridge } from './cartridge';
 
 @Entity()
 export class User extends BaseEntity {
@@ -29,6 +28,20 @@ export class User extends BaseEntity {
     @Column()
     @IsString()
     patronimyc: string;
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @Column()
+    @IsNotEmpty()
+    @MinLength(4)
+    @IsString()
+    nickname: string
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @Column()
+    @IsNotEmpty()
+    @MinLength(4)
+    @IsString()
+    password: string
 
     // @ApiProperty({
     //     type: () => Cartridge,

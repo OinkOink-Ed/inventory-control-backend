@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cartridge } from 'src/common/entities/cartridge';
 import { Repository } from 'typeorm';
-import { CreateCartridgeDto, CreatedResponseCartridgeDto } from './dto/CreateCartridgeDto';
+import { CreateCartridgeDto } from './dto/CreateCartridgeDto';
 
 @Injectable()
-export class CartridgeService {
+export class CartridgesService {
     constructor(
         @InjectRepository(Cartridge)
         private readonly repo: Repository<Cartridge>,
     ) { }
 
-    async create(dto: CreateCartridgeDto): Promise<CreatedResponseCartridgeDto> {
-        return await this.repo.save(dto);
+    async create(dto: CreateCartridgeDto) {
+        await this.repo.insert(dto);
     };
 };
