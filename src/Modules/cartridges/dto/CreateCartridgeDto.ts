@@ -1,6 +1,6 @@
 import { OmitType } from "@nestjs/swagger";
-import { Cartridge } from "src/common/entities/cartridge";
+import { Cartridges } from "src/common/entities/cartridges";
 
-export class CreateCartridgeDto extends OmitType(Cartridge, ["id"]) { };
+export class CreateCartridgeDto extends OmitType(Cartridges, ["id"]) { };
 
-export class CreatedResponseCartridgeDto extends Cartridge { }
+export class CreatedResponseCartridgeDto extends Cartridges { }

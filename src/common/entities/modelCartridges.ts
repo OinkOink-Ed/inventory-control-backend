@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
-import { CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Cartridges } from "./cartridges";
 
 @Entity()
 export class ModelCartridges {
@@ -8,12 +9,14 @@ export class ModelCartridges {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    modelName: string
+    @ApiProperty({
+        type: () => Cartridges,
+        isArray: true,
+    })
+    @OneToMany(() => Cartridges, cartridges => cartridges.model)
+    modelName: Cartridges[]
 
-    @ApiProperty() s
+    @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
 }

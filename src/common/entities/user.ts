@@ -50,7 +50,7 @@ export class User {
     @ApiProperty()
     @Column()
     @IsString()
-    role: string;
+    role_ID: number;
 
     @ApiProperty()
     @CreateDateColumn({})

@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { CartridgeController } from './cartridges.controller';
 import { CartridgesService } from './cartridges.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cartridge } from 'src/common/entities/cartridge';
+import { Cartridges } from 'src/common/entities/cartridges';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cartridge])],
+  imports: [TypeOrmModule.forFeature([Cartridges])],
   controllers: [CartridgeController],
   providers: [CartridgesService]
 })

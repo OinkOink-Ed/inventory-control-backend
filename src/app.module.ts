@@ -7,6 +7,10 @@ import { User } from './common/entities/user';
 import { CartridgeModule } from './Modules/cartridges/cartridge.module';
 import { AuthModule } from './Modules/auth/auth.module';
 import { AuthGuard } from './common/guards/AuthGuard';
+import { ModelCartridges } from './common/entities/modelCartridges';
+import { MovementOfTheCartridge } from './common/entities/movementOfTheCartridge';
+import { Profiles } from './common/entities/profiles';
+import { Cartridges } from './common/entities/cartridges';
 
 @Module({
   imports: [
@@ -27,7 +31,11 @@ import { AuthGuard } from './common/guards/AuthGuard';
           database: configService.get<string>('database.name'),
           synchronize: true,
           entities: [
-            User
+            User,
+            ModelCartridges,
+            MovementOfTheCartridge,
+            Profiles,
+            Cartridges,
           ],
         };
       },

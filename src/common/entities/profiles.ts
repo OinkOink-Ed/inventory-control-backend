@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
-import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Profiles {
@@ -11,6 +11,7 @@ export class Profiles {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
+    @Column()
     roleName: string
 
     @ApiProperty()
