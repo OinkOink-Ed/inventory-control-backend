@@ -1,33 +1,12 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Column, Entity } from 'typeorm';
-import { BaseEntity } from './baseEntity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class User extends BaseEntity {
-
-    @ApiProperty({ required: true, nullable: false, minLength: 4 })
-    @Column({
-        nullable: false
-    })
-    @IsString()
-    @IsNotEmpty()
-    @MinLength(4)
-    name: string;
-
-    @ApiProperty({ required: true, nullable: false, minLength: 4 })
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(4)
-    @Column({
-        nullable: false
-    })
-    surname: string;
-
+export class User {
     @ApiProperty()
-    @Column()
-    @IsString()
-    patronimyc: string;
+    @PrimaryGeneratedColumn()
+    id: number
 
     @ApiProperty({ required: true, nullable: false, minLength: 4 })
     @Column()
@@ -43,10 +22,41 @@ export class User extends BaseEntity {
     @IsString()
     password: string
 
-    // @ApiProperty({
-    //     type: () => Cartridge,
-    //     isArray: true,
-    // })
-    // @OneToMany(() => Cartridge, cartridge => cartridge)
-    // cartridge: Cartridge[]
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(4)
+    @Column({
+        nullable: false
+    })
+    surname: string;
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @Column({
+        nullable: false
+    })
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
+    name: string;
+
+    @ApiProperty()
+    @Column({
+        nullable: false
+    })
+    @IsString()
+    patronimyc: string;
+
+    @ApiProperty()
+    @Column()
+    @IsString()
+    role: string;
+
+    @ApiProperty()
+    @CreateDateColumn({})
+    createdAt: Date;
+
+    @ApiProperty()
+    @UpdateDateColumn({})
+    updatedAt: Date;
 }
