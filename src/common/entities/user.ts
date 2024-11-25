@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './role';
+import { CartridgeModels } from './modelCartridges';
 
 @Entity()
 export class User {
@@ -52,16 +53,21 @@ export class User {
         type: () => Role,
         isArray: true
     })
-    @IsString()
     @ManyToMany(() => Role, role => role.users, { cascade: true })
     @JoinTable()
     roles: Role[];
 
+    @OneToMany(() => CartridgeModels, cartridgemodels => cartridgemodels.creator)
+    addedModels: CartridgeModels[]
+
+    @OneToMany(() => CartridgeModels, cartridgemodels => cartridgemodels.updater)
+    updatedModels: CartridgeModels[]
+
     @ApiProperty()
-    @CreateDateColumn({})
+    @CreateDateColumn()
     createdAt: Date;
 
     @ApiProperty()
-    @UpdateDateColumn({})
+    @UpdateDateColumn()
     updatedAt: Date;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -10,11 +10,16 @@ export class MovementOfTheCartridge {
 
     @ApiProperty({ required: true, nullable: false })
     @IsNotEmpty()
+    @IsArray()
+    cartridges: string
+
+    @ApiProperty({ required: true, nullable: false })
+    @IsNotEmpty()
     @IsString()
     @Column({
         nullable: false
     })
-    whoAccepted_ID: number
+    whoAccepted: number
 
     @ApiProperty()
     @CreateDateColumn()
@@ -24,7 +29,7 @@ export class MovementOfTheCartridge {
     @Column({
         nullable: false
     })
-    issuing_ID: number
+    issuing: number
 
     @ApiProperty()
     @UpdateDateColumn()

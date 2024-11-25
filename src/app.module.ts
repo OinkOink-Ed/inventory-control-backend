@@ -7,8 +7,7 @@ import { User } from './common/entities/user';
 import { CartridgesModule } from './Modules/Cartridges/cartridges.module';
 import { AuthModule } from './Modules/Auth/auth.module';
 import { AuthGuard } from './common/guards/AuthGuard';
-import { ModelCartridges } from './common/entities/modelCartridges';
-import { MovementOfTheCartridge } from './common/entities/movementOfTheCartridge';
+import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 
@@ -32,8 +31,7 @@ import { Cartridges } from './common/entities/cartridges';
           synchronize: true,
           entities: [
             User,
-            ModelCartridges,
-            MovementOfTheCartridge,
+            CartridgeModels,
             Role,
             Cartridges,
           ],

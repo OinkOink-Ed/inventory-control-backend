@@ -1,7 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsDate, IsNotEmpty, IsString } from "class-validator";
-import { ModelCartridges } from "./modelCartridges";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 @Entity()
 export class Cartridges {
@@ -9,11 +8,10 @@ export class Cartridges {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ApiProperty({
-        type: () => ModelCartridges
-    })
-    @ManyToOne(() => ModelCartridges, modelCartridges => modelCartridges.modelName)
-    model: ModelCartridges;
+    @ApiProperty()
+    @IsString()
+    @Column()
+    model: string
 
     @ApiProperty({ required: true, nullable: false, default: true })
     @IsNotEmpty()
@@ -22,7 +20,10 @@ export class Cartridges {
     availability: boolean
 
     @ApiProperty()
-    @IsNotEmpty()
-    @Column()
-    movement_ID: number
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @ApiProperty()
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
