@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from './role';
 
 @Entity()
 export class User {
@@ -9,17 +10,17 @@ export class User {
     id: number
 
     @ApiProperty({ required: true, nullable: false, minLength: 4 })
-    @Column()
     @IsNotEmpty()
     @MinLength(4)
     @IsString()
+    @Column()
     nickname: string
 
     @ApiProperty({ required: true, nullable: false, minLength: 4 })
-    @Column()
     @IsNotEmpty()
     @MinLength(4)
     @IsString()
+    @Column()
     password: string
 
     @ApiProperty({ required: true, nullable: false, minLength: 4 })
@@ -32,25 +33,29 @@ export class User {
     surname: string;
 
     @ApiProperty({ required: true, nullable: false, minLength: 4 })
-    @Column({
-        nullable: false
-    })
     @IsString()
     @IsNotEmpty()
     @MinLength(4)
-    name: string;
-
-    @ApiProperty()
     @Column({
         nullable: false
     })
-    @IsString()
-    patronimyc: string;
+    name: string;
 
     @ApiProperty()
-    @Column()
     @IsString()
-    role_ID: number;
+    @Column({
+        nullable: false
+    })
+    patronimyc: string;
+
+    @ApiProperty({
+        type: () => Role,
+        isArray: true
+    })
+    @IsString()
+    @ManyToMany(() => Role, role => role.users, { cascade: true })
+    @JoinTable()
+    roles: Role[];
 
     @ApiProperty()
     @CreateDateColumn({})

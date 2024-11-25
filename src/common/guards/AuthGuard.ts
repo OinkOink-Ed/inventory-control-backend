@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { jwtConstants } from "src/Modules/auth/constants";
+import { jwtConstants } from "src/Modules/Auth/constants";
 import { Request } from 'express';
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "../decorators/SkipAuth";

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CartridgeController } from './cartridges.controller';
+import { CartridgesController } from './cartridges.controller';
 import { CartridgesService } from './cartridges.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cartridges } from 'src/common/entities/cartridges';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cartridges])],
-  controllers: [CartridgeController],
+  controllers: [CartridgesController],
   providers: [CartridgesService]
 })
-export class CartridgeModule { }
+export class CartridgesModule { }

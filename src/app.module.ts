@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './Modules/users/users.module';
+import { UsersModule } from './Modules/Users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
-import { CartridgeModule } from './Modules/cartridges/cartridge.module';
-import { AuthModule } from './Modules/auth/auth.module';
+import { CartridgesModule } from './Modules/Cartridges/cartridges.module';
+import { AuthModule } from './Modules/Auth/auth.module';
 import { AuthGuard } from './common/guards/AuthGuard';
 import { ModelCartridges } from './common/entities/modelCartridges';
 import { MovementOfTheCartridge } from './common/entities/movementOfTheCartridge';
-import { Profiles } from './common/entities/profiles';
+import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 
 @Module({
@@ -34,7 +34,7 @@ import { Cartridges } from './common/entities/cartridges';
             User,
             ModelCartridges,
             MovementOfTheCartridge,
-            Profiles,
+            Role,
             Cartridges,
           ],
         };
@@ -42,8 +42,8 @@ import { Cartridges } from './common/entities/cartridges';
       inject: [ConfigService],
     }),
     UsersModule,
-    CartridgeModule,
-    AuthModule
+    CartridgesModule,
+    AuthModule,
   ],
   providers: [
     {

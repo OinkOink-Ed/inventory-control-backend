@@ -4,7 +4,7 @@ import { ApiCreatedResponse } from '@nestjs/swagger';
 import { CreateCartridgeDto, CreatedResponseCartridgeDto } from './dto/CreateCartridgeDto';
 
 @Controller('cartridges')
-export class CartridgeController {
+export class CartridgesController {
     constructor(private readonly createCartridgeService: CartridgesService) { }
 
     @Post()
