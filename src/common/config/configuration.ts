@@ -26,6 +26,6 @@ export const validationSchema = Joi.object({
     PORT: Joi.number().port().default(3000),
     DB_USER: Joi.string().default("root"),
     DB_PASSWORD: Joi.string().default("password1"),
-    DB_DATABASE: Joi.string().default("cartridge_service"),
+    DB_DATABASE: Joi.string().default("inventory_control"),
     DB_HOST: Joi.string().default("localhost"),
 })

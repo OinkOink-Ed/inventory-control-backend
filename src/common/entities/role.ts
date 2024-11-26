@@ -1,28 +1,28 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Relation, UpdateDateColumn } from "typeorm";
 import { User } from "./user";
 
 @Entity()
 export class Role {
     @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
     @PrimaryGeneratedColumn()
     id: number
 
     @ApiProperty()
-    @IsString()
     @IsNotEmpty()
+    @IsString()
     @Column()
     roleName: string
 
-    @ManyToMany(() => User, user => user.roles)
+    @OneToMany(() => User, user => user.role)
     users: User[]
 
-    @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
 
-    @ApiProperty()
     @UpdateDateColumn()
     updatedAt: Date;
 }

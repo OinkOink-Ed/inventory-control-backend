@@ -12,14 +12,45 @@ export class UsersService {
     ) { }
 
     async create(dto: CreateUserDto) {
-        await this.repo.insert(dto);
+        await this.repo.save(dto);
     };
 
     async findOne(nickname: string): Promise<User | undefined> {
-        return this.repo.findOne({ where: { nickname: `${nickname}` } })
+        return this.repo.findOne(
+            {
+                where: {
+                    nickname: `${nickname}`
+                },
+
+                select: {
+                    id: true,
+                    name: true,
+                    nickname: true,
+                    patronimyc: true,
+                    surname: true,
+                    role: {
+                        roleName: true
+                    },
+                }
+            }
+        );
     }
 
     async getAll(): Promise<CreatedResponseUserDto[]> {
-        return this.repo.find()
+        return this.repo.find(
+            {
+                select: {
+                    id: true,
+                    name: true,
+                    nickname: true,
+                    patronimyc: true,
+                    surname: true,
+                    role: {
+                        roleName: true
+                    },
+                },
+                relations: ["role"],
+            }
+        );
     }
 };

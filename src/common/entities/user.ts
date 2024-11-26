@@ -1,8 +1,9 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { IsNotEmpty, IsNotEmptyObject, IsString, MinLength, ValidateNested } from 'class-validator';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './role';
 import { CartridgeModels } from './modelCartridges';
+import { Type } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -51,23 +52,22 @@ export class User {
 
     @ApiProperty({
         type: () => Role,
-        isArray: true
     })
-    @ManyToMany(() => Role, role => role.users, { cascade: true })
-    @JoinTable()
-    roles: Role[];
+    @IsNotEmptyObject()
+    @ValidateNested()
+    @Type(() => Role)
+    @ManyToOne(() => Role, role => role.users)
+    role: Role
 
     @OneToMany(() => CartridgeModels, cartridgemodels => cartridgemodels.creator)
-    addedModels: CartridgeModels[]
+    addedModels: Relation<CartridgeModels>[]
 
     @OneToMany(() => CartridgeModels, cartridgemodels => cartridgemodels.updater)
-    updatedModels: CartridgeModels[]
+    updatedModels: Relation<CartridgeModels>[]
 
-    @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
 
-    @ApiProperty()
     @UpdateDateColumn()
     updatedAt: Date;
 }

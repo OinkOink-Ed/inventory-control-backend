@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './Modules/Users/users.module';
+import { UsersModule } from './Modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
-import { CartridgesModule } from './Modules/Cartridges/cartridges.module';
-import { AuthModule } from './Modules/Auth/auth.module';
+import { CartridgesModule } from './Modules/cartridges/cartridges.module';
+import { AuthModule } from './Modules/auth/auth.module';
 import { AuthGuard } from './common/guards/AuthGuard';
 import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
+import { RoleModule } from './Modules/role/role.module';
 
 @Module({
   imports: [
@@ -42,12 +43,13 @@ import { Cartridges } from './common/entities/cartridges';
     UsersModule,
     CartridgesModule,
     AuthModule,
+    RoleModule,
   ],
-  providers: [
-    {
-      provide: 'APP_GUARD',
-      useClass: AuthGuard
-    }
-  ]
+  // providers: [
+  //   {
+  //     provide: 'APP_GUARD',
+  //     useClass: AuthGuard
+  //   }
+  // ]
 })
 export class AppModule { }

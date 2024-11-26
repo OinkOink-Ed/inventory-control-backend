@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation, UpdateDateColumn } from "typeorm";
 import { User } from "./user";
 
 @Entity()
@@ -17,7 +17,7 @@ export class CartridgeModels {
     })
     @ManyToOne(() => User, user => user.addedModels, { cascade: ["insert"] })
     @JoinColumn({ name: "creator_id" })
-    creator: User
+    creator: Relation<User>
 
     @ApiProperty({
         type: () => User,
@@ -25,7 +25,7 @@ export class CartridgeModels {
     })
     @ManyToOne(() => User, user => user.updatedModels, { cascade: ["update"] })
     @JoinColumn({ name: "updater_id" })
-    updater: User
+    updater: Relation<User>
 
     @ApiProperty()
     @CreateDateColumn()

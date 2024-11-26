@@ -15,7 +15,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateUserDto) {
-    await this.usersService.create(createDto) as unknown as Promise<CreatedResponseUserDto>;
+    await this.usersService.create(createDto);
   };
 
   @Get()
