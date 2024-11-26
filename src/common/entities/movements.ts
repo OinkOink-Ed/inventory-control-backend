@@ -3,7 +3,7 @@ import { IsArray, IsNotEmpty, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
-export class MovementOfTheCartridge {
+export class Movements {
     @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number

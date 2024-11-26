@@ -9,9 +9,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Post()
-  @ApiCreatedResponse({
-    type: CreatedResponseUserDto
-  })
+  // @ApiCreatedResponse({
+  //   type: CreatedResponseUserDto
+  // })
 
   @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateUserDto) {

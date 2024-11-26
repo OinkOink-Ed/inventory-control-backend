@@ -11,6 +11,7 @@ import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 import { RoleModule } from './Modules/role/role.module';
+import { Movements } from './common/entities/movements';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RoleModule } from './Modules/role/role.module';
             CartridgeModels,
             Role,
             Cartridges,
+            // Movements,
           ],
         };
       },
