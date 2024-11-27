@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { ApiCreatedResponse } from '@nestjs/swagger';
-import { CreateRoleDto, RoleAllResponseDto } from './dto/createRoleDto';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { CreateRoleDto, RoleOfAllUsersResponseDto } from './dto/createRoleDto';
 
+@ApiTags('Role')
 @Controller('role')
 export class RoleController {
     constructor(private readonly roleService: RoleService) { }
@@ -19,7 +20,8 @@ export class RoleController {
 
     @Get()
     @ApiCreatedResponse({
-        type: RoleAllResponseDto
+        type: () => RoleOfAllUsersResponseDto,
+        isArray: true
     })
     async getAll() {
         return await this.roleService.getAll();

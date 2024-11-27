@@ -11,6 +11,7 @@ import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 import { RoleModule } from './Modules/role/role.module';
+import { AuthGuard } from './common/guards/AuthGuard';
 // import { Movements } from './common/entities/movements';
 
 @Module({
@@ -47,11 +48,11 @@ import { RoleModule } from './Modules/role/role.module';
     AuthModule,
     RoleModule,
   ],
-  // providers: [
-  //   {
-  //     provide: 'APP_GUARD',
-  //     useClass: AuthGuard
-  //   }
-  // ]
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard
+    }
+  ]
 })
 export class AppModule { }

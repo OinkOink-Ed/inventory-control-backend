@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/common/entities/role';
 import { Repository } from 'typeorm';
-import { CreateRoleDto, RoleAllResponseDto } from './dto/createRoleDto';
+import { CreateRoleDto, RoleOfAllUsersResponseDto } from './dto/createRoleDto';
 
 @Injectable()
 export class RoleService {
@@ -15,7 +15,7 @@ export class RoleService {
         await this.repo.insert(dto)
     }
 
-    async getAll(): Promise<RoleAllResponseDto[]> {
+    async getAll(): Promise<RoleOfAllUsersResponseDto[]> {
         return this.repo.find({
             select: {
                 id: true,

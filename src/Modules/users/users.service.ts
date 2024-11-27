@@ -15,6 +15,28 @@ export class UsersService {
         await this.repo.save(dto);
     };
 
+    async findOneForAuth(nickname: string): Promise<User | undefined> {
+        return this.repo.findOne(
+            {
+                where: {
+                    nickname: `${nickname}`
+                },
+
+                select: {
+                    id: true,
+                    name: true,
+                    nickname: true,
+                    patronimyc: true,
+                    surname: true,
+                    password: true,
+                    role: {
+                        roleName: true
+                    },
+                }
+            }
+        );
+    }
+
     async findOne(nickname: string): Promise<UserResponseDto | undefined> {
         return this.repo.findOne(
             {

@@ -12,15 +12,17 @@ export class AuthService {
 
     @HttpCode(HttpStatus.OK)
     async signIn(nickname: string, pass: string): Promise<AccessAuthResponseDto> {
-        const user = await this.usersService.findOne(nickname);
+        const user = await this.usersService.findOneForAuth(nickname);
 
         if (user?.password !== pass) {
             throw new UnauthorizedException();
         }
 
+        const { password, ...profile } = user
+
         return {
             access_token: await this.jwtService.signAsync({ sub: user.id }),
-            profile: { ...user }
+            profile: { ...profile }
         }
     }
 }
