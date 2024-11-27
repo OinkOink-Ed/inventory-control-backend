@@ -8,16 +8,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
   const config = new DocumentBuilder()
-    .setTitle('CartiredgeService')
-    .setDescription('The CartiredgeService API description')
+    .setTitle('Inventory Control')
+    .setDescription('The Inventory Control API description')
     .setVersion('1.0')
-    .addTag('CartiredgeServiceGP')
+    .addTag('Inventory Control GP')
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
     extraModels: [AccessAuthResponseDto]
   });
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+
+  });
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,

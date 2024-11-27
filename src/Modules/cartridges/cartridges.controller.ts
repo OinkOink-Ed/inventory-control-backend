@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { CartridgesService } from './cartridges.service';
 import { ApiCreatedResponse } from '@nestjs/swagger';
-import { CreateCartridgeDto, CreatedResponseCartridgeDto } from './dto/CreateCartridgeDto';
+import { CreateCartridgeDto /*, CreatedResponseCartridgeDto*/ } from './dto/CreateCartridgeDto';
 
 @Controller('cartridges')
 export class CartridgesController {
@@ -9,7 +9,7 @@ export class CartridgesController {
 
     @Post()
     @ApiCreatedResponse({
-        type: CreatedResponseCartridgeDto
+        // type: CreatedResponseCartridgeDto
     })
 
     @HttpCode(HttpStatus.OK)

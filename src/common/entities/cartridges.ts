@@ -19,11 +19,9 @@ export class Cartridges {
     @Column({ nullable: false, default: true })
     availability: boolean
 
-    @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
 
-    @ApiProperty()
     @UpdateDateColumn()
     updatedAt: Date;
 }

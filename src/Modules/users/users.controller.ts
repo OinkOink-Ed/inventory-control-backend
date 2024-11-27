@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreatedResponseUserDto, CreateUserDto } from './dto/createUserDto';
+import { UserResponseDto, CreateUserDto } from './dto/createUserDto';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Users')
@@ -20,10 +20,10 @@ export class UsersController {
 
   @Get()
   @ApiCreatedResponse({
-    type: CreatedResponseUserDto
+    type: UserResponseDto
   })
 
-  async getAll(): Promise<CreatedResponseUserDto[]> {
+  async getAll(): Promise<UserResponseDto[]> {
     return await this.usersService.getAll();
   }
 };
