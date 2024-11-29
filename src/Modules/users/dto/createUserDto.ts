@@ -1,17 +1,68 @@
-import { ApiProperty, OmitType } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmptyObject, ValidateNested } from "class-validator";
-import { Role } from "src/common/entities/role";
-import { User } from "src/common/entities/user";
+import { IsNotEmpty, IsNotEmptyObject, IsString, MinLength, ValidateNested } from "class-validator";
+import { RoleResponsWhithUserDto, RoleWhenCreatingUserDto } from "src/Modules/role/dto/createRoleDto";
 
-export class CreateUserDto extends OmitType(User, ["id", "role"] as const) {
+export class CreateUserDto {
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsNotEmpty()
+    @MinLength(4)
+    @IsString()
+    nickname: string
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(4)
+    surname: string;
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
+    name: string;
+
+    @ApiProperty()
+    @IsString()
+    patronimyc: string;
+
     @ApiProperty({
-        type: () => Role
+        type: () => RoleWhenCreatingUserDto
     })
-    @IsNotEmptyObject()
     @ValidateNested()
-    @Type(() => OmitType(Role, ["roleName"] as const))
-    role: Omit<Role, "roleName">
-};
+    @IsNotEmptyObject()
+    @Type(() => RoleWhenCreatingUserDto)
+    role: RoleWhenCreatingUserDto
+}
 
-export class UserResponseDto extends OmitType(User, ["password"] as const) { };
+export class UserResponseDto {
+    @ApiProperty()
+    id: number
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsNotEmpty()
+    @MinLength(4)
+    @IsString()
+    nickname: string
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(4)
+    surname: string;
+
+    @ApiProperty({ required: true, nullable: false, minLength: 4 })
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(4)
+    name: string;
+
+    @ApiProperty()
+    @IsString()
+    patronimyc: string;
+
+    @ApiProperty({
+        type: () => RoleResponsWhithUserDto,
+    })
+    role: RoleResponsWhithUserDto
+}

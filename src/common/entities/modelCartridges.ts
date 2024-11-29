@@ -1,37 +1,24 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation, UpdateDateColumn } from "typeorm";
 import { User } from "./user";
 
 @Entity()
 export class CartridgeModels {
-    @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number
 
-    @ApiProperty()
+    @Column()
     modelName: string
 
-    @ApiProperty({
-        type: () => User,
-        isArray: true,
-    })
     @ManyToOne(() => User, user => user.addedModels, { cascade: ["insert"] })
     @JoinColumn({ name: "creator_id" })
     creator: Relation<User>
-
-    @ApiProperty({
-        type: () => User,
-        isArray: true,
-    })
     @ManyToOne(() => User, user => user.updatedModels, { cascade: ["update"] })
     @JoinColumn({ name: "updater_id" })
     updater: Relation<User>
 
-    @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
 
-    @ApiProperty()
     @UpdateDateColumn()
     updatedAt: Date;
 }

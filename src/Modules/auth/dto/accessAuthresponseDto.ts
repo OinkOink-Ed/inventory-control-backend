@@ -1,5 +1,4 @@
-import { ApiProperty, OmitType } from "@nestjs/swagger"
-import { User } from "src/common/entities/user"
+import { ApiProperty } from "@nestjs/swagger"
 import { UserResponseDto } from "src/Modules/users/dto/createUserDto"
 
 export class AccessAuthResponseDto {

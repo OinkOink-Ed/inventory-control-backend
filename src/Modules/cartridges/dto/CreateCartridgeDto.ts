@@ -1,6 +1,27 @@
-import { OmitType } from "@nestjs/swagger";
-import { Cartridges } from "src/common/entities/cartridges";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
-export class CreateCartridgeDto extends OmitType(Cartridges, ["id"]) { };
+export class CreateCartridgeDto {
+    @ApiProperty()
+    @IsString()
+    model: string
 
-export class CreatedResponseCartridgeDto extends Cartridges { }
+    @ApiProperty({ required: true, nullable: false, default: true })
+    @IsNotEmpty()
+    @IsBoolean()
+    availability: boolean
+}
+
+export class ResponsseCartridgeDto {
+    @ApiProperty()
+    id: number
+
+    @ApiProperty()
+    @IsString()
+    model: string
+
+    @ApiProperty({ required: true, nullable: false, default: true })
+    @IsNotEmpty()
+    @IsBoolean()
+    availability: boolean
+}

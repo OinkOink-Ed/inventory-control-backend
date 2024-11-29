@@ -1,6 +1,28 @@
-import { OmitType } from "@nestjs/swagger";
-import { Role } from "src/common/entities/role";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-export class CreateRoleDto extends OmitType(Role, ["id"]) { }
+export class CreateRoleDto {
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    roleName: string
+}
 
-export class RoleOfAllUsersResponseDto extends Role { }
+export class RoleWhenCreatingUserDto {
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
+    id: number
+}
+
+export class RoleResponsWhithUserDto {
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
+    id: number
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    roleName: string
+}
