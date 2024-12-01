@@ -10,7 +10,7 @@ export class RoleController {
 
     @Post()
     @ApiCreatedResponse({
-
+        type: null
     })
 
     @HttpCode(HttpStatus.OK)
