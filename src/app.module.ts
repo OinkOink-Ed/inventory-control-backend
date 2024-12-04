@@ -14,6 +14,7 @@ import { RoleModule } from './Modules/role/role.module';
 import { AuthGuard } from './common/guards/AuthGuard';
 // import { Movements } from './common/entities/movements';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
