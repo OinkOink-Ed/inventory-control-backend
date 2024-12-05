@@ -12,11 +12,11 @@ export class UsersService {
     ) { }
 
     async create(dto: CreateUserDto) {
-        await this.repo.save(dto);
+        return await this.repo.save(dto);
     };
 
     async findOneForAuth(nickname: string): Promise<User | undefined> {
-        return this.repo.findOne(
+        return await this.repo.findOne(
             {
                 where: {
                     nickname: `${nickname}`
@@ -38,7 +38,7 @@ export class UsersService {
     }
 
     async findOne(nickname: string): Promise<UserResponseDto | undefined> {
-        return this.repo.findOne(
+        return await this.repo.findOne(
             {
                 where: {
                     nickname: `${nickname}`
@@ -59,7 +59,7 @@ export class UsersService {
     }
 
     async getAll(): Promise<UserResponseDto[]> {
-        return this.repo.find(
+        return await this.repo.find(
             {
                 select: {
                     id: true,

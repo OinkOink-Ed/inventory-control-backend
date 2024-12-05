@@ -12,6 +12,6 @@ export class CartridgesService {
     ) { }
 
     async create(dto: CreateCartridgeDto) {
-        await this.repo.insert(dto);
+        return await this.repo.insert(dto);
     };
 };

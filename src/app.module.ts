@@ -6,7 +6,6 @@ import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
 import { CartridgesModule } from './Modules/cartridges/cartridges.module';
 import { AuthModule } from './Modules/auth/auth.module';
-// import { AuthGuard } from './common/guards/AuthGuard';
 import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';

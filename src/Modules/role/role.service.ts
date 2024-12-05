@@ -12,11 +12,11 @@ export class RoleService {
     ) { }
 
     async create(dto: CreateRoleDto) {
-        await this.repo.insert(dto)
+        return await this.repo.insert(dto)
     }
 
     async getAll(): Promise<RoleResponsWhithUserDto[]> {
-        return this.repo.find({
+        return await this.repo.find({
             select: {
                 id: true,
                 roleName: true

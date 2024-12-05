@@ -2,7 +2,9 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthRequestDto } from './dto/authRequestDto';
 import { SkipAuth } from 'src/common/decorators/SkipAuth';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiRequestTimeoutResponse } from '@nestjs/swagger';
+import { AccessAuthResponseDto } from './dto/accessAuthresponseDto';
+import { ErrorResponse400, ErrorResponse403, ErrorResponse404, ErrorResponse408 } from 'src/common/errorTypes';
 
 @SkipAuth()
 @Controller('auth')
@@ -11,10 +13,22 @@ export class AuthController {
 
     @Post()
     @ApiCreatedResponse({
-        type: null
+        type: AccessAuthResponseDto
+    })
+    @ApiBadRequestResponse({
+        type: () => ErrorResponse400
+      })
+      @ApiRequestTimeoutResponse({
+        type: () => ErrorResponse408
+      })
+    @ApiForbiddenResponse({
+        type: () => ErrorResponse403
+    })
+    @ApiNotFoundResponse({
+        type: () => ErrorResponse404
     })
     @HttpCode(HttpStatus.OK)
-    sighIn(@Body() sighInDto: AuthRequestDto) {
-        return this.authService.signIn(sighInDto.nickname, sighInDto.password)
+    async sighIn(@Body() sighInDto: AuthRequestDto) {
+        return await this.authService.signIn(sighInDto.nickname, sighInDto.password)
     }
 }
