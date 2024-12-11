@@ -13,14 +13,13 @@ import { RoleModule } from './Modules/role/role.module';
 import { AuthGuard } from './common/guards/AuthGuard';
 // import { Movements } from './common/entities/movements';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
       cache: true,
-      validationSchema: validationSchema
+      validationSchema: validationSchema,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
@@ -51,8 +50,8 @@ import { AuthGuard } from './common/guards/AuthGuard';
   providers: [
     {
       provide: 'APP_GUARD',
-      useClass: AuthGuard
-    }
-  ]
+      useClass: AuthGuard,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

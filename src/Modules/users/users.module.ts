@@ -10,4 +10,4 @@ import { User } from '../../common/entities/user';
   providers: [UsersService],
   exports: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}
