@@ -7,6 +7,7 @@ import { AccessAuthResponseDto } from './Modules/auth/dto/accessAuthresponseDto'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Inventory Control')
     .setDescription('The Inventory Control API description')

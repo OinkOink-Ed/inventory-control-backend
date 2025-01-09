@@ -14,22 +14,23 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.OK)
   async signIn(nickname: string, pass: string): Promise<AccessAuthResponseDto> {
-    const user = await this.usersService.findOneForAuth(nickname);
 
-    const { password, ...profile } = user;
+    try {
+      const user = await this.usersService.findOneForAuth(nickname);
 
-    const isMatch = await bcrypt.compare(pass, password);
+      const { password, ...profile } = user;
 
-    if (!isMatch) {
-      throw new UnauthorizedException();
+      await bcrypt.compare(pass, password);
+
+      return {
+        access_token: await this.jwtService.signAsync({ sub: profile }),
+      };
+    } catch (error) {
+      throw new UnauthorizedException({ ...error, message: "Неверный логин или пароль" });
     }
-
-    return {
-      access_token: await this.jwtService.signAsync({ sub: profile }),
-    };
   }
 }

@@ -1,4 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
+
+// Здесь бы ещё разобраться с тем, а как их все типизировать и что у них должно быть через свагер
+
 export class ErrorResponse400 {
     @ApiProperty()
     statusCode: number;
@@ -22,7 +25,7 @@ export class ErrorResponse408 {
     @ApiProperty()
     retryAfter?: number;
     @ApiProperty()
-    timestamp?: string; 
+    timestamp?: string;
 }
 
 export class ErrorResponse403 {
@@ -32,7 +35,7 @@ export class ErrorResponse403 {
     message: string;
     @ApiProperty()
     description?: string;
-    @ApiProperty() 
+    @ApiProperty()
     requestedPath?: string;
     @ApiProperty()
     permissions?: string[];
@@ -46,7 +49,7 @@ export class ErrorResponse404 {
     @ApiProperty()
     message: string;
     @ApiProperty()
-    description?: string; 
+    description?: string;
     @ApiProperty()
     requestedPath?: string;
     @ApiProperty()

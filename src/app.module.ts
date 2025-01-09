@@ -47,11 +47,11 @@ import { AuthGuard } from './common/guards/AuthGuard';
     AuthModule,
     RoleModule,
   ],
-  providers: [
-    {
-      provide: 'APP_GUARD',
-      useClass: AuthGuard,
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: 'APP_GUARD',
+  //     useClass: AuthGuard,
+  //   },
+  // ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,10 +1,10 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthRequestDto } from './dto/authRequestDto';
 import { SkipAuth } from 'src/common/decorators/SkipAuth';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiRequestTimeoutResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AccessAuthResponseDto } from './dto/accessAuthresponseDto';
-import { ErrorResponse400, ErrorResponse403, ErrorResponse404, ErrorResponse408 } from 'src/common/errorTypes';
+import { } from 'src/common/errorTypes';
 
 @SkipAuth()
 @Controller('auth')
@@ -15,18 +15,14 @@ export class AuthController {
     @ApiCreatedResponse({
         type: AccessAuthResponseDto
     })
-    @ApiBadRequestResponse({
-        type: () => ErrorResponse400
-      })
-      @ApiRequestTimeoutResponse({
-        type: () => ErrorResponse408
-      })
-    @ApiForbiddenResponse({
-        type: () => ErrorResponse403
+
+    //Разобраться бы как типизировать ошибки правильно
+    //Пока что так, чтобы после того, как kubb забирал типы из swagger на клиенте, у меня TS не ругался на то, что Errors идёт как any
+
+    @ApiUnauthorizedResponse({
+        type: () => UnauthorizedException
     })
-    @ApiNotFoundResponse({
-        type: () => ErrorResponse404
-    })
+
     @HttpCode(HttpStatus.OK)
     async sighIn(@Body() sighInDto: AuthRequestDto) {
         return await this.authService.signIn(sighInDto.nickname, sighInDto.password)
