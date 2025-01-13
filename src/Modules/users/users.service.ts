@@ -10,7 +10,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly repo: Repository<User>,
-  ) {}
+  ) { }
 
   async create(dto: CreateUserDto) {
     const salt = await bcrypt.genSalt(10);
@@ -26,6 +26,10 @@ export class UsersService {
         nickname: `${nickname}`,
       },
 
+      relations: {
+        role: true
+      },
+
       select: {
         id: true,
         name: true,
@@ -35,7 +39,7 @@ export class UsersService {
         password: true,
         role: {
           roleName: true,
-        },
+        }
       },
     });
   }

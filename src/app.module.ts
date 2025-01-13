@@ -10,7 +10,7 @@ import { CartridgeModels } from './common/entities/modelCartridges';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 import { RoleModule } from './Modules/role/role.module';
-import { AuthGuard } from './common/guards/AuthGuard';
+// import { AuthGuard } from './common/guards/AuthGuard';
 // import { Movements } from './common/entities/movements';
 
 @Module({
