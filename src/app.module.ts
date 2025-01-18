@@ -6,12 +6,13 @@ import configuration, { validationSchema } from './common/config/configuration';
 import { User } from './common/entities/user';
 import { CartridgesModule } from './Modules/cartridges/cartridges.module';
 import { AuthModule } from './Modules/auth/auth.module';
-import { CartridgeModels } from './common/entities/modelCartridges';
+import { CartridgeModels } from './common/entities/cartridgeModels';
 import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 import { RoleModule } from './Modules/role/role.module';
 // import { AuthGuard } from './common/guards/AuthGuard';
 // import { Movements } from './common/entities/movements';
+import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridges.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { RoleModule } from './Modules/role/role.module';
     CartridgesModule,
     AuthModule,
     RoleModule,
+    ModelCartridgesModule,
   ],
   // providers: [
   //   {
@@ -54,4 +56,4 @@ import { RoleModule } from './Modules/role/role.module';
   //   },
   // ],
 })
-export class AppModule { }
+export class AppModule {}

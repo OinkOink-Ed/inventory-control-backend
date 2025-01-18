@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsString,
   MinLength,
   ValidateNested,
@@ -80,4 +81,11 @@ export class UserResponseDto {
     type: () => RoleResponsWhithUserDto,
   })
   role: RoleResponsWhithUserDto;
+}
+
+export class UserWhenCreatemodelDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
 }
