@@ -89,3 +89,17 @@ export class UserWhenCreatemodelDto {
   @IsNumber()
   id: number;
 }
+
+export class UserResponseWithModelsCartridgesDto {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  surname: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  patronimyc: string;
+}

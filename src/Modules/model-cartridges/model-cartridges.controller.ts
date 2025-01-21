@@ -11,6 +11,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -22,12 +23,12 @@ import {
   ErrorResponse408,
 } from 'src/common/errorTypes';
 import { SuccessResponse200 } from 'src/common/successTypes';
-import { CreateModelCartridgeDto } from './dto/CreateModelCartridgeDto';
+import { CreateModelCartridgeDto, ModelCartridgeResponse } from './dto/CreateModelCartridgeDto';
 
 @ApiTags('ModelCartridges')
 @Controller('model-cartridges')
 export class ModelCartridgesController {
-  constructor(private readonly createModelCartridge: ModelCartridgesService) {}
+  constructor(private readonly createModelCartridge: ModelCartridgesService) { }
 
   @Post()
   @ApiCreatedResponse({
@@ -51,10 +52,10 @@ export class ModelCartridgesController {
   }
 
   @Get()
-  // @ApiCreatedResponse({
-  //   type: () => RoleResponsWhithUserDto,
-  //   isArray: true,
-  // })
+  @ApiOkResponse({
+    type: () => ModelCartridgeResponse,
+    isArray: true,
+  })
   @ApiBadRequestResponse({
     type: () => ErrorResponse400,
   })
@@ -67,7 +68,7 @@ export class ModelCartridgesController {
   @ApiNotFoundResponse({
     type: () => ErrorResponse404,
   })
-  async getAll() {
+  async getAll(): Promise<ModelCartridgeResponse[]> {
     return await this.createModelCartridge.getAll();
   }
 }

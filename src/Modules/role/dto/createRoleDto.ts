@@ -17,12 +17,8 @@ export class RoleWhenCreatingUserDto {
 
 export class RoleResponsWhithUserDto {
     @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
     id: number
 
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
     roleName: string
 }
