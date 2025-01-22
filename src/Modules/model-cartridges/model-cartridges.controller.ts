@@ -11,7 +11,6 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -22,17 +21,19 @@ import {
   ErrorResponse404,
   ErrorResponse408,
 } from 'src/common/errorTypes';
-import { SuccessResponse200 } from 'src/common/successTypes';
-import { CreateModelCartridgeDto, ModelCartridgeResponse } from './dto/CreateModelCartridgeDto';
+import {
+  CreateModelCartridgeDto,
+  ModelCartridgeResponse,
+} from './dto/CreateModelCartridgeDto';
 
 @ApiTags('ModelCartridges')
 @Controller('model-cartridges')
 export class ModelCartridgesController {
-  constructor(private readonly createModelCartridge: ModelCartridgesService) { }
+  constructor(private readonly createModelCartridge: ModelCartridgesService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => CreateModelCartridgeDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponse400,
@@ -48,11 +49,11 @@ export class ModelCartridgesController {
   })
   @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateModelCartridgeDto) {
-    return await this.createModelCartridge.create(createDto);
+    await this.createModelCartridge.create(createDto);
   }
 
   @Get()
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: () => ModelCartridgeResponse,
     isArray: true,
   })
@@ -68,6 +69,7 @@ export class ModelCartridgesController {
   @ApiNotFoundResponse({
     type: () => ErrorResponse404,
   })
+  @HttpCode(HttpStatus.OK)
   async getAll(): Promise<ModelCartridgeResponse[]> {
     return await this.createModelCartridge.getAll();
   }

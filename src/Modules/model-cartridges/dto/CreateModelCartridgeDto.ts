@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
-import { UserResponseWithModelsCartridgesDto, UserWhenCreatemodelDto } from 'src/Modules/users/dto/createUserDto';
+import {
+  UserResponseWithModelsCartridgesDto,
+  UserWhenCreatemodelDto,
+} from 'src/Modules/users/dto/createUserDto';
 
 export class CreateModelCartridgeDto {
   @ApiProperty()
@@ -17,22 +20,19 @@ export class CreateModelCartridgeDto {
   creator: UserWhenCreatemodelDto;
 }
 
-
 export class ModelCartridgeResponse {
   @ApiProperty({
     type: () => UserResponseWithModelsCartridgesDto,
   })
-  creator: UserResponseWithModelsCartridgesDto
+  creator: UserResponseWithModelsCartridgesDto;
 
   @ApiProperty()
-  id: number
+  id: number;
 
   @ApiProperty()
-  modelName: string
+  modelName: string;
   @ApiProperty()
-
-  createdAt: Date
+  createdAt: Date;
   @ApiProperty()
-
-  updatedAt: Date
+  updatedAt: Date;
 }
