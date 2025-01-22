@@ -36,3 +36,20 @@ export class ModelCartridgeResponse {
   @ApiProperty()
   updatedAt: Date;
 }
+
+export class ModelCartridgeResponse2 {
+  @ApiProperty({
+    type: () => UserResponseWithModelsCartridgesDto,
+  })
+  creator: UserResponseWithModelsCartridgesDto;
+
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  modelName: string;
+  @ApiProperty()
+  createdAt: string;
+  @ApiProperty()
+  updatedAt: string;
+}
