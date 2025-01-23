@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import {
   UserResponseWithModelsCartridgesDto,
   UserWhenCreatemodelDto,
@@ -8,8 +13,14 @@ import {
 
 export class CreateModelCartridgeDto {
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   modelName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  printerName: string;
 
   @ApiProperty({
     type: () => UserWhenCreatemodelDto,
@@ -30,21 +41,7 @@ export class ModelCartridgeResponse {
   id: number;
 
   @ApiProperty()
-  modelName: string;
-  @ApiProperty()
-  createdAt: Date;
-  @ApiProperty()
-  updatedAt: Date;
-}
-
-export class ModelCartridgeResponse2 {
-  @ApiProperty({
-    type: () => UserResponseWithModelsCartridgesDto,
-  })
-  creator: UserResponseWithModelsCartridgesDto;
-
-  @ApiProperty()
-  id: number;
+  printerName: string;
 
   @ApiProperty()
   modelName: string;

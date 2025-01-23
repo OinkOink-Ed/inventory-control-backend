@@ -24,14 +24,13 @@ import {
 import {
   CreateModelCartridgeDto,
   ModelCartridgeResponse,
-  ModelCartridgeResponse2,
 } from './dto/CreateModelCartridgeDto';
 import { SuccessResponse200 } from 'src/common/successTypes';
 
 @ApiTags('ModelCartridges')
 @Controller('model-cartridges')
 export class ModelCartridgesController {
-  constructor(private readonly createModelCartridge: ModelCartridgesService) { }
+  constructor(private readonly createModelCartridge: ModelCartridgesService) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -50,17 +49,25 @@ export class ModelCartridgesController {
     type: () => ErrorResponse404,
   })
   @HttpCode(HttpStatus.OK)
-  async create(@Body() createDto: CreateModelCartridgeDto): Promise<SuccessResponse200 | ErrorResponse400 | ErrorResponse408 | ErrorResponse403 | ErrorResponse404> {
+  async create(
+    @Body() createDto: CreateModelCartridgeDto,
+  ): Promise<
+    | SuccessResponse200
+    | ErrorResponse400
+    | ErrorResponse408
+    | ErrorResponse403
+    | ErrorResponse404
+  > {
     await this.createModelCartridge.create(createDto);
     return {
       statusCode: 200,
-      message: "Модель картриджа успешно добавлена"
-    }
+      message: 'Модель картриджа успешно добавлена',
+    };
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => ModelCartridgeResponse2,
+    type: () => ModelCartridgeResponse,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -76,7 +83,7 @@ export class ModelCartridgesController {
     type: () => ErrorResponse404,
   })
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<ModelCartridgeResponse[]> {
+  async getAll(): Promise<CreateModelCartridgeDto[]> {
     return await this.createModelCartridge.getAll();
   }
 }

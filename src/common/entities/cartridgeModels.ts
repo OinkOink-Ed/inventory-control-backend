@@ -17,6 +17,9 @@ export class CartridgeModels {
   @Column()
   modelName: string;
 
+  @Column()
+  printerName: string;
+
   @ManyToOne(() => User, (user) => user.addedModels, { cascade: ['insert'] })
   creator: Relation<User>;
   @ManyToOne(() => User, (user) => user.updatedModels, { cascade: ['update'] })

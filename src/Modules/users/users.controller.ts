@@ -47,12 +47,17 @@ export class UsersController {
   })
   @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateUserDto) {
-    return await this.usersService.create(createDto);
+    await this.usersService.create(createDto);
+    return {
+      statusCode: 200,
+      message: 'Модель картриджа успешно добавлена',
+    };
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => UserResponseDto,
+    isArray: true,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponse400,
