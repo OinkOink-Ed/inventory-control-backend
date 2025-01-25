@@ -36,7 +36,7 @@ export class CreateUserDto {
   @IsString()
   patronimyc: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true, nullable: false, minLength: 4 })
   @IsString()
   @IsNotEmpty()
   @MinLength(4)

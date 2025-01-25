@@ -50,7 +50,7 @@ export class UsersController {
     await this.usersService.create(createDto);
     return {
       statusCode: 200,
-      message: 'Модель картриджа успешно добавлена',
+      message: 'Пользователь успешно добавлен',
     };
   }
 
