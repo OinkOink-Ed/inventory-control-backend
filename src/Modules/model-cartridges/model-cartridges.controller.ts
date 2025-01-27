@@ -30,7 +30,7 @@ import { SuccessResponse200 } from 'src/common/successTypes';
 @ApiTags('ModelCartridges')
 @Controller('model-cartridges')
 export class ModelCartridgesController {
-  constructor(private readonly createModelCartridge: ModelCartridgesService) {}
+  constructor(private readonly createModelCartridge: ModelCartridgesService) { }
 
   @Post()
   @ApiCreatedResponse({

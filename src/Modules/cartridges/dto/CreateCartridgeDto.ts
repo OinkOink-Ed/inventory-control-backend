@@ -19,9 +19,4 @@ export class ResponsseCartridgeDto {
   @ApiProperty()
   @IsString()
   model: string;
-
-  @ApiProperty({ required: true, nullable: false, default: true })
-  @IsNotEmpty()
-  @IsBoolean()
-  availability: boolean;
 }

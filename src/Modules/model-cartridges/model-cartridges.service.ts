@@ -9,7 +9,7 @@ export class ModelCartridgesService {
   constructor(
     @InjectRepository(CartridgeModels)
     private readonly repo: Repository<CartridgeModels>,
-  ) {}
+  ) { }
 
   async create(dto: CreateModelCartridgeDto) {
     return await this.repo.save(dto);

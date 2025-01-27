@@ -1,7 +1,9 @@
+import { CartridgeModels } from 'src/common/entities/cartridgeModels';
+import { ValidateCartridgeModel } from 'src/common/validators/ValidateCartridgeModel';
 import {
-  Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,11 +13,9 @@ export class Cartridges {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  model: string;
-
-  @Column({ nullable: false, default: true })
-  availability: boolean;
+  @ManyToOne(() => CartridgeModels, (CartridgeModels) => CartridgeModels.modelName, { cascade: ['insert'] })
+  @ValidateCartridgeModel()
+  modelName: string;
 
   @CreateDateColumn()
   createdAt: Date;

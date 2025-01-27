@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user';
+import { Cartridges } from 'src/common/entities/cartridges';
 
 @Entity()
 export class CartridgeModels {
@@ -19,6 +21,9 @@ export class CartridgeModels {
 
   @Column()
   printerName: string;
+
+  @OneToMany(() => Cartridges, (Cartridges) => Cartridges.id)
+  cartridges: Relation<Cartridges>[]
 
   @ManyToOne(() => User, (user) => user.addedModels, { cascade: ['insert'] })
   creator: Relation<User>;
