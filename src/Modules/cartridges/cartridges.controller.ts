@@ -28,6 +28,10 @@ export class CartridgesController {
     })
     @HttpCode(HttpStatus.OK)
     async create(@Body() createDto: CreateCartridgeDto) {
-        return await this.createCartridgeService.create(createDto);
+        await this.createCartridgeService.create(createDto);
+        return {
+            statusCode: 200,
+            message: 'Картриджи успешно добавлены',
+          };
     };
 }

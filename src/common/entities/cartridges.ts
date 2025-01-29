@@ -1,5 +1,4 @@
 import { CartridgeModels } from 'src/common/entities/cartridgeModels';
-import { ValidateCartridgeModel } from 'src/common/validators/ValidateCartridgeModel';
 import {
   CreateDateColumn,
   Entity,
@@ -14,7 +13,6 @@ export class Cartridges {
   id: number;
 
   @ManyToOne(() => CartridgeModels, (CartridgeModels) => CartridgeModels.modelName, { cascade: ['insert'] })
-  @ValidateCartridgeModel()
   modelName: string;
 
   @CreateDateColumn()

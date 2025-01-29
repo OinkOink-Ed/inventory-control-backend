@@ -1,18 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateCartridgeDto {
   @ApiProperty()
   @IsString()
-  model: string;
+  modelName: string;
 
-  // @ApiProperty({ required: true, nullable: false, default: true })
-  @IsNotEmpty()
-  @IsBoolean()
-  availability: boolean = true;
+  @ApiProperty()
+  @IsNumber()
+  count: number;
 }
 
-export class ResponsseCartridgeDto {
+export class ResponseCartridgeDto {
   @ApiProperty()
   id: number;
 

@@ -49,11 +49,11 @@ import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridg
     RoleModule,
     ModelCartridgesModule,
   ],
-  // providers: [
-  //   {
-  //     provide: 'APP_GUARD',
-  //     useClass: AuthGuard,
-  //   },
-  // ],
+  providers: [
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: AuthGuard,
+    // },
+  ],
 })
 export class AppModule {}
