@@ -12,7 +12,11 @@ export class Cartridges {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => CartridgeModels, (CartridgeModels) => CartridgeModels.modelName, { cascade: ['insert'] })
+  @ManyToOne(
+    () => CartridgeModels,
+    (CartridgeModels) => CartridgeModels.modelName,
+    { cascade: ['insert'], onDelete: 'CASCADE' },
+  )
   modelName: string;
 
   @CreateDateColumn()

@@ -11,7 +11,7 @@ import { Role } from './common/entities/role';
 import { Cartridges } from './common/entities/cartridges';
 import { RoleModule } from './Modules/role/role.module';
 // import { AuthGuard } from './common/guards/AuthGuard';
-// import { Movements } from './common/entities/movements';
+import { Movements } from './common/entities/movements';
 import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridges.module';
 
 @Module({
@@ -32,13 +32,7 @@ import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridg
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.name'),
           synchronize: true,
-          entities: [
-            User,
-            CartridgeModels,
-            Role,
-            Cartridges,
-            // Movements,
-          ],
+          entities: [User, CartridgeModels, Role, Cartridges, Movements],
         };
       },
       inject: [ConfigService],

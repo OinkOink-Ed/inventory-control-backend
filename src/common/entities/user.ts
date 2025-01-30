@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Role } from './role';
 import { CartridgeModels } from './cartridgeModels';
+import { Movements } from './movements';
 
 @Entity()
 export class User {
@@ -45,6 +46,9 @@ export class User {
     (cartridgemodels) => cartridgemodels.creator,
   )
   addedModels: Relation<CartridgeModels>[];
+
+  @OneToMany(() => Movements, (movements) => movements)
+  movements_id: Relation<Movements>[];
 
   @OneToMany(
     () => CartridgeModels,
