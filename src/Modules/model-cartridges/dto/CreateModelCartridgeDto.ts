@@ -3,12 +3,13 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import {
   UserResponseWithModelsCartridgesDto,
-  UserWhenCreatemodelDto,
+  UserWhenCreateDto,
 } from 'src/Modules/users/dto/createUserDto';
 
 export class CreateModelCartridgeDto {
@@ -23,12 +24,24 @@ export class CreateModelCartridgeDto {
   printerName: string;
 
   @ApiProperty({
-    type: () => UserWhenCreatemodelDto,
+    type: () => UserWhenCreateDto,
   })
   @ValidateNested()
   @IsNotEmptyObject()
-  @Type(() => UserWhenCreatemodelDto)
-  creator: UserWhenCreatemodelDto;
+  @Type(() => UserWhenCreateDto)
+  creator: UserWhenCreateDto;
+}
+
+export class CartridgeModelWhenRecipient {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  modelName: string;
 }
 
 export class ModelCartridgeResponse {

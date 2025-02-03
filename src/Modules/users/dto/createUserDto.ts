@@ -83,7 +83,7 @@ export class UserResponseDto {
   role: RoleResponsWhithUserDto;
 }
 
-export class UserWhenCreatemodelDto {
+export class UserWhenCreateDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

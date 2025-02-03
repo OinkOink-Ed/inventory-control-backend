@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -17,7 +18,7 @@ export class Cartridges {
     (CartridgeModels) => CartridgeModels.modelName,
     { cascade: ['insert'], onDelete: 'CASCADE' },
   )
-  modelName: string;
+  modelName: Relation<CartridgeModels>;
 
   @CreateDateColumn()
   createdAt: Date;

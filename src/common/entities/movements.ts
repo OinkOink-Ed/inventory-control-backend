@@ -17,6 +17,12 @@ export class Movements {
   count: number;
 
   @Column()
+  division: string;
+
+  @Column()
+  cabinet: number;
+
+  @Column()
   modelCartridge: string;
 
   @Column()
