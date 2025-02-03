@@ -4,6 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 export class CreateCartridgeDto {
   @ApiProperty()
   @IsString()
+  // @IsUserAlreadyExist() пока что не работает
   modelName: string;
 
   @ApiProperty()
