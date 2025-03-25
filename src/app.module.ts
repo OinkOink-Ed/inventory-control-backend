@@ -1,18 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './Modules/users/users.module';
+// import { UsersModule } from './Modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
-import { User } from './common/entities/user';
-import { CartridgesModule } from './Modules/cartridges/cartridges.module';
-import { AuthModule } from './Modules/auth/auth.module';
-import { CartridgeModels } from './common/entities/cartridgeModels';
-import { Role } from './common/entities/role';
-import { Cartridges } from './common/entities/cartridges';
-import { RoleModule } from './Modules/role/role.module';
+import { RoleModule } from 'src/Modules/role/role.module';
+// import { CartridgesModule } from './Modules/cartridges/cartridges.module';
+// import { AuthModule } from './Modules/auth/auth.module';
+// import { Role } from './common/entities/role';
 // import { AuthGuard } from './common/guards/AuthGuard';
-import { Movements } from './common/entities/movements';
-import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridges.module';
+// import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridges.module';
 
 @Module({
   imports: [
@@ -32,16 +28,17 @@ import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridg
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.name'),
           synchronize: true,
-          entities: [User, CartridgeModels, Role, Cartridges, Movements],
+          // entities: [Role],
+          autoLoadEntities: true,
         };
       },
       inject: [ConfigService],
     }),
-    UsersModule,
-    CartridgesModule,
-    AuthModule,
+    // UsersModule,
+    // CartridgesModule,
+    // AuthModule,
+    // ModelCartridgesModule,
     RoleModule,
-    ModelCartridgesModule,
   ],
   providers: [
     // {
