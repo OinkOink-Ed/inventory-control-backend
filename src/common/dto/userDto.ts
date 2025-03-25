@@ -1,34 +1,34 @@
-import { ApiProperty } from "@nestjs/swagger"
+// import { ApiProperty } from "@nestjs/swagger"
 
-export class UserDto {
+// export class UserDto {
 
-  @ApiProperty()
-  id: number
+//   @ApiProperty()
+//   id: number
 
-  @ApiProperty()
-  name: string
+//   @ApiProperty()
+//   name: string
 
-  @ApiProperty()
-  nickname: string
+//   @ApiProperty()
+//   nickname: string
 
-  @ApiProperty()
-  patronimyc: string
+//   @ApiProperty()
+//   patronimyc: string
 
-  @ApiProperty()
-  surname: string
+//   @ApiProperty()
+//   surname: string
 
-  @ApiProperty()
-  password: string
+//   @ApiProperty()
+//   password: string
 
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      roleName: {
-        type: 'string',
-      }
-    },
-  })
-  role: {
-    roleName: string
-  }
-}
+//   @ApiProperty({
+//     type: 'object',
+//     properties: {
+//       roleName: {
+//         type: 'string',
+//       }
+//     },
+//   })
+//   role: {
+//     roleName: string
+//   }
+// }
