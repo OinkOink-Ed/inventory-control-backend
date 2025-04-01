@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Role {
+export class Delivery {
   @PrimaryGeneratedColumn()
   id: number;
 
