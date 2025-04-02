@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { RoleService } from './role.service';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -16,20 +15,21 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { DivisionService } from './division.service';
+import { SuccessResponse200 } from 'src/common/successTypes';
 import {
   ErrorResponse400,
   ErrorResponse403,
   ErrorResponse404,
   ErrorResponse408,
 } from 'src/common/errorTypes';
-import { SuccessResponse200 } from 'src/common/successTypes';
-import { CreateRoleDto } from './dto/createRoleDto';
-import { ReadRoleDto } from './dto/ReadRoleDto';
+import { CreateDivisionDto } from './dto/CreateDivisionDto';
+import { ReadDivisionDto } from './dto/ReadDivisionDto';
 
-@ApiTags('Role')
-@Controller('role')
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+@ApiTags('Division')
+@Controller('division')
+export class DivisionController {
+  constructor(private readonly divisionService: DivisionService) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -48,13 +48,13 @@ export class RoleController {
     type: () => ErrorResponse404,
   })
   @HttpCode(HttpStatus.OK)
-  async create(@Body() createDto: CreateRoleDto) {
-    return await this.roleService.create(createDto);
+  async create(@Body() createDto: CreateDivisionDto) {
+    return await this.divisionService.create(createDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: () => ReadRoleDto,
+    type: () => ReadDivisionDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -69,7 +69,7 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponse404,
   })
-  async getAll(): Promise<ReadRoleDto[]> {
-    return await this.roleService.getAll();
+  async getAll(): Promise<ReadDivisionDto[]> {
+    return await this.divisionService.getAll();
   }
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRoleDto {
+export class AuthResponseDto {
   @ApiProperty()
-  roleName: string;
+  access_token: string;
 }

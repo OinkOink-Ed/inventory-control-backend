@@ -6,13 +6,11 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { RoleService } from './role.service';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -21,15 +19,16 @@ import {
   ErrorResponse403,
   ErrorResponse404,
   ErrorResponse408,
-} from 'src/common/errorTypes';
+} from '../../common/errorTypes';
 import { SuccessResponse200 } from 'src/common/successTypes';
-import { CreateRoleDto } from './dto/createRoleDto';
-import { ReadRoleDto } from './dto/ReadRoleDto';
+import { ReadUserDto } from './dto/ReadUserDto';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/createUserDto';
 
-@ApiTags('Role')
-@Controller('role')
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+@ApiTags('Users')
+@Controller('users')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -48,13 +47,17 @@ export class RoleController {
     type: () => ErrorResponse404,
   })
   @HttpCode(HttpStatus.OK)
-  async create(@Body() createDto: CreateRoleDto) {
-    return await this.roleService.create(createDto);
+  async create(@Body() createDto: CreateUserDto) {
+    await this.userService.create(createDto);
+    return {
+      statusCode: 200,
+      message: 'Пользователь успешно добавлен',
+    };
   }
 
   @Get()
-  @ApiOkResponse({
-    type: () => ReadRoleDto,
+  @ApiCreatedResponse({
+    type: () => ReadUserDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -69,7 +72,7 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponse404,
   })
-  async getAll(): Promise<ReadRoleDto[]> {
-    return await this.roleService.getAll();
+  async getAll(): Promise<ReadUserDto[]> {
+    return await this.userService.getAll();
   }
 }
