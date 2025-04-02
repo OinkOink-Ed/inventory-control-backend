@@ -9,4 +9,4 @@ import { CartridgeModelController } from './cartridgeModel.controller';
   controllers: [CartridgeModelController],
   providers: [CartridgeModelService],
 })
-export class cartridgeModelModule {}
+export class CartridgeModelModule {}

@@ -5,11 +5,11 @@ import configuration, { validationSchema } from './common/config/configuration';
 import { RoleModule } from 'src/Modules/role/role.module';
 import { DivisionModule } from './Modules/division/division.module';
 import { UserModule } from './Modules/user/user.module';
-import { CartridgeModel } from './common/entities/CartridgeModel';
 import { AuthModule } from './Modules/auth/auth.module';
 import { KabinetModule } from './Modules/kabinet/kabinet.module';
 import { StatusModule } from './Modules/status/status.module';
 import { WarehouseModule } from './Modules/warehouse/warehouse.module';
+import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.module';
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { WarehouseModule } from './Modules/warehouse/warehouse.module';
       inject: [ConfigService],
     }),
     AuthModule,
-    CartridgeModel,
+    CartridgeModelModule,
     DivisionModule,
     KabinetModule,
     RoleModule,
