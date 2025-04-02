@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-// import { UsersModule } from './Modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
 import { RoleModule } from 'src/Modules/role/role.module';
-// import { CartridgesModule } from './Modules/cartridges/cartridges.module';
-// import { AuthModule } from './Modules/auth/auth.module';
-// import { Role } from './common/entities/role';
-// import { AuthGuard } from './common/guards/AuthGuard';
-// import { ModelCartridgesModule } from './Modules/model-cartridges/model-cartridges.module';
+import { DivisionModule } from './Modules/division/division.module';
+import { UserModule } from './Modules/user/user.module';
+import { CartridgeModel } from './common/entities/CartridgeModel';
+import { AuthModule } from './Modules/auth/auth.module';
+import { KabinetModule } from './Modules/kabinet/kabinet.module';
+import { StatusModule } from './Modules/status/status.module';
+import { WarehouseModule } from './Modules/warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -34,11 +35,14 @@ import { RoleModule } from 'src/Modules/role/role.module';
       },
       inject: [ConfigService],
     }),
-    // UsersModule,
-    // CartridgesModule,
-    // AuthModule,
-    // ModelCartridgesModule,
+    AuthModule,
+    CartridgeModel,
+    DivisionModule,
+    KabinetModule,
     RoleModule,
+    StatusModule,
+    UserModule,
+    WarehouseModule,
   ],
   providers: [
     // {

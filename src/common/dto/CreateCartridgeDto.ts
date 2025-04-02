@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateKabinetDto {
+export class CreateCartridgeDto {
   @ApiProperty()
-  number: number;
+  cartridgeModelId: number;
 
   @ApiProperty()
-  divisionID: number;
+  statusId: number;
 }

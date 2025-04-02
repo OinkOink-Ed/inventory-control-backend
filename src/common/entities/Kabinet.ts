@@ -12,7 +12,11 @@ export class Kabinet {
   id: number;
 
   @Column()
-  number: string;
+  number: number;
+
+  //Нужно сделать связь
+  @Column()
+  divisionId: number;
 
   @CreateDateColumn()
   createdAt: Date;

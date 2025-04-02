@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRecievingDto {
+export class CreateDecomissioningDto {
+  @ApiProperty()
+  comment: string;
+
   @ApiProperty()
   wareHouseID: number;
 

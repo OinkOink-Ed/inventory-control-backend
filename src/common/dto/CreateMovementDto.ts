@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRecievingDto {
+export class CreateMovementDto {
   @ApiProperty()
-  wareHouseID: number;
+  wareHouseFromID: number;
+
+  @ApiProperty()
+  wareHouseWhereID: number;
 
   @ApiProperty()
   userId: number;

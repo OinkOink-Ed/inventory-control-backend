@@ -12,19 +12,23 @@ export class Warehouse {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   openning: Date;
 
-  //   @Column()
-  //   divisionId
+  @Column()
+  divisionId: number;
 
-  //   @Column()
-  //   statusID
+  //Добавить отношения
+  @Column()
+  statusId: number;
 
   @Column()
   closure: Date;
 
-  //   @Column()
-  //   cartridgeID
+  @Column()
+  cartridgeId: number;
 
   @CreateDateColumn()
   createdAt: Date;

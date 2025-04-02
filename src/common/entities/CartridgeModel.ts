@@ -14,8 +14,9 @@ export class CartridgeModel {
   @Column()
   name: string;
 
-  //   @Column()
-  //   creatorID
+  //Это связь - отношение
+  @Column()
+  creatorid: number;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -24,22 +24,24 @@ export class User {
   lastname: string;
 
   @Column()
-  patronymic: string;
+  patronimyc: string;
 
   @Column()
   telephone: string;
 
-  //   @Column()
-  //   roleID
+  //Везде где ID  добавить это как связь или отношение
 
-  //   @Column()
-  //   divisionID
+  @Column()
+  roleId: number;
 
-  //   @Column()
-  //   statusID
+  @Column()
+  divisionId: number;
 
-  // @Column()
-  // creatorID
+  @Column()
+  statusId: number;
+
+  @Column()
+  creatorId: number;
 
   @CreateDateColumn()
   createdAt: Date;
