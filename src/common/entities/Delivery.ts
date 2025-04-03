@@ -1,5 +1,5 @@
 import {
-  //   Column,
+  Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
@@ -7,15 +7,23 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Cartridge {
+export class Delivery {
   @PrimaryGeneratedColumn()
   id: number;
 
-  //   @Column()
-  //   cartridgeModelsID
+  // Где ID  добавить связи
 
-  //   @Column()
-  //   statusID
+  @Column()
+  userId: number;
+
+  @Column()
+  kabinetId: number;
+
+  @Column()
+  divisionId: number;
+
+  @Column()
+  warehouseId: number;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,4 +1,5 @@
 import {
+  Column,
   //   Column,
   CreateDateColumn,
   Entity,
@@ -7,21 +8,17 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Movement {
+export class Receieving {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // userID
+  // там где ID добавить связи
 
-  // @Column()
-  // cartridgeID
+  @Column()
+  userId: number;
 
-  // @Column()
-  // warehouseFromID
-
-  // @Column()
-  // warehouseWhereID
+  @Column()
+  warehouseId: number;
 
   @CreateDateColumn()
   createdAt: Date;

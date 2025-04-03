@@ -29,6 +29,11 @@ export class User {
   @Column()
   telephone: string;
 
+  // Исправить через переводчик названия + почитать как через TypeORM делать тип Enum
+
+  @Column()
+  state: 'active' | 'noactive';
+
   //Везде где ID  добавить это как связь или отношение
 
   @Column()
@@ -36,9 +41,6 @@ export class User {
 
   @Column()
   divisionId: number;
-
-  @Column()
-  statusId: number;
 
   @Column()
   creatorId: number;

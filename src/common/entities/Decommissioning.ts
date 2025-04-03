@@ -7,18 +7,20 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Division {
+export class Decommissioning {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  comment: string;
+
+  //Добавить связи где ID
 
   @Column()
-  address: string;
+  userId: number;
 
-  //   @Column()
-  //   kabinetID
+  @Column()
+  warehouseId: number;
 
   @CreateDateColumn()
   createdAt: Date;

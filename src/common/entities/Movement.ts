@@ -7,12 +7,20 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Status {
+export class Movement {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  userId: number;
+
+  //Добавить связи где ID
+
+  @Column()
+  warehouseFromId: number;
+
+  @Column()
+  warehouseWhereId: number;
 
   @CreateDateColumn()
   createdAt: Date;

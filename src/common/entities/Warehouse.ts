@@ -7,21 +7,27 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Decommissioning {
+export class Warehouse {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  comment: string;
+  name: string;
 
-  // @Column()
-  // userID
+  @Column()
+  openning: Date;
 
-  // @Column()
-  // cartridgeID
+  @Column()
+  closure: Date;
 
-  // @Column()
-  // warehouseID
+  //Скорректировать названия
+
+  @Column()
+  state: 'open' | 'clouse';
+
+  //Добавить отношения
+  @Column()
+  divisionId: number;
 
   @CreateDateColumn()
   createdAt: Date;

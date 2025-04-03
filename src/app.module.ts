@@ -7,7 +7,6 @@ import { DivisionModule } from './Modules/division/division.module';
 import { UserModule } from './Modules/user/user.module';
 import { AuthModule } from './Modules/auth/auth.module';
 import { KabinetModule } from './Modules/kabinet/kabinet.module';
-import { StatusModule } from './Modules/status/status.module';
 import { WarehouseModule } from './Modules/warehouse/warehouse.module';
 import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.module';
 
@@ -40,7 +39,6 @@ import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.mo
     DivisionModule,
     KabinetModule,
     RoleModule,
-    StatusModule,
     UserModule,
     WarehouseModule,
   ],
