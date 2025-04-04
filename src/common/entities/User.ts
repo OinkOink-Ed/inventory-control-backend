@@ -3,17 +3,18 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
+  // OneToMany,
   PrimaryGeneratedColumn,
+  // Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserStatus } from '../types/UserStatus';
-import { Division } from './Division';
-import { Warehouse } from './Warehouse';
-import { Kabinet } from './Kabinet';
-import { CartridgeModel } from './CartridgeModel';
-import { Cartridge } from './Cartridge';
-import { Role } from './Role';
+// import { Division } from './Division';
+// import { Warehouse } from './Warehouse';
+// import { Kabinet } from './Kabinet';
+// import { CartridgeModel } from './CartridgeModel';
+// import { Cartridge } from './Cartridge';
+import type { Role } from './Role';
 
 @Entity()
 export class User {
@@ -48,7 +49,7 @@ export class User {
   // @ManyToOne(() => Division, (division) => division.users)
   // division: Division;
 
-  @ManyToOne(() => Role, (role) => role.users)
+  @ManyToOne('Role', (role: Role) => role.users)
   role: Role;
 
   // @ManyToOne(() => User, (user) => user.createdUsers, { nullable: true })

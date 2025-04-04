@@ -2,17 +2,18 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
-import { DivisionModule } from './Modules/division/division.module';
-import { RoleModule } from 'src/Modules/role/role.module';
+
+// import { DivisionModule } from './Modules/division/division.module';
 import { UserModule } from './Modules/user/user.module';
+import { RoleModule } from 'src/Modules/role/role.module';
 
 import { AuthModule } from './Modules/auth/auth.module';
 
-import { KabinetModule } from './Modules/kabinet/kabinet.module';
-import { WarehouseModule } from './Modules/warehouse/warehouse.module';
-import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.module';
-import { User } from './common/entities/User';
-import { Role } from './common/entities/Role';
+// import { AuthModule } from './Modules/auth/auth.module';
+
+// import { KabinetModule } from './Modules/kabinet/kabinet.module';
+// import { WarehouseModule } from './Modules/warehouse/warehouse.module';
+// import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.module';
 
 @Module({
   imports: [
