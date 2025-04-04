@@ -18,13 +18,4 @@ export class ReadUserDto {
 
   @ApiProperty()
   telephone: string;
-
-  @ApiProperty()
-  roleId: number;
-
-  @ApiProperty()
-  divisionId: number;
-
-  @ApiProperty()
-  statusId: number;
 }

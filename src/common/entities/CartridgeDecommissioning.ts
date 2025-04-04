@@ -7,20 +7,20 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Decommissioning {
+export class CartridgeDecommissioning {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   comment: string;
 
-  //Добавить связи где ID
+  //Это связь - отношение
 
   @Column()
-  creatorId: number;
+  decommissioningId: number;
 
   @Column()
-  warehouseId: number;
+  cartridgeId: number;
 
   @CreateDateColumn()
   createdAt: Date;

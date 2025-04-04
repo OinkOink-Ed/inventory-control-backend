@@ -2,9 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserStatus } from '../types/UserStatus';
+import { Division } from './Division';
+import { Warehouse } from './Warehouse';
+import { Kabinet } from './Kabinet';
+import { CartridgeModel } from './CartridgeModel';
+import { Cartridge } from './Cartridge';
+import { Role } from './Role';
 
 @Entity()
 export class User {
@@ -29,21 +38,50 @@ export class User {
   @Column()
   telephone: string;
 
-  // Исправить через переводчик названия + почитать как через TypeORM делать тип Enum
+  @Column({
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.ACTIVE,
+  })
+  state: UserStatus;
 
-  @Column()
-  state: 'active' | 'noactive';
+  // @ManyToOne(() => Division, (division) => division.users)
+  // division: Division;
 
-  //Везде где ID  добавить это как связь или отношение
+  @ManyToOne(() => Role, (role) => role.users)
+  role: Role;
 
-  @Column()
-  roleId: number;
+  // @ManyToOne(() => User, (user) => user.createdUsers, { nullable: true })
+  // creator: User;
 
-  @Column()
-  divisionId: number;
+  // @OneToMany(() => User, (user) => user.creator, { nullable: true })
+  // createdUsers: User[];
 
-  @Column()
-  creatorId: number;
+  // @OneToMany(() => Role, (role) => role.creator, { nullable: true })
+  // createdRoles: Role[];
+
+  // @OneToMany(() => Warehouse, (warehouse) => warehouse.creator, {
+  //   nullable: true,
+  // })
+  // createdWarehouses: Warehouse[];
+
+  // @OneToMany(() => Division, (division) => division.creator, {
+  //   nullable: true,
+  // })
+  // createdDivisions: Division[];
+
+  // @OneToMany(() => Kabinet, (kabinet) => kabinet.creator, { nullable: true })
+  // createdKabinets: Kabinet[];
+
+  // @OneToMany(() => CartridgeModel, (cartridgeModel) => cartridgeModel.creator, {
+  //   nullable: true,
+  // })
+  // createdCartridgeModels: CartridgeModel[];
+
+  // @OneToMany(() => Cartridge, (cartridge) => cartridge.creator, {
+  //   nullable: true,
+  // })
+  // createdCartridges: Cartridge[];
 
   @CreateDateColumn()
   createdAt: Date;

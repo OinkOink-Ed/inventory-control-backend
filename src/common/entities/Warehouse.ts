@@ -2,9 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { WarehouseStatus } from '../types/WarehouseStatus';
+import { Division } from './Division';
+import { User } from './User';
+import { Cartridge } from './Cartridge';
 
 @Entity()
 export class Warehouse {
@@ -15,19 +23,27 @@ export class Warehouse {
   name: string;
 
   @Column()
-  openning: Date;
+  openningDate: Date;
 
   @Column()
-  closure: Date;
+  closingDate: Date;
 
-  //Скорректировать названия
+  @Column({
+    type: 'enum',
+    enum: WarehouseStatus,
+    default: WarehouseStatus.ISOPEN,
+  })
+  state: WarehouseStatus;
 
-  @Column()
-  state: 'open' | 'clouse';
+  @OneToOne(() => Division, (division) => division.warehouse)
+  @JoinColumn()
+  division: Division;
 
-  //Добавить отношения
-  @Column()
-  divisionId: number;
+  @ManyToOne(() => User, (user) => user.createdWarehouses)
+  creator: User;
+
+  @OneToMany(() => Cartridge, (cartridge) => cartridge.warehouse)
+  cartridges: Cartridge[];
 
   @CreateDateColumn()
   createdAt: Date;

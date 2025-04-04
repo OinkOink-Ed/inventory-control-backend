@@ -2,13 +2,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { validationSchema } from './common/config/configuration';
-import { RoleModule } from 'src/Modules/role/role.module';
 import { DivisionModule } from './Modules/division/division.module';
+import { RoleModule } from 'src/Modules/role/role.module';
 import { UserModule } from './Modules/user/user.module';
+
 import { AuthModule } from './Modules/auth/auth.module';
+
 import { KabinetModule } from './Modules/kabinet/kabinet.module';
 import { WarehouseModule } from './Modules/warehouse/warehouse.module';
 import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.module';
+import { User } from './common/entities/User';
+import { Role } from './common/entities/Role';
 
 @Module({
   imports: [
@@ -28,19 +32,20 @@ import { CartridgeModelModule } from './Modules/cartridgeModel/cartridgeModel.mo
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.name'),
           synchronize: true,
-          // entities: [Role],
+          // entities: [Role, User],
           autoLoadEntities: true,
         };
       },
       inject: [ConfigService],
     }),
     AuthModule,
-    CartridgeModelModule,
-    DivisionModule,
-    KabinetModule,
-    RoleModule,
+    // CartridgeModelModule,
+    // DivisionModule,
+    // KabinetModule,
     UserModule,
-    WarehouseModule,
+    RoleModule,
+
+    // WarehouseModule,
   ],
   providers: [
     // {

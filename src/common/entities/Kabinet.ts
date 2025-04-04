@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './User';
+import { Division } from './Division';
 
 @Entity()
 export class Kabinet {
@@ -14,13 +17,11 @@ export class Kabinet {
   @Column()
   number: string;
 
-  //Нужно сделать связь где ID
+  @ManyToOne(() => Division, (division) => division.kabinets)
+  division: Division;
 
-  @Column()
-  divisionId: number;
-
-  @Column()
-  creatorId: number;
+  @ManyToOne(() => User, (user) => user.createdKabinets)
+  creator: User;
 
   @CreateDateColumn()
   createdAt: Date;

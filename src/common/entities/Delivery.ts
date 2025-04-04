@@ -14,7 +14,7 @@ export class Delivery {
   // Где ID  добавить связи
 
   @Column()
-  userId: number;
+  creatorId: number;
 
   @Column()
   kabinetId: number;

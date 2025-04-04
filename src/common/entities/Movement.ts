@@ -11,10 +11,10 @@ export class Movement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  userId: number;
-
   //Добавить связи где ID
+
+  @Column()
+  creatorId: number;
 
   @Column()
   warehouseFromId: number;

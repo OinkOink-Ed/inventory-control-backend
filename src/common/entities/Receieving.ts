@@ -15,7 +15,7 @@ export class Receieving {
   // там где ID добавить связи
 
   @Column()
-  userId: number;
+  creatorId: number;
 
   @Column()
   warehouseId: number;

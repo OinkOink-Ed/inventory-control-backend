@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './User';
 
 @Entity()
 export class CartridgeModel {
@@ -14,9 +16,8 @@ export class CartridgeModel {
   @Column()
   name: string;
 
-  //Это связь - отношение
-  @Column()
-  creatorid: number;
+  @ManyToOne(() => User, (user) => user.createdCartridgeModels)
+  creator: User;
 
   @CreateDateColumn()
   createdAt: Date;
