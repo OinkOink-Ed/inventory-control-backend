@@ -1,23 +1,26 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Cartridge } from './Cartridge';
+import type { Movement } from './Movement';
 
 @Entity()
 export class CartridgeMovement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  //Это связь - отношение
+  @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionMovement)
+  @JoinColumn()
+  cartridge: Cartridge;
 
-  @Column()
-  movementId: number;
-
-  @Column()
-  cartridgeId: number;
+  @ManyToOne('Movement', (movement: Movement) => movement.action)
+  movement: Movement;
 
   @CreateDateColumn()
   createdAt: Date;

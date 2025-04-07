@@ -3,12 +3,17 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CartridgeStatus } from '../types/CartridgeStatus';
 import type { Warehouse } from './Warehouse';
 import type { User } from './User';
+import type { CartridgeMovement } from './CartridgeMovement';
+import type { CartridgeReceiving } from './CartridgeReceiving';
+import type { CartridgeDecommissioning } from './CartridgeDecommissioning';
+import type { CartridgeDelivery } from './CartridgeDelivery';
 
 @Entity()
 export class Cartridge {
@@ -24,6 +29,31 @@ export class Cartridge {
 
   @Column()
   model: number;
+
+  @OneToOne(
+    'CartridgeMovement',
+    (cartridgeMovement: CartridgeMovement) => cartridgeMovement.cartridge,
+  )
+  actionMovement: CartridgeMovement;
+
+  @OneToOne(
+    'CartridgeReceiving',
+    (cartridgeReceiving: CartridgeReceiving) => cartridgeReceiving.cartridge,
+  )
+  actionReceiving: CartridgeReceiving;
+
+  @OneToOne(
+    'CartridgeDecommissioning',
+    (cartridgeDecommissioning: CartridgeDecommissioning) =>
+      cartridgeDecommissioning.cartridge,
+  )
+  actionDecommissioning: CartridgeDecommissioning;
+
+  @OneToOne(
+    'CartridgeDelivery',
+    (cartridgeDelivery: CartridgeDelivery) => cartridgeDelivery.cartridge,
+  )
+  actionDelivery: CartridgeDelivery;
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.cartridges, {
     cascade: ['insert'],

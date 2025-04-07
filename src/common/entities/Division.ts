@@ -12,6 +12,7 @@ import {
 import type { User } from './User';
 import type { Kabinet } from './Kabinet';
 import type { Warehouse } from './Warehouse';
+import type { Delivery } from './Delivery';
 
 @Entity()
 export class Division {
@@ -34,7 +35,10 @@ export class Division {
   users: User[];
 
   @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.division)
-  kabinets: Kabinet[];
+  kabinet: Kabinet[];
+
+  @OneToMany('Delivery', (delivery: Delivery) => delivery.division)
+  delivery: Delivery[];
 
   @ManyToOne('User', (user: User) => user.createdDivisions)
   creator: User;

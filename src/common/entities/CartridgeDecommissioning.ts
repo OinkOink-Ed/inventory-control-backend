@@ -2,9 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Cartridge } from './Cartridge';
+import type { Decommissioning } from './Decommissioning';
 
 @Entity()
 export class CartridgeDecommissioning {
@@ -14,13 +19,18 @@ export class CartridgeDecommissioning {
   @Column()
   comment: string;
 
-  //Это связь - отношение
+  @ManyToOne(
+    'Decommissioning',
+    (decommissioning: Decommissioning) => decommissioning.action,
+  )
+  decommissioning: Decommissioning;
 
-  @Column()
-  decommissioningId: number;
-
-  @Column()
-  cartridgeId: number;
+  @OneToOne(
+    'Cartridge',
+    (cartridge: Cartridge) => cartridge.actionDecommissioning,
+  )
+  @JoinColumn()
+  cartridge: Cartridge;
 
   @CreateDateColumn()
   createdAt: Date;

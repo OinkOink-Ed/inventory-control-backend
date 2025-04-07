@@ -8,19 +8,19 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import type { Cartridge } from './Cartridge';
-import type { Delivery } from './Delivery';
+import type { Receiving } from './Receiving';
 
 @Entity()
-export class CartridgeDelivery {
+export class CartridgeReceiving {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne('Delivery', (delivery: Delivery) => delivery.action)
-  delivery: Delivery;
-
-  @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionDelivery)
+  @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionReceiving)
   @JoinColumn()
   cartridge: Cartridge;
+
+  @ManyToOne('Receiving', (receiving: Receiving) => receiving.action)
+  receiving: number;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,29 +1,41 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { CartridgeDelivery } from './CartridgeDelivery';
+import type { User } from './User';
+import type { Warehouse } from './Warehouse';
+import type { Division } from './Division';
+import type { Kabinet } from './Kabinet';
 
 @Entity()
 export class Delivery {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // Где ID  добавить связи
+  @OneToMany(
+    'CartridgeDelivery',
+    (cartridgeDelivery: CartridgeDelivery) => cartridgeDelivery.delivery,
+  )
+  action: CartridgeDelivery[];
 
-  @Column()
-  creatorId: number;
+  @ManyToOne('User', (user: User) => user.createdDelivery, {
+    cascade: ['insert'],
+  })
+  creator: User;
 
-  @Column()
-  kabinetId: number;
+  @ManyToOne('Kabinet', (kabinet: Kabinet) => kabinet.delivery)
+  kabinet: Kabinet;
 
-  @Column()
-  divisionId: number;
+  @ManyToOne('Division', (division: Division) => division.delivery)
+  division: Division;
 
-  @Column()
-  warehouseId: number;
+  @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.delivery)
+  warehouse: Warehouse;
 
   @CreateDateColumn()
   createdAt: Date;

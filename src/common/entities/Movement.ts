@@ -1,26 +1,36 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { CartridgeMovement } from './CartridgeMovement';
+import type { Warehouse } from './Warehouse';
+import type { User } from './User';
 
 @Entity()
 export class Movement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  //Добавить связи где ID
+  @ManyToOne('User', (user: User) => user.createdMovement, {
+    cascade: ['insert'],
+  })
+  creator: User;
 
-  @Column()
-  creatorId: number;
+  @OneToMany(
+    'CartridgeMovement',
+    (cartridgeMovement: CartridgeMovement) => cartridgeMovement.movement,
+  )
+  action: CartridgeMovement[];
 
-  @Column()
-  warehouseFromId: number;
+  @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.movementOut)
+  warehouseFrom: Warehouse;
 
-  @Column()
-  warehouseWhereId: number;
+  @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.movementIn)
+  warehouseWhere: Warehouse;
 
   @CreateDateColumn()
   createdAt: Date;

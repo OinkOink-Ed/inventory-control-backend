@@ -21,6 +21,10 @@ import type { Warehouse } from 'src/common/entities/Warehouse';
 import type { Kabinet } from 'src/common/entities/Kabinet';
 import type { CartridgeModel } from 'src/common/entities/CartridgeModel';
 import type { Cartridge } from 'src/common/entities/Cartridge';
+import type { Movement } from './Movement';
+import type { Receiving } from './Receiving';
+import { Decommissioning } from './Decommissioning';
+import { Delivery } from './Delivery';
 
 @Entity()
 export class User {
@@ -100,6 +104,30 @@ export class User {
     nullable: true,
   })
   createdCartridges: Cartridge[];
+
+  @OneToMany('Movement', (movement: Movement) => movement.creator, {
+    nullable: true,
+  })
+  createdMovement: Movement[];
+
+  @OneToMany('Receiving', (receiving: Receiving) => receiving.creator, {
+    nullable: true,
+  })
+  createdReceiving: Receiving[];
+
+  @OneToMany(
+    'Decommissioning',
+    (decommissioning: Decommissioning) => decommissioning.creator,
+    {
+      nullable: true,
+    },
+  )
+  createdDecommissioning: Decommissioning[];
+
+  @OneToMany('Delivery', (delivery: Delivery) => delivery.creator, {
+    nullable: true,
+  })
+  createdDelivery: Delivery[];
 
   @CreateDateColumn()
   createdAt: Date;
