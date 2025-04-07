@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
-import { Division } from './Division';
+import type { User } from './User';
+import type { Division } from './Division';
 
 @Entity()
 export class Kabinet {
@@ -17,10 +17,14 @@ export class Kabinet {
   @Column()
   number: string;
 
-  @ManyToOne(() => Division, (division) => division.kabinets)
+  @ManyToOne('Division', (division: Division) => division.kabinets, {
+    cascade: ['insert'],
+  })
   division: Division;
 
-  @ManyToOne(() => User, (user) => user.createdKabinets)
+  @ManyToOne('User', (user: User) => user.createdKabinets, {
+    cascade: ['insert'],
+  })
   creator: User;
 
   @CreateDateColumn()

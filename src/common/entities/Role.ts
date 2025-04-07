@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   // Relation,
@@ -17,8 +18,11 @@ export class Role {
   @Column()
   roleName: string;
 
-  // @ManyToOne(() => User, (user) => user.createdRoles)
-  // creator: User;
+  @ManyToOne('User', (user: User) => user.createdRoles, {
+    nullable: true,
+    cascade: true,
+  })
+  creator: User;
 
   @OneToMany('User', (user: User) => user.role)
   users: User[];

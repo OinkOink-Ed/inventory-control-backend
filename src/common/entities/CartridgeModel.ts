@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
+import type { User } from './User';
 
 @Entity()
 export class CartridgeModel {
@@ -16,7 +16,9 @@ export class CartridgeModel {
   @Column()
   name: string;
 
-  @ManyToOne(() => User, (user) => user.createdCartridgeModels)
+  @ManyToOne('User', (user: User) => user.createdCartridgeModels, {
+    cascade: ['insert'],
+  })
   creator: User;
 
   @CreateDateColumn()

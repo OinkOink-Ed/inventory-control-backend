@@ -7,11 +7,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthRequestDto } from './dto/AuthRequestDto';
 import { SkipAuth } from 'src/common/decorators/SkipAuth';
 import { ApiCreatedResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import {} from 'src/common/errorTypes';
 import { AuthResponseDto } from './dto/AuthResponseDto';
+import { AuthRequestDto } from 'src/Modules/auth/dto/authRequestDto';
 
 @SkipAuth()
 @Controller('auth')

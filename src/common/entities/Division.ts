@@ -2,15 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
-import { Kabinet } from './Kabinet';
-import { Warehouse } from './Warehouse';
+import type { User } from './User';
+import type { Kabinet } from './Kabinet';
+import type { Warehouse } from './Warehouse';
 
 @Entity()
 export class Division {
@@ -23,16 +24,19 @@ export class Division {
   @Column()
   location: string;
 
-  @OneToOne(() => Warehouse, (warehouse) => warehouse.division)
+  @OneToOne('Warehouse', (warehouse: Warehouse) => warehouse.division, {
+    cascade: ['insert'],
+  })
+  @JoinColumn()
   warehouse: Warehouse;
 
-  @OneToMany(() => User, (user) => user.division)
+  @OneToMany('User', (user: User) => user.division)
   users: User[];
 
-  @OneToMany(() => Kabinet, (kabinet) => kabinet.division)
+  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.division)
   kabinets: Kabinet[];
 
-  @ManyToOne(() => User, (user) => user.createdDivisions)
+  @ManyToOne('User', (user: User) => user.createdDivisions)
   creator: User;
 
   @CreateDateColumn()

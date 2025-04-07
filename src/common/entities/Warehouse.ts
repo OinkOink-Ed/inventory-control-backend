@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -10,9 +9,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { WarehouseStatus } from '../types/WarehouseStatus';
-import { Division } from './Division';
-import { User } from './User';
-import { Cartridge } from './Cartridge';
+import type { Division } from './Division';
+import type { User } from './User';
+import type { Cartridge } from './Cartridge';
 
 @Entity()
 export class Warehouse {
@@ -35,14 +34,17 @@ export class Warehouse {
   })
   state: WarehouseStatus;
 
-  @OneToOne(() => Division, (division) => division.warehouse)
-  @JoinColumn()
+  @OneToOne('Division', (division: Division) => division.warehouse, {
+    nullable: true,
+  })
   division: Division;
 
-  @ManyToOne(() => User, (user) => user.createdWarehouses)
+  @ManyToOne('User', (user: User) => user.createdWarehouses, {
+    cascade: ['insert'],
+  })
   creator: User;
 
-  @OneToMany(() => Cartridge, (cartridge) => cartridge.warehouse)
+  @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.warehouse)
   cartridges: Cartridge[];
 
   @CreateDateColumn()

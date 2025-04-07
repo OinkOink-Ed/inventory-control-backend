@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CartridgeStatus } from '../types/CartridgeStatus';
-import { Warehouse } from './Warehouse';
-import { User } from './User';
+import type { Warehouse } from './Warehouse';
+import type { User } from './User';
 
 @Entity()
 export class Cartridge {
@@ -22,15 +22,17 @@ export class Cartridge {
   })
   state: CartridgeStatus;
 
-  // Настроить связи там, где ID
-
   @Column()
   model: number;
 
-  @ManyToOne(() => Warehouse, (warehouse) => warehouse.cartridges)
+  @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.cartridges, {
+    cascade: ['insert'],
+  })
   warehouse: Warehouse;
 
-  @ManyToOne(() => User, (user) => user.createdCartridges)
+  @ManyToOne('User', (user: User) => user.createdCartridges, {
+    cascade: ['insert'],
+  })
   creator: User;
 
   @CreateDateColumn()

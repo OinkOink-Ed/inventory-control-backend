@@ -23,7 +23,7 @@ import {
 import { SuccessResponse200 } from 'src/common/successTypes';
 import { ReadUserDto } from './dto/ReadUserDto';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/createUserDto';
+import { CreateUserDto } from 'src/Modules/user/dto/CreateUserDto';
 
 @ApiTags('Users')
 @Controller('users')
