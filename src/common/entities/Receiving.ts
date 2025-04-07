@@ -1,22 +1,11 @@
-import {
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { User } from './User';
 import type { Warehouse } from './Warehouse';
 import type { CartridgeReceiving } from './CartridgeReceiving';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Receiving {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  // там где ID добавить связи
-
+export class Receiving extends Base {
   @ManyToOne('User', (user: User) => user.createdReceiving, {
     cascade: ['insert'],
   })
@@ -30,10 +19,4 @@ export class Receiving {
     (cartridgeReceiving: CartridgeReceiving) => cartridgeReceiving.receiving,
   )
   action: CartridgeReceiving[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -1,21 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import type { Cartridge } from './Cartridge';
 import type { Decommissioning } from './Decommissioning';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class CartridgeDecommissioning {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class CartridgeDecommissioning extends Base {
   @Column()
   comment: string;
 
@@ -31,10 +20,4 @@ export class CartridgeDecommissioning {
   )
   @JoinColumn()
   cartridge: Cartridge;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

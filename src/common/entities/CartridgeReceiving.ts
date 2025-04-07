@@ -1,30 +1,14 @@
-import {
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import type { Cartridge } from './Cartridge';
 import type { Receiving } from './Receiving';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class CartridgeReceiving {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class CartridgeReceiving extends Base {
   @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionReceiving)
   @JoinColumn()
   cartridge: Cartridge;
 
   @ManyToOne('Receiving', (receiving: Receiving) => receiving.action)
   receiving: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

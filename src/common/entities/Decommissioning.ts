@@ -1,25 +1,13 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { CartridgeDecommissioning } from './CartridgeDecommissioning';
 import type { User } from './User';
 import type { Warehouse } from './Warehouse';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Decommissioning {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Decommissioning extends Base {
   @Column()
   comment: string;
-
-  //Добавить связи где ID
 
   @OneToMany(
     'CartridgeDecommissioning',
@@ -35,10 +23,4 @@ export class Decommissioning {
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.decommissioning)
   warehouse: Warehouse;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

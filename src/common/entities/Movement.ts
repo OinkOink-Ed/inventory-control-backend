@@ -1,20 +1,11 @@
-import {
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { CartridgeMovement } from './CartridgeMovement';
 import type { Warehouse } from './Warehouse';
 import type { User } from './User';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Movement {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Movement extends Base {
   @ManyToOne('User', (user: User) => user.createdMovement, {
     cascade: ['insert'],
   })
@@ -31,10 +22,4 @@ export class Movement {
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.movementIn)
   warehouseWhere: Warehouse;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

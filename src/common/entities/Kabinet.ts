@@ -1,21 +1,11 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { User } from './User';
 import type { Division } from './Division';
 import type { Delivery } from './Delivery';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Kabinet {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Kabinet extends Base {
   @Column()
   number: string;
 
@@ -31,10 +21,4 @@ export class Kabinet {
     cascade: ['insert'],
   })
   creator: User;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

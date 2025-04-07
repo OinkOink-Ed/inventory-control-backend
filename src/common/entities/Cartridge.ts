@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
 import { CartridgeStatus } from '../types/CartridgeStatus';
 import type { Warehouse } from './Warehouse';
 import type { User } from './User';
@@ -14,12 +6,10 @@ import type { CartridgeMovement } from './CartridgeMovement';
 import type { CartridgeReceiving } from './CartridgeReceiving';
 import type { CartridgeDecommissioning } from './CartridgeDecommissioning';
 import type { CartridgeDelivery } from './CartridgeDelivery';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Cartridge {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Cartridge extends Base {
   @Column({
     type: 'enum',
     enum: CartridgeStatus,
@@ -64,10 +54,4 @@ export class Cartridge {
     cascade: ['insert'],
   })
   creator: User;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -1,20 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  // Relation,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { User } from './User';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Role {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Role extends Base {
   @Column()
   roleName: string;
 
@@ -26,10 +15,4 @@ export class Role {
 
   @OneToMany('User', (user: User) => user.role)
   users: User[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

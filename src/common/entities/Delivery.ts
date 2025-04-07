@@ -1,22 +1,13 @@
-import {
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { CartridgeDelivery } from './CartridgeDelivery';
 import type { User } from './User';
 import type { Warehouse } from './Warehouse';
 import type { Division } from './Division';
 import type { Kabinet } from './Kabinet';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Delivery {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Delivery extends Base {
   @OneToMany(
     'CartridgeDelivery',
     (cartridgeDelivery: CartridgeDelivery) => cartridgeDelivery.delivery,
@@ -36,10 +27,4 @@ export class Delivery {
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.delivery)
   warehouse: Warehouse;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

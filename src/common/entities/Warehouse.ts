@@ -1,13 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { WarehouseStatus } from '../types/WarehouseStatus';
 import type { Division } from './Division';
 import type { User } from './User';
@@ -15,13 +6,11 @@ import type { Cartridge } from './Cartridge';
 import type { Movement } from './Movement';
 import type { Receiving } from './Receiving';
 import type { Decommissioning } from './Decommissioning';
-import { Delivery } from './Delivery';
+import type { Delivery } from './Delivery';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Warehouse {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Warehouse extends Base {
   @Column()
   name: string;
 
@@ -68,10 +57,4 @@ export class Warehouse {
 
   @OneToMany('Delivery', (delivery: Delivery) => delivery.warehouse)
   delivery: Delivery[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

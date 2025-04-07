@@ -1,24 +1,19 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import type { User } from './User';
 import type { Kabinet } from './Kabinet';
 import type { Warehouse } from './Warehouse';
 import type { Delivery } from './Delivery';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class Division {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Division extends Base {
   @Column()
   name: string;
 
@@ -42,10 +37,4 @@ export class Division {
 
   @ManyToOne('User', (user: User) => user.createdDivisions)
   creator: User;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

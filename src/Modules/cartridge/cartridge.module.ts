@@ -6,7 +6,7 @@ import { CartridgesController } from 'src/Modules/cartridge/cartridge.controller
 import { CartridgesService } from 'src/Modules/cartridge/cartridge.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cartridge /*, Movement*/])],
+  imports: [TypeOrmModule.forFeature([Cartridge])],
   controllers: [CartridgesController],
   providers: [CartridgesService],
 })

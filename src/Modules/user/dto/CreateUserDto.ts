@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import type { Role } from 'src/common/entities/Role';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -33,17 +34,5 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  role: role;
-
-  // @ApiProperty()
-  // divisionID: number;
-
-  // @ApiProperty()
-  // statusId: number;
-}
-
-//Нужно будет подумать об этих интерфейсах входных данных и их структуре через свагер
-
-interface role {
-  id: number;
+  role: Role;
 }

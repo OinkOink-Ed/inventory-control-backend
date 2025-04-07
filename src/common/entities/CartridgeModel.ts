@@ -1,18 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import type { User } from './User';
+import { Base } from 'src/common/entities/Base';
 
 @Entity()
-export class CartridgeModel {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class CartridgeModel extends Base {
   @Column()
   name: string;
 
@@ -20,10 +11,4 @@ export class CartridgeModel {
     cascade: ['insert'],
   })
   creator: User;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
