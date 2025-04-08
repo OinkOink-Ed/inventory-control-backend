@@ -6,7 +6,7 @@ import {
   ReadWarehouseDetailedDto,
   ReadWarehouseDto,
 } from './dto/ReadWarehouseDto';
-import { Warehouse } from 'src/common/entities/Warehouse';
+import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
 
 @Injectable()
 export class WarehouseService {

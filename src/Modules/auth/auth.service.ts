@@ -12,9 +12,13 @@ import { AuthResponseDto } from './dto/AuthResponseDto';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
-    private jwtService: JwtService,
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
+
+  generateToken(payload: any) {
+    return this.jwtService.signAsync(payload);
+  }
 
   @HttpCode(HttpStatus.OK)
   async signIn(nickname: string, pass: string): Promise<AuthResponseDto> {
@@ -26,7 +30,7 @@ export class AuthService {
       await bcrypt.compare(pass, password);
 
       return {
-        access_token: await this.jwtService.signAsync({ sub: profile }),
+        access_token: await this.generateToken({ sub: profile }),
       };
     } catch (error) {
       throw new UnauthorizedException({

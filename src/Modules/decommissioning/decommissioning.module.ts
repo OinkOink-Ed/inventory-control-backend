@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { DecommissioningController } from './decommissioning.controller';
 import { DecommissioningService } from './decommissioning.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Decommissioning } from 'src/common/entities/Decommissioning';
-import { CartridgeDecommissioning } from 'src/common/entities/CartridgeDecommissioning';
+import { Decommissioning } from 'src/Modules/decommissioning/entities/Decommissioning';
+import { CartridgeDecommissioning } from 'src/Modules/decommissioning/entities/CartridgeDecommissioning';
 
 @Module({
   imports: [

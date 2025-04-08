@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CartridgeModel } from 'src/common/entities/CartridgeModel';
+import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { Repository } from 'typeorm';
 import { CreateCartridgeModelDto } from './dto/CreateCartridgeModelDto';
 import {

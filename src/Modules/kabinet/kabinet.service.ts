@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Kabinet } from 'src/common/entities/Kabinet';
+import { Kabinet } from 'src/Modules/kabinet/entities/Kabinet';
 import { Repository } from 'typeorm';
 import { ReadKabinetDto } from './dto/ReadKabinetDto';
 import { CreateKabinetDto } from './dto/CreateKabinetDto';

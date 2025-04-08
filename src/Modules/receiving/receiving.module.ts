@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ReceivingController } from './receiving.controller';
 import { ReceivingService } from './receiving.service';
-import { CartridgeReceiving } from 'src/common/entities/CartridgeReceiving';
-import { Receiving } from 'src/common/entities/Receiving';
+import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
+import { Receiving } from 'src/Modules/receiving/entities/Receiving';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

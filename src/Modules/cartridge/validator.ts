@@ -7,7 +7,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { Cartridge } from 'src/common/entities/Cartridge';
+import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
 import { Repository } from 'typeorm';
 
 // this. оказывается пустым, нужно читать об DI

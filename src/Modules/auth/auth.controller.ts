@@ -11,7 +11,7 @@ import { SkipAuth } from 'src/common/decorators/SkipAuth';
 import { ApiCreatedResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import {} from 'src/common/errorTypes';
 import { AuthResponseDto } from './dto/AuthResponseDto';
-import { AuthRequestDto } from 'src/Modules/auth/dto/authRequestDto';
+import { AuthRequestDto } from 'src/Modules/auth/dto/AuthRequestDto';
 
 @SkipAuth()
 @Controller('auth')

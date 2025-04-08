@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CartridgeModel } from 'src/common/entities/CartridgeModel';
+import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { CartridgeModelService } from './cartridgeModel.service';
 import { CartridgeModelController } from './cartridgeModel.controller';
 

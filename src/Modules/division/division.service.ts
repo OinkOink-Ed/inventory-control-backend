@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Division } from 'src/common/entities/Division';
+import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
 import { CreateDivisionDto } from './dto/CreateDivisionDto';
 import { ReadDivisionDto } from './dto/ReadDivisionDto';
