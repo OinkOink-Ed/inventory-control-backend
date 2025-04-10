@@ -16,6 +16,11 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+
+    //Указываем массив путей, где TS будет искать файлы с определениями типов
+    "typeRoots": ["node_modules/@types", "types"]
+  },
+  //Массив путей или шаблонов, которые указывают TS какие файлы включать в процесс компиляции и проверки типов
+  "include": ["src/**/*", "types/**/*"]
 }

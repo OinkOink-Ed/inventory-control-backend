@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -14,16 +7,11 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  ErrorResponse400,
-  ErrorResponse403,
-  ErrorResponse404,
-  ErrorResponse408,
-} from '../../common/errorTypes';
-import { SuccessResponse200 } from 'src/common/successTypes';
 import { ReadUserDto } from './dto/ReadUserDto';
 import { UserService } from './user.service';
 import { CreateUserDto } from 'src/Modules/user/dto/CreateUserDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -32,25 +20,24 @@ export class UserController {
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => SuccessResponse,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateUserDto) {
     await this.userService.create(createDto);
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.CREATED,
       message: 'Пользователь успешно добавлен',
     };
   }
@@ -61,16 +48,16 @@ export class UserController {
     isArray: true,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
   async getAll(): Promise<ReadUserDto[]> {
     return await this.userService.getAll();

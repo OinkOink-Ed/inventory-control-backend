@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RoleService } from './role.service';
 import {
   ApiBadRequestResponse,
@@ -16,15 +9,10 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  ErrorResponse400,
-  ErrorResponse403,
-  ErrorResponse404,
-  ErrorResponse408,
-} from 'src/common/errorTypes';
-import { SuccessResponse200 } from 'src/common/successTypes';
 import { CreateRoleDto } from './dto/createRoleDto';
 import { ReadRoleDto } from './dto/ReadRoleDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @ApiTags('Role')
 @Controller('role')
@@ -33,21 +21,20 @@ export class RoleController {
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => SuccessResponse,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateRoleDto) {
     return await this.roleService.create(createDto);
   }
@@ -58,16 +45,16 @@ export class RoleController {
     isArray: true,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
   async getAll(): Promise<ReadRoleDto[]> {
     return await this.roleService.getAll();

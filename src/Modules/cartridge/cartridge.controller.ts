@@ -1,49 +1,73 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateCartridgeDto } from './dto/CreateCartridgeDto';
-import {
-  ErrorResponse400,
-  ErrorResponse403,
-  ErrorResponse404,
-  ErrorResponse408,
-} from 'src/common/errorTypes';
-import { SuccessResponse200 } from 'src/common/successTypes';
 import { CartridgesService } from 'src/Modules/cartridge/cartridge.service';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { RequsestCreateCartridgeDto } from './dto/RequsestCreateCartridgeDto';
+import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
+import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')
 export class CartridgesController {
-  constructor(private readonly createCartridgeService: CartridgesService) {}
+  constructor(private readonly cartridgeService: CartridgesService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    description: 'Картриджи успешно добавлены',
+    type: () => SuccessResponse,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    description:
+      'Неверный формат данных, дубликат записи или отсутствие связанной записи',
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    description: 'Доступ запрещен',
+    type: () => ErrorResponseDto,
   })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+  @ApiRequestTimeoutResponse({
+    description: 'Превышено время ожидания',
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
-  async create(@Body() createDto: CreateCartridgeDto) {
-    await this.createCartridgeService.create(createDto);
+  async create(
+    @Body() createDto: RequsestCreateCartridgeDto,
+  ): Promise<SuccessResponse> {
+    await this.cartridgeService.createMany(createDto);
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.CREATED,
       message: 'Картриджи успешно добавлены',
     };
+  }
+
+  @Get()
+  @ApiOkResponse({
+    description: 'Список картриджей отправлен',
+    type: () => SuccessResponse,
+  })
+  @ApiBadRequestResponse({
+    description:
+      'Неверный формат данных, дубликат записи или отсутствие связанной записи',
+    type: () => ErrorResponseDto,
+  })
+  @ApiForbiddenResponse({
+    description: 'Доступ запрещен',
+    type: () => ErrorResponseDto,
+  })
+  @ApiRequestTimeoutResponse({
+    description: 'Превышено время ожидания',
+    type: () => ErrorResponseDto,
+  })
+  async getAll(
+    @Body() getDto: RequestGetAllCartridgeInWarehouseDto,
+  ): Promise<ResponseGetAllCartridgeInWarehouseDto[]> {
+    return await this.cartridgeService.getAll(getDto);
   }
 }

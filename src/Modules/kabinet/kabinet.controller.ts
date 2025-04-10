@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -16,15 +9,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { KabinetService } from './kabinet.service';
-import { SuccessResponse200 } from 'src/common/successTypes';
-import {
-  ErrorResponse400,
-  ErrorResponse403,
-  ErrorResponse404,
-  ErrorResponse408,
-} from 'src/common/errorTypes';
 import { CreateKabinetDto } from './dto/CreateKabinetDto';
 import { ReadKabinetDto } from './dto/ReadKabinetDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @ApiTags('Kabinet')
 @Controller('kabinet')
@@ -33,21 +21,20 @@ export class KabinetController {
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => SuccessResponse,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async create(@Body() createDto: CreateKabinetDto) {
     return await this.kabinetService.create(createDto);
   }
@@ -58,16 +45,16 @@ export class KabinetController {
     isArray: true,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
   async getAll(): Promise<ReadKabinetDto[]> {
     return await this.kabinetService.getAll();

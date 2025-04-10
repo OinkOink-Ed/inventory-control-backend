@@ -1,9 +1,4 @@
-import {
-  HttpCode,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
@@ -20,23 +15,23 @@ export class AuthService {
     return this.jwtService.signAsync(payload);
   }
 
-  @HttpCode(HttpStatus.OK)
   async signIn(nickname: string, pass: string): Promise<AuthResponseDto> {
-    try {
-      const user = await this.usersService.findOneForAuth(nickname);
+    const user = await this.usersService.findOneForAuth(nickname);
 
-      const { password, ...profile } = user;
-
-      await bcrypt.compare(pass, password);
-
-      return {
-        access_token: await this.generateToken({ sub: profile }),
-      };
-    } catch (error) {
-      throw new UnauthorizedException({
-        ...error,
-        message: 'Неверный логин или пароль',
-      });
+    if (!user) {
+      throw new UnauthorizedException('неверный логин ил пароль');
     }
+
+    const isPasswordValid = await bcrypt.compare(pass, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Неверный логин или пароль');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...profile } = user;
+    return {
+      access_token: await this.generateToken({ sub: profile }),
+    };
   }
 }

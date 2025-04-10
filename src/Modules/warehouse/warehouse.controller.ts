@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import {
   ApiBadRequestResponse,
@@ -15,18 +8,13 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SuccessResponse200 } from 'src/common/successTypes';
-import {
-  ErrorResponse400,
-  ErrorResponse403,
-  ErrorResponse404,
-  ErrorResponse408,
-} from 'src/common/errorTypes';
 import { CreateWarehouseDto } from './dto/CreateWarehouseDto';
 import {
   ReadWarehouseDetailedDto,
   ReadWarehouseDto,
 } from './dto/ReadWarehouseDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -35,33 +23,26 @@ export class WarehouseController {
 
   @Post()
   @ApiCreatedResponse({
-    type: () => SuccessResponse200,
+    type: () => SuccessResponse,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async create(
     @Body() createDto: CreateWarehouseDto,
-  ): Promise<
-    | SuccessResponse200
-    | ErrorResponse400
-    | ErrorResponse408
-    | ErrorResponse403
-    | ErrorResponse404
-  > {
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.createModelCartridge.create(createDto);
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.CREATED,
       message: 'Модель картриджа успешно добавлена',
     };
   }
@@ -72,18 +53,17 @@ export class WarehouseController {
     isArray: true,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async getAllDetailed(): Promise<ReadWarehouseDetailedDto[]> {
     return await this.createModelCartridge.getAllDetailed();
   }
@@ -94,18 +74,17 @@ export class WarehouseController {
     isArray: true,
   })
   @ApiBadRequestResponse({
-    type: () => ErrorResponse400,
+    type: () => ErrorResponseDto,
   })
   @ApiRequestTimeoutResponse({
-    type: () => ErrorResponse408,
+    type: () => ErrorResponseDto,
   })
   @ApiForbiddenResponse({
-    type: () => ErrorResponse403,
+    type: () => ErrorResponseDto,
   })
   @ApiNotFoundResponse({
-    type: () => ErrorResponse404,
+    type: () => ErrorResponseDto,
   })
-  @HttpCode(HttpStatus.OK)
   async getAll(): Promise<ReadWarehouseDto[]> {
     return await this.createModelCartridge.getAll();
   }

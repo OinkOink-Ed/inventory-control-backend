@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { UserStatus } from '../../../common/types/UserStatus';
+import { UserStatus } from '../../../common/enums/UserStatus';
 import type { Role } from '../../role/entities/Role';
 import type { Division } from 'src/Modules/division/entities/Division';
 import type { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';

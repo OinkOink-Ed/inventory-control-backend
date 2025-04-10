@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
-import { WarehouseStatus } from '../../../common/types/WarehouseStatus';
+import { WarehouseStatus } from '../../../common/enums/WarehouseStatus';
 import type { Division } from '../../division/entities/Division';
 import type { User } from '../../user/entities/User';
 import type { Cartridge } from '../../cartridge/entities/Cartridge';
