@@ -8,7 +8,7 @@ import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeRece
 import { User } from 'src/Modules/user/entities/User';
 import { WarehouseBase } from 'src/Modules/warehouse/dto/WarehouseBase';
 
-export class CartridgeBase {
+export class CartridgeBaseDto {
   @ApiProperty()
   @IsNumber()
   id: number;

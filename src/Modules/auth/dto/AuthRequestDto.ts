@@ -1,4 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { AuthBase } from 'src/Modules/auth/dto/AuthBase';
+import { AuthBaseDto } from 'src/Modules/auth/dto/AuthBaseDto';
 
-export class AuthRequestDto extends PickType(AuthBase, ['username', 'password']){}
+export class AuthRequestDto extends PickType(AuthBaseDto, [
+  'username',
+  'password',
+]) {}

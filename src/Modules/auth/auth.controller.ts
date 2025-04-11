@@ -11,7 +11,7 @@ import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signin')
+  @Post()
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: () => AuthResponseDto,

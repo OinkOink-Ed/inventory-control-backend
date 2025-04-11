@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-export class AuthBase {
+export class AuthBaseDto {
   @ApiProperty()
   @IsString()
   username: string;
