@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber } from 'class-validator';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
+import { CartridgeModelBaseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseDto';
 import { CartridgeDecommissioning } from 'src/Modules/decommissioning/entities/CartridgeDecommissioning';
 import { CartridgeDelivery } from 'src/Modules/delivery/entities/CartridgeDelivery';
 import { CartridgeMovement } from 'src/Modules/movement/entities/CartridgeMovement';
-import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
-import { User } from 'src/Modules/user/entities/User';
-import { WarehouseBase } from 'src/Modules/warehouse/dto/WarehouseBase';
+import { CartridgeReceivingBaseDto } from 'src/Modules/receiving/dto/CartridgeReceivingBaseDto';
+import { UserBaseDto } from 'src/Modules/user/dto/UserBaseDto';
+import { WarehouseBaseDto } from 'src/Modules/warehouse/dto/WarehouseBaseDto';
 
 export class CartridgeBaseDto {
   @ApiProperty()
@@ -20,9 +21,10 @@ export class CartridgeBaseDto {
   @IsEnum(CartridgeStatus)
   state: CartridgeStatus;
 
-  @ApiProperty()
-  @IsNumber()
-  model: number;
+  @ApiProperty({
+    type: () => CartridgeModelBaseDto,
+  })
+  model: CartridgeModelBaseDto;
 
   // CartridgeMovement должен быть DTO
   @ApiProperty({
@@ -30,11 +32,10 @@ export class CartridgeBaseDto {
   })
   actionMovement: CartridgeMovement;
 
-  // CartridgeReceiving должен быть DTO
   @ApiProperty({
-    type: () => CartridgeReceiving,
+    type: () => CartridgeReceivingBaseDto,
   })
-  actionReceiving: CartridgeReceiving;
+  actionReceiving: CartridgeReceivingBaseDto;
 
   // CartridgeDecommissioning должен быть DTO
   @ApiProperty({
@@ -49,15 +50,14 @@ export class CartridgeBaseDto {
   actionDelivery: CartridgeDelivery;
 
   @ApiProperty({
-    type: () => WarehouseBase,
+    type: () => WarehouseBaseDto,
   })
-  warehouse: WarehouseBase;
+  warehouse: WarehouseBaseDto;
 
-  // User должен быть DTO
   @ApiProperty({
-    type: () => User,
+    type: () => UserBaseDto,
   })
-  creator: User;
+  creator: UserBaseDto;
 
   @ApiProperty()
   createdAt: Date;

@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import type { User } from '../../user/entities/User';
 import { Base } from 'src/common/entities/Base';
+import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
 
 @Entity()
 export class CartridgeModel extends Base {
@@ -11,4 +12,9 @@ export class CartridgeModel extends Base {
     cascade: ['insert'],
   })
   creator: User;
+
+  @OneToMany('Cartridge', (cartrdge: Cartridge) => cartrdge.model, {
+    nullable: true,
+  })
+  cartridges: Cartridge[];
 }

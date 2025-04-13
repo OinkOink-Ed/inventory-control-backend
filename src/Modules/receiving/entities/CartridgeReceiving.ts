@@ -10,5 +10,5 @@ export class CartridgeReceiving extends Base {
   cartridge: Cartridge;
 
   @ManyToOne('Receiving', (receiving: Receiving) => receiving.action)
-  receiving: number;
+  receiving: Receiving;
 }

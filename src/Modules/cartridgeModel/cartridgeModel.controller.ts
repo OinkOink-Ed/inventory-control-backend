@@ -15,11 +15,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { CreateCartridgeModelDto } from './dto/CreateCartridgeModelDto';
-import { ReadCartridgeModelDto } from './dto/ReadCartridgeModelDto';
 import { CartridgeModelService } from './cartridgeModel.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { RequestCreateCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/RequestCreateCartridgeModelDto';
+import { ResponseGetAllCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllCartridgeModelDto';
+import { ResponseGetAllDetailedCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllDetailedCartridgeModelDto';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')
@@ -45,7 +46,7 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: CreateCartridgeModelDto,
+    @Body() createDto: RequestCreateCartridgeModelDto,
   ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.createModelCartridge.create(createDto);
     return {
@@ -56,7 +57,7 @@ export class CartridgeModelController {
 
   @Get('detailed')
   @ApiCreatedResponse({
-    type: () => ReadCartridgeModelDto,
+    type: () => ResponseGetAllDetailedCartridgeModelDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -72,13 +73,13 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAllDetailed(): Promise<ReadCartridgeModelDto[]> {
+  async getAllDetailed(): Promise<ResponseGetAllDetailedCartridgeModelDto[]> {
     return await this.createModelCartridge.getAllDetailed();
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => ReadCartridgeModelDto,
+    type: () => ResponseGetAllCartridgeModelDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -94,7 +95,7 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<ReadCartridgeModelDto[]> {
+  async getAll(): Promise<ResponseGetAllCartridgeModelDto[]> {
     return await this.createModelCartridge.getAll();
   }
 }

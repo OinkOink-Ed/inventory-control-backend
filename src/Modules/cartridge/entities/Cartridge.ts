@@ -7,6 +7,7 @@ import type { CartridgeReceiving } from '../../receiving/entities/CartridgeRecei
 import type { CartridgeDecommissioning } from '../../decommissioning/entities/CartridgeDecommissioning';
 import type { CartridgeDelivery } from '../../delivery/entities/CartridgeDelivery';
 import { Base } from 'src/common/entities/Base';
+import type { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 
 @Entity()
 export class Cartridge extends Base {
@@ -17,8 +18,11 @@ export class Cartridge extends Base {
   })
   state: CartridgeStatus;
 
-  @Column()
-  model: number;
+  @ManyToOne(
+    'CartridgeModel',
+    (cartrdgeModel: CartridgeModel) => cartrdgeModel.cartridges,
+  )
+  model: CartridgeModel;
 
   @OneToOne(
     'CartridgeMovement',

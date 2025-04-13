@@ -1,44 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RequestCreateCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/RequestCreateCartridgeModelDto';
+import { ResponseGetAllCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllCartridgeModelDto';
+import { ResponseGetAllDetailedCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllDetailedCartridgeModelDto';
 import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { Repository } from 'typeorm';
-import { CreateCartridgeModelDto } from './dto/CreateCartridgeModelDto';
-import {
-  ReadCartridgeModelDto,
-  ReadCartridgeModelDtoDetailed,
-} from './dto/ReadCartridgeModelDto';
 
 @Injectable()
 export class CartridgeModelService {
   constructor(
     @InjectRepository(CartridgeModel)
-    private readonly repo: Repository<CartridgeModel>,
+    private readonly repoCartridgeModel: Repository<CartridgeModel>,
   ) {}
 
-  async create(dto: CreateCartridgeModelDto) {
-    return await this.repo.save(dto);
+  async create(dto: RequestCreateCartridgeModelDto) {
+    return await this.repoCartridgeModel.save(dto);
   }
 
-  async getAll(): Promise<ReadCartridgeModelDto[]> {
-    return await this.repo.find();
+  async getAll(): Promise<ResponseGetAllCartridgeModelDto[]> {
+    return await this.repoCartridgeModel.find({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
   }
 
   //После добавления отношения нужно будет скорректировать
-  async getAllDetailed(): Promise<ReadCartridgeModelDtoDetailed[]> {
-    return await this.repo
-      .find
-
-      // {
-      //   select: {
-      //     creatorId: {
-      //       id: true,
-      //       surname: true,
-      //       name: true,
-      //       patronimyc: true,
-      //     },
-      //   },
-      //   relations: ['creator'],
-      // }
-      ();
+  async getAllDetailed(): Promise<ResponseGetAllDetailedCartridgeModelDto[]> {
+    return await this.repoCartridgeModel.find({
+      select: {
+        id: true,
+        name: true,
+        creator: {
+          id: true,
+          lastname: true,
+          name: true,
+          patronimyc: true,
+        },
+      },
+      relations: ['Сartridge'],
+    });
   }
 }

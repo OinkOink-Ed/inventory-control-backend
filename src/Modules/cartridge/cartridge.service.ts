@@ -1,33 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
-import { DataSource, Repository } from 'typeorm';
-import { RequsestCreateCartridgeDto } from './dto/RequsestCreateCartridgeDto';
+import { QueryRunner, Repository } from 'typeorm';
 import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
 import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
+import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
 
 @Injectable()
-export class CartridgesService {
+export class CartridgeService {
   constructor(
     @InjectRepository(Cartridge)
     private readonly repoCartridges: Repository<Cartridge>,
-    private readonly dataSourse: DataSource,
   ) {}
 
-  async createMany(dto: RequsestCreateCartridgeDto) {
+  async createMany(dto: ServiceCreateCartridgeDto, queryRunner: QueryRunner) {
     const { count, ...restDto } = dto;
 
-    const queryRunner = this.dataSourse.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    // Создаем одинакоыве dto (занимаем память)
+    const dtos = Array(count).fill(restDto);
     try {
-      for (let i = 0; i < count; i++) {
-        await queryRunner.manager.save(Cartridge, restDto);
-      }
+      //Так быстрее если не много
+      const result = await queryRunner.manager.insert(Cartridge, dtos);
+
+      const createdIds = result.identifiers.map((idObj) => idObj.id);
 
       await queryRunner.commitTransaction();
-      return true;
+      return createdIds;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -45,7 +43,10 @@ export class CartridgesService {
       },
       select: {
         id: true,
-        model: true,
+        model: {
+          id: true,
+          name: true,
+        },
         state: true,
         warehouse: {
           id: true,
@@ -57,7 +58,10 @@ export class CartridgesService {
 
     return cartridges.map((cartridge) => ({
       id: cartridge.id,
-      model: cartridge.model,
+      model: {
+        id: cartridge.model.id,
+        name: cartridge.model.name,
+      },
       state: cartridge.state,
       warehouse: {
         id: cartridge.warehouse.id,

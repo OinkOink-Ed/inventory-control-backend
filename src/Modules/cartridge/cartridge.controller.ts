@@ -6,7 +6,7 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CartridgesService } from 'src/Modules/cartridge/cartridge.service';
+import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
 import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
@@ -14,8 +14,8 @@ import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')
-export class CartridgesController {
-  constructor(private readonly cartridgeService: CartridgesService) {}
+export class CartridgeController {
+  constructor(private readonly cartridgeService: CartridgeService) {}
 
   @Get()
   @ApiOkResponse({

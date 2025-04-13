@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, Matches, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+  Min,
+} from 'class-validator';
 import { UserStatus } from 'src/common/enums/UserStatus';
 import { Division } from 'src/Modules/division/entities/Division';
 import { Role } from 'src/Modules/role/entities/Role';
@@ -14,6 +21,10 @@ import { Decommissioning } from 'src/Modules/decommissioning/entities/Decommissi
 import { Delivery } from 'src/Modules/delivery/entities/Delivery';
 
 export class UserBaseDto {
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -143,4 +154,10 @@ export class UserBaseDto {
     type: () => Delivery,
   })
   createdDelivery: Delivery[];
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }
