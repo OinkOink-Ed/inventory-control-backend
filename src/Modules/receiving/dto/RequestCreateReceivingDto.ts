@@ -1,11 +1,17 @@
 import { IntersectionType } from '@nestjs/mapped-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
+import { IdObject } from 'src/common/dto/IdObjectDto';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
 import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseDto';
-import { CartridgeModelWithCreateReceivingDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelWithCreateReceivingDto';
 import { UserBaseDto } from 'src/Modules/user/dto/UserBaseDto';
-import { WarehouseWhithCreateReceivingDto } from 'src/Modules/warehouse/dto/WarehouseWhithCreateReceivingDto';
 
 export class RequestCreateReceivingDto extends IntersectionType(
   PickType(CartridgeBaseDto, ['state']),
@@ -24,12 +30,18 @@ export class RequestCreateReceivingDto extends IntersectionType(
   count: number;
 
   @ApiProperty({
-    type: () => CartridgeModelWithCreateReceivingDto,
+    type: () => IdObject,
   })
-  model: CartridgeModelWithCreateReceivingDto;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => IdObject)
+  model: IdObject;
 
   @ApiProperty({
-    type: () => WarehouseWhithCreateReceivingDto,
+    type: () => IdObject,
   })
-  warehouse: WarehouseWhithCreateReceivingDto;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => IdObject)
+  warehouse: IdObject;
 }

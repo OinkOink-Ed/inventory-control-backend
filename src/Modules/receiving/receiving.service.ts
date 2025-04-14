@@ -57,7 +57,7 @@ export class ReceivingService {
       const cartridgeReceivingDtos: CreateCartridgeReceivingDto[] =
         cartridgeIds.map((cartridge) => ({
           cartridge,
-          receiving,
+          receiving: receiving,
         }));
 
       await cartridgeReceivingRepo.insert(cartridgeReceivingDtos);

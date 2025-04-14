@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { WarehouseStatus } from 'src/common/enums/WarehouseStatus';
 import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseDto';
 import { Decommissioning } from 'src/Modules/decommissioning/entities/Decommissioning';
@@ -35,17 +43,26 @@ export class WarehouseBaseDto {
   @ApiProperty({
     type: () => Division,
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Division)
   division: Division;
 
   @ApiProperty({
     type: () => UserBaseDto,
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UserBaseDto)
   creator: UserBaseDto;
 
   @ApiProperty({
     type: () => CartridgeBaseDto,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CartridgeBaseDto)
   cartridges: CartridgeBaseDto[];
 
   //Должен быть DTO
@@ -53,6 +70,9 @@ export class WarehouseBaseDto {
     type: () => Movement,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Movement)
   movementOut: Movement[];
 
   //Должен быть DTO
@@ -60,12 +80,18 @@ export class WarehouseBaseDto {
     type: () => Movement,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Movement)
   movementIn: Movement[];
 
   @ApiProperty({
     type: () => ReceivingBaseDto,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ReceivingBaseDto)
   receiving: ReceivingBaseDto[];
 
   //Здесь должно быть DTO
@@ -73,6 +99,9 @@ export class WarehouseBaseDto {
     type: () => Decommissioning,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Decommissioning)
   decommissioning: Decommissioning[];
 
   //Здесь должно быть DTO
@@ -80,6 +109,9 @@ export class WarehouseBaseDto {
     type: () => Delivery,
     isArray: true,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Delivery)
   delivery: Delivery[];
 
   @ApiProperty()
