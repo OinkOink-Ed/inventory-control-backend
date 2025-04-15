@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseRequestDto';
 import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
-import { CreateDivisionDto } from './dto/CreateDivisionDto';
-import { ReadDivisionDto } from './dto/ReadDivisionDto';
 
 @Injectable()
 export class DivisionService {
@@ -12,8 +12,12 @@ export class DivisionService {
     private readonly repo: Repository<Division>,
   ) {}
 
-  async create(dto: CreateDivisionDto) {
-    return await this.repo.insert(dto);
+  async create(dto: DivisionBaseRequestDto): Promise<SuccessResponse> {
+    await this.repo.insert(dto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Подразделение успешно добавлено',
+    };
   }
 
   async getAll(): Promise<ReadDivisionDto[]> {

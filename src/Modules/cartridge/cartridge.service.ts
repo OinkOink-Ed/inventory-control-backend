@@ -13,7 +13,10 @@ export class CartridgeService {
     private readonly repoCartridges: Repository<Cartridge>,
   ) {}
 
-  async createMany(dto: ServiceCreateCartridgeDto, queryRunner: QueryRunner) {
+  async createMany(
+    dto: ServiceCreateCartridgeDto,
+    queryRunner: QueryRunner,
+  ): Promise<Array<{ id: number }>> {
     const { count, ...restDto } = dto;
 
     // Создаем одинакоыве dto (занимаем память)
@@ -22,7 +25,9 @@ export class CartridgeService {
       //Так быстрее если не много
       const result = await queryRunner.manager.insert(Cartridge, dtos);
 
-      const createdIds = result.identifiers.map((idObj) => idObj.id);
+      const createdIds: Array<{ id: number }> = result.identifiers.map(
+        (idObj) => idObj.id,
+      );
 
       await queryRunner.commitTransaction();
       return createdIds;
@@ -37,7 +42,7 @@ export class CartridgeService {
   async getAll(
     dto: RequestGetAllCartridgeInWarehouseDto,
   ): Promise<ResponseGetAllCartridgeInWarehouseDto[]> {
-    const cartridges = await this.repoCartridges.find({
+    return await this.repoCartridges.find({
       where: {
         warehouse: { id: dto.warehouse.id },
       },
@@ -55,19 +60,5 @@ export class CartridgeService {
         createdAt: true,
       },
     });
-
-    return cartridges.map((cartridge) => ({
-      id: cartridge.id,
-      model: {
-        id: cartridge.model.id,
-        name: cartridge.model.name,
-      },
-      state: cartridge.state,
-      warehouse: {
-        id: cartridge.warehouse.id,
-        name: cartridge.warehouse.name,
-      },
-      createdAt: cartridge.createdAt,
-    }));
   }
 }

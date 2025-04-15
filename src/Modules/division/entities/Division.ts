@@ -35,6 +35,8 @@ export class Division extends Base {
   @OneToMany('Delivery', (delivery: Delivery) => delivery.division)
   delivery: Delivery[];
 
-  @ManyToOne('User', (user: User) => user.createdDivisions)
+  @ManyToOne('User', (user: User) => user.createdDivisions, {
+    cascade: ['insert'],
+  })
   creator: User;
 }

@@ -9,10 +9,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DivisionService } from './division.service';
-import { CreateDivisionDto } from './dto/CreateDivisionDto';
-import { ReadDivisionDto } from './dto/ReadDivisionDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseRequestDto';
 
 @ApiTags('Division')
 @Controller('division')
@@ -35,10 +34,14 @@ export class DivisionController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: CreateDivisionDto) {
+  async create(
+    @Body() createDto: DivisionBaseRequestDto,
+  ): Promise<SuccessResponse> {
     return await this.divisionService.create(createDto);
   }
 
+  //нужно ещё guard для проверки роли запилить
+  //И после обработать лоигку вызова того или иного метода
   @Get()
   @ApiOkResponse({
     type: () => ReadDivisionDto,

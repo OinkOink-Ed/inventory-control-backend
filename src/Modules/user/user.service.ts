@@ -28,13 +28,6 @@ export class UserService {
       where: {
         username: `${nickname}`,
       },
-
-      //   То, что со связями - нужно будет исправить после того, как я связи загружу
-
-      //   relations: {
-      //     role: true,
-      //   },
-
       select: {
         id: true,
         name: true,
@@ -42,9 +35,9 @@ export class UserService {
         patronimyc: true,
         lastname: true,
         password: true,
-        // role: {
-        //   roleName: true,
-        // },
+        role: {
+          roleName: true,
+        },
       },
     });
   }

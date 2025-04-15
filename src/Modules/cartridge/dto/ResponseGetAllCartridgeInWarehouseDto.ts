@@ -2,6 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { CartridgeBaseResponseDto } from './CartridgeBaseResponseDto';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
 import { ResponseWithGetAllCartridgeDto } from 'src/Modules/warehouse/dto/ResponseWithGetAllCartridgeDto';
+import { ResponseGetAllCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllCartridgeModelDto';
 
 export class ResponseGetAllCartridgeInWarehouseDto extends PickType(
   CartridgeBaseResponseDto,
@@ -19,7 +20,7 @@ export class ResponseGetAllCartridgeInWarehouseDto extends PickType(
   warehouse: ResponseWithGetAllCartridgeDto;
 
   @ApiProperty({
-    type: () => CartridgeModelWithCreateReceivingDto,
+    type: () => ResponseGetAllCartridgeModelDto,
   })
-  model: CartridgeModelWithCreateReceivingDto;
+  model: ResponseGetAllCartridgeModelDto;
 }

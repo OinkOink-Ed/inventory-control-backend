@@ -48,12 +48,8 @@ export class CartridgeModelController {
   })
   async create(
     @Body() createDto: RequestCreateModelCartridgeDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
-    await this.createModelCartridge.create(createDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Модель картриджа успешно добавлена',
-    };
+  ): Promise<SuccessResponse> {
+    return await this.createModelCartridge.create(createDto);
   }
 
   @Get('detailed')
