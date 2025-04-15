@@ -10,8 +10,8 @@ import {
 } from 'class-validator';
 import { IdObject } from 'src/common/dto/IdObjectDto';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
-import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseDto';
-import { UserBaseDto } from 'src/Modules/user/dto/UserBaseDto';
+import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseResponseDto';
+import { UserBaseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
 
 export class RequestCreateReceivingDto extends IntersectionType(
   PickType(CartridgeBaseDto, ['state']),

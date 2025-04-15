@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateWarehouseDto } from './dto/CreateWarehouseDto';
-import {
-  ReadWarehouseDetailedDto,
-  ReadWarehouseDto,
-} from './dto/ReadWarehouseDto';
+
 import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
+import { WarehouseBaseResponseDto } from './dto/WarehouseBaseResponseDto';
+import { WarehouseBaseRequestDto } from './dto/WarehouseBaseRequestDto';
 
 @Injectable()
 export class WarehouseService {
@@ -15,30 +13,30 @@ export class WarehouseService {
     private readonly repo: Repository<Warehouse>,
   ) {}
 
-  async create(dto: CreateWarehouseDto) {
+  async create(dto: WarehouseBaseRequestDto) {
     return await this.repo.save(dto);
   }
 
-  async getAll(): Promise<ReadWarehouseDto[]> {
-    return await this.repo.find();
+  async getAll(): Promise<WarehouseBaseResponseDto[]> {
+    return await this.repo.find({
+      select: {
+        id: true,
+      },
+    });
   }
 
   //После добавления отношения нужно будет скорректировать
-  async getAllDetailed(): Promise<ReadWarehouseDetailedDto[]> {
-    return await this.repo
-      .find
-
-      // {
-      //   select: {
-      //     creatorId: {
-      //       id: true,
-      //       surname: true,
-      //       name: true,
-      //       patronimyc: true,
-      //     },
-      //   },
-      //   relations: ['creator'],
-      // }
-      ();
+  async getAllDetailed(): Promise<WarehouseBaseResponseDto[]> {
+    return await this.repo.find({
+      select: {
+        creator: {
+          id: true,
+          lastname: true,
+          name: true,
+          patronimyc: true,
+        },
+      },
+      relations: ['creator'],
+    });
   }
 }

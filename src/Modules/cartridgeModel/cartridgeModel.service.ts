@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RequestCreateCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/RequestCreateCartridgeModelDto';
-import { ResponseGetAllCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllCartridgeModelDto';
-import { ResponseGetAllDetailedCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllDetailedCartridgeModelDto';
 import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { Repository } from 'typeorm';
+import { RequestCreateModelCartridgeDto } from './dto/RequestCreateModelCartridgeDto';
+import { ResponseGetAllCartridgeModelDto } from './dto/ResponseGetAllCartridgeModelDto';
+import { ResponseGetAllDetailedCartridgeModelDto } from './dto/ResponseGetAllDetailedCartridgeModelDto';
 
 @Injectable()
 export class CartridgeModelService {
@@ -13,7 +13,7 @@ export class CartridgeModelService {
     private readonly repoCartridgeModel: Repository<CartridgeModel>,
   ) {}
 
-  async create(dto: RequestCreateCartridgeModelDto) {
+  async create(dto: RequestCreateModelCartridgeDto) {
     return await this.repoCartridgeModel.save(dto);
   }
 
@@ -39,7 +39,6 @@ export class CartridgeModelService {
           patronimyc: true,
         },
       },
-      relations: ['Сartridge'],
     });
   }
 }

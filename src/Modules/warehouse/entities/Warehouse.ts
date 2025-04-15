@@ -27,9 +27,7 @@ export class Warehouse extends Base {
   })
   state: WarehouseStatus;
 
-  @OneToOne('Division', (division: Division) => division.warehouse, {
-    nullable: true,
-  })
+  @OneToOne('Division', (division: Division) => division.warehouse)
   division: Division;
 
   @ManyToOne('User', (user: User) => user.createdWarehouses, {

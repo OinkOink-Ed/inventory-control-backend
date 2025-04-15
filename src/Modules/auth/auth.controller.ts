@@ -2,9 +2,9 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SkipAuth } from 'src/common/decorators/SkipAuth';
 import { ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { AuthResponseDto } from './dto/AuthResponseDto';
-import { AuthRequestDto } from 'src/Modules/auth/dto/AuthRequestDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { AuthBaseResponseDto } from './dto/AuthBaseResponseDto';
+import { AuthBaseRequestDto } from './dto/AuthBaseRequestDto';
 
 @SkipAuth()
 @Controller('auth')
@@ -14,13 +14,13 @@ export class AuthController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: () => AuthResponseDto,
+    type: () => AuthBaseResponseDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
     type: () => ErrorResponseDto,
   })
-  async signIn(@Body() sighInDto: AuthRequestDto) {
+  async signIn(@Body() sighInDto: AuthBaseRequestDto) {
     return await this.authService.signIn(
       sighInDto.username,
       sighInDto.password,

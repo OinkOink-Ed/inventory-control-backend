@@ -1,19 +1,14 @@
 import { PickType } from '@nestjs/mapped-types';
+import { CartridgeModelBaseResponseDto } from './CartridgeModelBaseResponseDto';
+import { ResponseUserWithGetAllDetailedCartridgeModelDto } from 'src/Modules/user/dto/ResponseWithGetAllDetailedCartridgeModelDto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsObject, ValidateNested } from 'class-validator';
-import { CartridgeModelBaseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseDto';
-import { ResponseUserWithGetAllDetailedCartridgeModelDto } from 'src/Modules/user/dto/ResponseUserWithGetAllDetailedCartridgeModelDto';
 
 export class ResponseGetAllDetailedCartridgeModelDto extends PickType(
-  CartridgeModelBaseDto,
+  CartridgeModelBaseResponseDto,
   ['id', 'name'],
 ) {
   @ApiProperty({
     type: () => ResponseUserWithGetAllDetailedCartridgeModelDto,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ResponseUserWithGetAllDetailedCartridgeModelDto)
   creator: ResponseUserWithGetAllDetailedCartridgeModelDto;
 }

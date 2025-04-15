@@ -8,13 +8,10 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateWarehouseDto } from './dto/CreateWarehouseDto';
-import {
-  ReadWarehouseDetailedDto,
-  ReadWarehouseDto,
-} from './dto/ReadWarehouseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { WarehouseBaseResponseDto } from './dto/WarehouseBaseResponseDto';
+import { WarehouseBaseRequestDto } from './dto/WarehouseBaseRequestDto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -38,7 +35,7 @@ export class WarehouseController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: CreateWarehouseDto,
+    @Body() createDto: WarehouseBaseRequestDto,
   ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.createModelCartridge.create(createDto);
     return {
@@ -49,7 +46,7 @@ export class WarehouseController {
 
   @Get('detailed')
   @ApiCreatedResponse({
-    type: () => ReadWarehouseDetailedDto,
+    type: () => WarehouseBaseResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -64,13 +61,13 @@ export class WarehouseController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAllDetailed(): Promise<ReadWarehouseDetailedDto[]> {
+  async getAllDetailed(): Promise<WarehouseBaseResponseDto[]> {
     return await this.createModelCartridge.getAllDetailed();
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => ReadWarehouseDto,
+    type: () => WarehouseBaseResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -85,7 +82,7 @@ export class WarehouseController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ReadWarehouseDto[]> {
+  async getAll(): Promise<WarehouseBaseResponseDto[]> {
     return await this.createModelCartridge.getAll();
   }
 }

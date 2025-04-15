@@ -1,85 +1,60 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsObject, ValidateNested } from 'class-validator';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
-import { CartridgeModelBaseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseDto';
+import { CartridgeModelBaseResponseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseResponseDto';
 import { CartridgeDecommissioning } from 'src/Modules/decommissioning/entities/CartridgeDecommissioning';
 import { CartridgeDelivery } from 'src/Modules/delivery/entities/CartridgeDelivery';
 import { CartridgeMovement } from 'src/Modules/movement/entities/CartridgeMovement';
 import { CartridgeReceivingBaseDto } from 'src/Modules/receiving/dto/CartridgeReceivingBaseDto';
-import { UserBaseDto } from 'src/Modules/user/dto/UserBaseDto';
-import { WarehouseBaseDto } from 'src/Modules/warehouse/dto/WarehouseBaseDto';
+import { UserBaseResponseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
+import { WarehouseBaseResponseDto } from 'src/Modules/warehouse/dto/WarehouseBaseResponseDto';
 
-export class CartridgeBaseDto {
+export class CartridgeBaseResponseDto {
   @ApiProperty()
-  @IsNumber()
   id: number;
 
   @ApiProperty({
     enum: CartridgeStatus,
     enumName: 'CartridgeStatus',
   })
-  @IsEnum(CartridgeStatus)
   state: CartridgeStatus;
 
   @ApiProperty({
-    type: () => CartridgeModelBaseDto,
+    type: () => CartridgeModelBaseResponseDto,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CartridgeModelBaseDto)
-  model: CartridgeModelBaseDto;
+  model: CartridgeModelBaseResponseDto;
 
   // CartridgeMovement должен быть DTO
   @ApiProperty({
     type: () => CartridgeMovement,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CartridgeMovement)
   actionMovement: CartridgeMovement;
 
   @ApiProperty({
     type: () => CartridgeReceivingBaseDto,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CartridgeReceivingBaseDto)
   actionReceiving: CartridgeReceivingBaseDto;
 
   // CartridgeDecommissioning должен быть DTO
   @ApiProperty({
     type: () => CartridgeDecommissioning,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CartridgeDecommissioning)
   actionDecommissioning: CartridgeDecommissioning;
 
   // CartridgeDelivery должен быть DTO
   @ApiProperty({
     type: () => CartridgeDelivery,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CartridgeDelivery)
   actionDelivery: CartridgeDelivery;
 
   @ApiProperty({
-    type: () => WarehouseBaseDto,
+    type: () => WarehouseBaseResponseDto,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => WarehouseBaseDto)
-  warehouse: WarehouseBaseDto;
+  warehouse: WarehouseBaseResponseDto;
 
   @ApiProperty({
-    type: () => UserBaseDto,
+    type: () => UserBaseResponseDto,
   })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => UserBaseDto)
-  creator: UserBaseDto;
+  creator: UserBaseResponseDto;
 
   @ApiProperty()
   createdAt: Date;

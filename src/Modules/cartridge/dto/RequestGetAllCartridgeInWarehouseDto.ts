@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { CartridgeBaseDto } from './CartridgeBaseDto';
+import { CartridgeBaseRequestDto } from './CartridgeBaseRequestDto';
 
 export class RequestGetAllCartridgeInWarehouseDto extends PickType(
-  CartridgeBaseDto,
+  CartridgeBaseRequestDto,
   ['warehouse'],
 ) {}

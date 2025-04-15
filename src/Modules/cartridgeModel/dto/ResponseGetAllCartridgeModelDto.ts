@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
-import { CartridgeModelBaseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseDto';
+import { CartridgeModelBaseResponseDto } from './CartridgeModelBaseResponseDto';
 
 export class ResponseGetAllCartridgeModelDto extends PickType(
-  CartridgeModelBaseDto,
+  CartridgeModelBaseResponseDto,
   ['id', 'name'],
 ) {}

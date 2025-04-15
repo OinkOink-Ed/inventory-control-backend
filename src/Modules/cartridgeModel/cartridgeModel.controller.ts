@@ -18,9 +18,10 @@ import {
 import { CartridgeModelService } from './cartridgeModel.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
-import { RequestCreateCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/RequestCreateCartridgeModelDto';
-import { ResponseGetAllCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllCartridgeModelDto';
-import { ResponseGetAllDetailedCartridgeModelDto } from 'src/Modules/cartridgeModel/dto/ResponseGetAllDetailedCartridgeModelDto';
+import { RequestCreateModelCartridgeDto } from './dto/RequestCreateModelCartridgeDto';
+import { ResponseGetAllCartridgeModelDto } from './dto/ResponseGetAllCartridgeModelDto';
+import { ResponseUserWithGetAllDetailedCartridgeModelDto } from '../user/dto/ResponseWithGetAllDetailedCartridgeModelDto';
+import { ResponseGetAllDetailedCartridgeModelDto } from './dto/ResponseGetAllDetailedCartridgeModelDto';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')
@@ -46,7 +47,7 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: RequestCreateCartridgeModelDto,
+    @Body() createDto: RequestCreateModelCartridgeDto,
   ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.createModelCartridge.create(createDto);
     return {
@@ -57,7 +58,7 @@ export class CartridgeModelController {
 
   @Get('detailed')
   @ApiCreatedResponse({
-    type: () => ResponseGetAllDetailedCartridgeModelDto,
+    type: () => ResponseUserWithGetAllDetailedCartridgeModelDto,
     isArray: true,
   })
   @ApiBadRequestResponse({

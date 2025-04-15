@@ -1,7 +1,0 @@
-import { PickType } from '@nestjs/mapped-types';
-import { WarehouseBaseDto } from 'src/Modules/warehouse/dto/WarehouseBaseDto';
-
-export class WarehouseWhithGetAllCartridgeDto extends PickType(
-  WarehouseBaseDto,
-  ['id', 'name'],
-) {}

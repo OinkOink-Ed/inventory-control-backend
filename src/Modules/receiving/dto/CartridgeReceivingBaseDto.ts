@@ -6,7 +6,7 @@ import {
   IsObject,
   ValidateNested,
 } from 'class-validator';
-import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseDto';
+import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseResponseDto';
 import { ReceivingBaseDto } from 'src/Modules/receiving/dto/ReceivingBaseDto';
 
 export class CartridgeReceivingBaseDto {
