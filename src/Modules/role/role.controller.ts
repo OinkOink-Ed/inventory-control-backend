@@ -9,10 +9,10 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateRoleDto } from './dto/createRoleDto';
-import { ReadRoleDto } from './dto/ReadRoleDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { RoleBaseRequest } from './dto/RoleBaseRequest';
+import { ResponseGetAllRole } from './dto/ResponseGetAllRole';
 
 @ApiTags('Role')
 @Controller('role')
@@ -35,13 +35,13 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: CreateRoleDto) {
+  async create(@Body() createDto: RoleBaseRequest): Promise<SuccessResponse> {
     return await this.roleService.create(createDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: () => ReadRoleDto,
+    type: () => ResponseGetAllRole,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -56,7 +56,7 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ReadRoleDto[]> {
+  async getAll(): Promise<ResponseGetAllRole[]> {
     return await this.roleService.getAll();
   }
 }

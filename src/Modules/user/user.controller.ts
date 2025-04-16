@@ -7,9 +7,7 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ReadUserDto } from './dto/ReadUserDto';
 import { UserService } from './user.service';
-import { CreateUserDto } from 'src/Modules/user/dto/CreateUserDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 

@@ -1,6 +1,7 @@
 import { Body, Controller, Get } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiRequestTimeoutResponse,
@@ -17,6 +18,7 @@ export class CartridgeController {
   constructor(private readonly cartridgeService: CartridgeService) {}
 
   @Get()
+  @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Список картриджей отправлен',
     type: () => ResponseGetAllCartridgeInWarehouseDto,

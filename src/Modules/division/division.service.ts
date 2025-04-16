@@ -4,6 +4,7 @@ import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseRequestDto';
 import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
+import { ResponseGetAllDivision } from './dto/ResponseGetAllDivision';
 
 @Injectable()
 export class DivisionService {
@@ -20,7 +21,7 @@ export class DivisionService {
     };
   }
 
-  async getAll(): Promise<ReadDivisionDto[]> {
+  async getAll(): Promise<ResponseGetAllDivision[]> {
     return await this.repo.find();
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -29,6 +30,7 @@ export class CartridgeModelController {
   constructor(private readonly createModelCartridge: CartridgeModelService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Картриджи успешно добавлены',
     type: () => SuccessResponse,
@@ -53,6 +55,7 @@ export class CartridgeModelController {
   }
 
   @Get('detailed')
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => ResponseUserWithGetAllDetailedCartridgeModelDto,
     isArray: true,
@@ -75,6 +78,7 @@ export class CartridgeModelController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => ResponseGetAllCartridgeModelDto,
     isArray: true,

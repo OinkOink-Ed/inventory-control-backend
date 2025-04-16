@@ -9,10 +9,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { KabinetService } from './kabinet.service';
-import { CreateKabinetDto } from './dto/CreateKabinetDto';
-import { ReadKabinetDto } from './dto/ReadKabinetDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { KabinetBaseRequest } from './dto/KabinetBaserequest';
+import { ResponseGetAllKabinetDto } from './dto/ResponseGetAllKabinetDto';
 
 @ApiTags('Kabinet')
 @Controller('kabinet')
@@ -35,13 +35,15 @@ export class KabinetController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: CreateKabinetDto) {
+  async create(
+    @Body() createDto: KabinetBaseRequest,
+  ): Promise<SuccessResponse> {
     return await this.kabinetService.create(createDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: () => ReadKabinetDto,
+    type: () => ResponseGetAllKabinetDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -56,7 +58,7 @@ export class KabinetController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ReadKabinetDto[]> {
+  async getAll(): Promise<ResponseGetAllKabinetDto[]> {
     return await this.kabinetService.getAll();
   }
 }
