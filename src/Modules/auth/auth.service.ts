@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { AuthBaseResponseDto } from './dto/AuthBaseResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { ServiceForAuthFindUserDto } from '../user/dto/ServiceForAuthFindUserDto';
 
 @Injectable()
 export class AuthService {
@@ -15,10 +17,14 @@ export class AuthService {
     return this.jwtService.signAsync(payload);
   }
 
-  async signIn(nickname: string, pass: string): Promise<AuthBaseResponseDto> {
-    const user = await this.usersService.findOneForAuth(nickname);
+  async signIn(
+    nickname: string,
+    pass: string,
+  ): Promise<AuthBaseResponseDto | ErrorResponseDto> {
+    const user: ServiceForAuthFindUserDto | null =
+      await this.usersService.findOneForAuth(nickname);
 
-    if (!user) {
+    if ('error' in user) {
       throw new UnauthorizedException('неверный логин ил пароль');
     }
 

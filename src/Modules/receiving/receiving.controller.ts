@@ -34,11 +34,7 @@ export class ReceivingController {
   })
   async create(
     @Body() createDto: RequestCreateReceivingDto,
-  ): Promise<SuccessResponse> {
-    await this.receivingService.create(createDto);
-    return {
-      statusCode: 201,
-      message: 'Картриджи успешно приняты',
-    };
+  ): Promise<SuccessResponse | ErrorResponseDto> {
+    return await this.receivingService.create(createDto);
   }
 }

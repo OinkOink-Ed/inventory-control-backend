@@ -9,6 +9,8 @@ import { Mapper } from '@automapper/core';
 import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
 import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
 import { CreateCartridgeReceivingDto } from 'src/Modules/receiving/dto/CreateCartridgeReceivingDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @Injectable()
 export class ReceivingService {
@@ -19,7 +21,9 @@ export class ReceivingService {
     private readonly dataSourse: DataSource,
   ) {}
 
-  async create(createDto: RequestCreateReceivingDto) {
+  async create(
+    createDto: RequestCreateReceivingDto,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
     const receivingDto = this.mapper.map(
       createDto,
@@ -62,7 +66,10 @@ export class ReceivingService {
 
       await cartridgeReceivingRepo.insert(cartridgeReceivingDtos);
       await queryRunner.commitTransaction();
-      return true;
+      return {
+        statusCode: 201,
+        message: 'Картриджи успешно приняты',
+      };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

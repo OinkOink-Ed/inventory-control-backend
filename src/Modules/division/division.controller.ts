@@ -39,7 +39,7 @@ export class DivisionController {
   })
   async create(
     @Body() createDto: DivisionBaseRequestDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     return await this.divisionService.create(createDto);
   }
 
@@ -63,7 +63,7 @@ export class DivisionController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllDivision[]> {
+  async getAll(): Promise<ResponseGetAllDivision[] | ErrorResponseDto> {
     return await this.divisionService.getAll();
   }
 }

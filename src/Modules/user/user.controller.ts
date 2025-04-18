@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -10,6 +10,8 @@ import {
 import { UserService } from './user.service';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { UserBaseRequestDto } from './dto/UserBaseRequestDto';
+import { ResponseGetAllUserDto } from './dto/ResponseGetAllUserDto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -32,17 +34,15 @@ export class UserController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: CreateUserDto) {
-    await this.userService.create(createDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Пользователь успешно добавлен',
-    };
+  async create(
+    @Body() createDto: UserBaseRequestDto,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
+    return await this.userService.create(createDto);
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => ReadUserDto,
+    type: () => ResponseGetAllUserDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -57,7 +57,7 @@ export class UserController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ReadUserDto[]> {
+  async getAll(): Promise<ResponseGetAllUserDto[] | ErrorResponseDto> {
     return await this.userService.getAll();
   }
 }

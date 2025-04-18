@@ -35,7 +35,9 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: RoleBaseRequest): Promise<SuccessResponse> {
+  async create(
+    @Body() createDto: RoleBaseRequest,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     return await this.roleService.create(createDto);
   }
 
@@ -56,7 +58,7 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllRole[]> {
+  async getAll(): Promise<ResponseGetAllRole[] | ErrorResponseDto> {
     return await this.roleService.getAll();
   }
 }

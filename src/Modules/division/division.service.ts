@@ -5,6 +5,8 @@ import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseReq
 import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
 import { ResponseGetAllDivision } from './dto/ResponseGetAllDivision';
+import { SelectFields } from 'types/utils';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @Injectable()
 export class DivisionService {
@@ -13,7 +15,9 @@ export class DivisionService {
     private readonly repo: Repository<Division>,
   ) {}
 
-  async create(dto: DivisionBaseRequestDto): Promise<SuccessResponse> {
+  async create(
+    dto: DivisionBaseRequestDto,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -21,7 +25,14 @@ export class DivisionService {
     };
   }
 
-  async getAll(): Promise<ResponseGetAllDivision[]> {
-    return await this.repo.find();
+  async getAll(): Promise<ResponseGetAllDivision[] | ErrorResponseDto> {
+    const select: SelectFields<ResponseGetAllDivision> = {
+      id: true,
+      name: true,
+    };
+
+    return await this.repo.find({
+      select,
+    });
   }
 }

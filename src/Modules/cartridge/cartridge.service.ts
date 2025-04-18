@@ -5,6 +5,8 @@ import { QueryRunner, Repository } from 'typeorm';
 import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
 import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
 import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
+import { SelectFields } from 'types/utils';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @Injectable()
 export class CartridgeService {
@@ -16,7 +18,7 @@ export class CartridgeService {
   async createMany(
     dto: ServiceCreateCartridgeDto,
     queryRunner: QueryRunner,
-  ): Promise<Array<{ id: number }>> {
+  ): Promise<Array<{ id: number }> | ErrorResponseDto> {
     const { count, ...restDto } = dto;
 
     // Создаем одинакоыве dto (занимаем память)
@@ -41,24 +43,27 @@ export class CartridgeService {
 
   async getAll(
     dto: RequestGetAllCartridgeInWarehouseDto,
-  ): Promise<ResponseGetAllCartridgeInWarehouseDto[]> {
+  ): Promise<ResponseGetAllCartridgeInWarehouseDto[] | ErrorResponseDto> {
+    const select: SelectFields<ResponseGetAllCartridgeInWarehouseDto> = {
+      id: true,
+      model: {
+        id: true,
+        name: true,
+      },
+      state: true,
+      warehouse: {
+        id: true,
+        name: true,
+      },
+      createdAt: true,
+    };
+
     return await this.repoCartridges.find({
       where: {
         warehouse: { id: dto.warehouse.id },
       },
-      select: {
-        id: true,
-        model: {
-          id: true,
-          name: true,
-        },
-        state: true,
-        warehouse: {
-          id: true,
-          name: true,
-        },
-        createdAt: true,
-      },
+      select,
+      relations: ['warehouse', 'model'],
     });
   }
 }

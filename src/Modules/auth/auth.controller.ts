@@ -25,7 +25,9 @@ export class AuthController {
     description: 'Unauthorized',
     type: () => ErrorResponseDto,
   })
-  async signIn(@Body() sighInDto: AuthBaseRequestDto) {
+  async signIn(
+    @Body() sighInDto: AuthBaseRequestDto,
+  ): Promise<AuthBaseResponseDto | ErrorResponseDto> {
     return await this.authService.signIn(
       sighInDto.username,
       sighInDto.password,

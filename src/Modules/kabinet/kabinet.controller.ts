@@ -37,7 +37,7 @@ export class KabinetController {
   })
   async create(
     @Body() createDto: KabinetBaseRequest,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     return await this.kabinetService.create(createDto);
   }
 
@@ -58,7 +58,7 @@ export class KabinetController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllKabinetDto[]> {
+  async getAll(): Promise<ResponseGetAllKabinetDto[] | ErrorResponseDto> {
     return await this.kabinetService.getAll();
   }
 }

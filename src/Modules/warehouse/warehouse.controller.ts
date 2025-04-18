@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import {
   ApiBadRequestResponse,
@@ -10,8 +10,9 @@ import {
 } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { WarehouseBaseResponseDto } from './dto/WarehouseBaseResponseDto';
 import { WarehouseBaseRequestDto } from './dto/WarehouseBaseRequestDto';
+import { ResponseGetAllDetailedWarehouseDto } from './dto/ResponseGetAllDetailedWarehouseDto';
+import { ResponseGetAllWarehouseDto } from './dto/ResponseGetAllWarehouseDto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -37,16 +38,12 @@ export class WarehouseController {
   async create(
     @Body() createDto: WarehouseBaseRequestDto,
   ): Promise<SuccessResponse | ErrorResponseDto> {
-    await this.createModelCartridge.create(createDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: 'Модель картриджа успешно добавлена',
-    };
+    return await this.createModelCartridge.create(createDto);
   }
 
   @Get('detailed')
   @ApiCreatedResponse({
-    type: () => WarehouseBaseResponseDto,
+    type: () => ResponseGetAllDetailedWarehouseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -61,13 +58,15 @@ export class WarehouseController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAllDetailed(): Promise<WarehouseBaseResponseDto[]> {
+  async getAllDetailed(): Promise<
+    ResponseGetAllDetailedWarehouseDto[] | ErrorResponseDto
+  > {
     return await this.createModelCartridge.getAllDetailed();
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => WarehouseBaseResponseDto,
+    type: () => ResponseGetAllWarehouseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -82,7 +81,7 @@ export class WarehouseController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<WarehouseBaseResponseDto[]> {
+  async getAll(): Promise<ResponseGetAllWarehouseDto[] | ErrorResponseDto> {
     return await this.createModelCartridge.getAll();
   }
 }

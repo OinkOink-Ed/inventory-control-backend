@@ -50,7 +50,7 @@ export class CartridgeModelController {
   })
   async create(
     @Body() createDto: RequestCreateModelCartridgeDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     return await this.createModelCartridge.create(createDto);
   }
 
@@ -73,7 +73,9 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAllDetailed(): Promise<ResponseGetAllDetailedCartridgeModelDto[]> {
+  async getAllDetailed(): Promise<
+    ResponseGetAllDetailedCartridgeModelDto[] | ErrorResponseDto
+  > {
     return await this.createModelCartridge.getAllDetailed();
   }
 
@@ -96,7 +98,9 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<ResponseGetAllCartridgeModelDto[]> {
+  async getAll(): Promise<
+    ResponseGetAllCartridgeModelDto[] | ErrorResponseDto
+  > {
     return await this.createModelCartridge.getAll();
   }
 }

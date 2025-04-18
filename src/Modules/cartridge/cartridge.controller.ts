@@ -38,7 +38,7 @@ export class CartridgeController {
   })
   async getAll(
     @Body() getDto: RequestGetAllCartridgeInWarehouseDto,
-  ): Promise<ResponseGetAllCartridgeInWarehouseDto[]> {
+  ): Promise<ResponseGetAllCartridgeInWarehouseDto[] | ErrorResponseDto> {
     return await this.cartridgeService.getAll(getDto);
   }
 }

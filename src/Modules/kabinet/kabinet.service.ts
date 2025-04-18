@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { KabinetBaseRequest } from './dto/KabinetBaserequest';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ResponseGetAllKabinetDto } from './dto/ResponseGetAllKabinetDto';
+import { SelectFields } from 'types/utils';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 
 @Injectable()
 export class KabinetService {
@@ -13,7 +15,9 @@ export class KabinetService {
     private readonly repo: Repository<Kabinet>,
   ) {}
 
-  async create(dto: KabinetBaseRequest): Promise<SuccessResponse> {
+  async create(
+    dto: KabinetBaseRequest,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -21,12 +25,14 @@ export class KabinetService {
     };
   }
 
-  async getAll(): Promise<ResponseGetAllKabinetDto[]> {
+  async getAll(): Promise<ResponseGetAllKabinetDto[] | ErrorResponseDto> {
+    const select: SelectFields<ResponseGetAllKabinetDto> = {
+      id: true,
+      number: true,
+    };
+
     return await this.repo.find({
-      select: {
-        id: true,
-        number: true,
-      },
+      select,
     });
   }
 }
