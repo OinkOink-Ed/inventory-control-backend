@@ -3,7 +3,7 @@ import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
 import { CartridgeModelBaseResponseDto } from 'src/Modules/cartridgeModel/dto/CartridgeModelBaseResponseDto';
 import { CartridgeDecommissioning } from 'src/Modules/decommissioning/entities/CartridgeDecommissioning';
 import { CartridgeDelivery } from 'src/Modules/delivery/entities/CartridgeDelivery';
-import { CartridgeMovement } from 'src/Modules/movement/entities/CartridgeMovement';
+import { CartridgeMovementBaseResponseDto } from 'src/Modules/movement/dto/CartridgeMovementBaseResponseDto';
 import { CartridgeReceivingBaseDto } from 'src/Modules/receiving/dto/CartridgeReceivingBaseDto';
 import { UserBaseResponseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
 import { WarehouseBaseResponseDto } from 'src/Modules/warehouse/dto/WarehouseBaseResponseDto';
@@ -23,11 +23,10 @@ export class CartridgeBaseResponseDto {
   })
   model: CartridgeModelBaseResponseDto;
 
-  // CartridgeMovement должен быть DTO
   @ApiProperty({
-    type: () => CartridgeMovement,
+    type: () => CartridgeMovementBaseResponseDto,
   })
-  actionMovement: CartridgeMovement;
+  actionMovement: CartridgeMovementBaseResponseDto;
 
   @ApiProperty({
     type: () => CartridgeReceivingBaseDto,

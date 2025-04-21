@@ -5,7 +5,7 @@ import { Decommissioning } from 'src/Modules/decommissioning/entities/Decommissi
 import { Delivery } from 'src/Modules/delivery/entities/Delivery';
 import { Division } from 'src/Modules/division/entities/Division';
 import { Movement } from 'src/Modules/movement/entities/Movement';
-import { ReceivingBaseDto } from 'src/Modules/receiving/dto/ReceivingBaseDto';
+import { ReceivingBaseDto } from 'src/Modules/receiving/dto/ReceivingBaseResponseDto';
 import { UserBaseResponseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
 
 export class WarehouseBaseResponseDto {

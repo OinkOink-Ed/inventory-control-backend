@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/RequestCreateReceivingDto';
+import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
 
 @Controller('receiving')
 export class ReceivingController {

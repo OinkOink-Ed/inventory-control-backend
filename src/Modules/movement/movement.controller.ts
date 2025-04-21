@@ -1,4 +1,39 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiRequestTimeoutResponse,
+} from '@nestjs/swagger';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { MovementService } from 'src/Modules/movement/movement.service';
 
 @Controller('movement')
-export class MovementController {}
+export class MovementController {
+  constructor(private readonly movementService: MovementService) {}
+
+  @Post()
+  @ApiCreatedResponse({
+    description: 'Картриджи успешно перемещены',
+    type: () => SuccessResponse,
+  })
+  @ApiBadRequestResponse({
+    description:
+      'Неверный формат данных, дубликат записи или отсутствие связанной записи',
+    type: () => ErrorResponseDto,
+  })
+  @ApiForbiddenResponse({
+    description: 'Доступ запрещен',
+    type: () => ErrorResponseDto,
+  })
+  @ApiRequestTimeoutResponse({
+    description: 'Превышено время ожидания',
+    type: () => ErrorResponseDto,
+  })
+  async create(
+    @Body() createDto: RequestCreateReceivingDto,
+  ): Promise<SuccessResponse | ErrorResponseDto> {
+    return await this.movementService.create(createDto);
+  }
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Receiving } from './entities/Receiving';
 import { DataSource } from 'typeorm';
 import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/RequestCreateReceivingDto';
+import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
 import { CreateReceivingDto } from 'src/Modules/receiving/dto/CreateReceivingDto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';

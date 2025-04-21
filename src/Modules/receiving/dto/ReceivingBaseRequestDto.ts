@@ -1,4 +1,3 @@
-import { IntersectionType } from '@nestjs/mapped-types';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -8,15 +7,12 @@ import {
   IsPositive,
   ValidateNested,
 } from 'class-validator';
-import { IdObject } from 'src/common/dto/IdObjectDto';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
-import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseResponseDto';
-import { UserBaseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
+import { UserBaseRequestDto } from 'src/Modules/user/dto/UserBaseRequestDto';
 
-export class RequestCreateReceivingDto extends IntersectionType(
-  PickType(CartridgeBaseDto, ['state']),
-  PickType(UserBaseDto, ['id']),
-) {
+export class RequestCreateReceivingDto extends PickType(UserBaseRequestDto, [
+  'id',
+]) {
   @ApiProperty({
     enum: CartridgeStatus,
     enumName: 'CartridgeStatus',

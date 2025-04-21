@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/RequestCreateReceivingDto';
+import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
 
 export class CreateReceivingDto extends PickType(RequestCreateReceivingDto, [
   'warehouse',

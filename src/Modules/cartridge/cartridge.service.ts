@@ -18,7 +18,7 @@ export class CartridgeService {
   async createMany(
     dto: ServiceCreateCartridgeDto,
     queryRunner: QueryRunner,
-  ): Promise<Array<{ id: number }> | ErrorResponseDto> {
+  ): Promise<Array<{ id: number }>> {
     const { count, ...restDto } = dto;
 
     // Создаем одинакоыве dto (занимаем память)

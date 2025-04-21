@@ -8,30 +8,30 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CartridgeReceivingBaseDto } from 'src/Modules/receiving/dto/CartridgeReceivingBaseDto';
-import { UserBaseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
-import { WarehouseBaseDto } from 'src/Modules/warehouse/dto/WarehouseBaseResponseDto';
+import { UserBaseResponseDto } from 'src/Modules/user/dto/UserBaseResponseDto';
+import { WarehouseBaseResponseDto } from 'src/Modules/warehouse/dto/WarehouseBaseResponseDto';
 
-export class ReceivingBaseDto {
+export class ReceivingBaseResponseDto {
   @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   id: number;
 
   @ApiProperty({
-    type: () => UserBaseDto,
+    type: () => UserBaseResponseDto,
   })
   @IsObject()
   @ValidateNested()
-  @Type(() => UserBaseDto)
-  creator: UserBaseDto;
+  @Type(() => UserBaseResponseDto)
+  creator: UserBaseResponseDto;
 
   @ApiProperty({
-    type: () => WarehouseBaseDto,
+    type: () => WarehouseBaseResponseDto,
   })
   @IsObject()
   @ValidateNested()
-  @Type(() => WarehouseBaseDto)
-  warehouse: WarehouseBaseDto;
+  @Type(() => WarehouseBaseResponseDto)
+  warehouse: WarehouseBaseResponseDto;
 
   @ApiProperty({
     type: () => CartridgeReceivingBaseDto,

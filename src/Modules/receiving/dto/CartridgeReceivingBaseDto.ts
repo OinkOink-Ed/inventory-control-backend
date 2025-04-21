@@ -7,7 +7,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CartridgeBaseDto } from 'src/Modules/cartridge/dto/CartridgeBaseResponseDto';
-import { ReceivingBaseDto } from 'src/Modules/receiving/dto/ReceivingBaseDto';
+import { ReceivingBaseDto } from 'src/Modules/receiving/dto/ReceivingBaseResponseDto';
 
 export class CartridgeReceivingBaseDto {
   @ApiProperty()

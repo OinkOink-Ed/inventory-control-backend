@@ -3,7 +3,7 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
 import { CreateReceivingDto } from 'src/Modules/receiving/dto/CreateReceivingDto';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/RequestCreateReceivingDto';
+import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
