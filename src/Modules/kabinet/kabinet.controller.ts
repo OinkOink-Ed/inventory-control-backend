@@ -11,8 +11,8 @@ import {
 import { KabinetService } from './kabinet.service';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { KabinetBaseRequest } from './dto/KabinetBaserequest';
-import { ResponseGetAllKabinetDto } from './dto/ResponseGetAllKabinetDto';
+import { PostCreateKabinetDto } from './dto/PostCreateKabinetDto';
+import { GetResponseAllKabinetDto } from './dto/GetResponseAllKabinetDto';
 
 @ApiTags('Kabinet')
 @Controller('kabinet')
@@ -36,14 +36,14 @@ export class KabinetController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: KabinetBaseRequest,
+    @Body() createDto: PostCreateKabinetDto,
   ): Promise<SuccessResponse | ErrorResponseDto> {
     return await this.kabinetService.create(createDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: () => ResponseGetAllKabinetDto,
+    type: () => GetResponseAllKabinetDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -58,7 +58,7 @@ export class KabinetController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllKabinetDto[] | ErrorResponseDto> {
+  async getAll(): Promise<GetResponseAllKabinetDto[] | ErrorResponseDto> {
     return await this.kabinetService.getAll();
   }
 }

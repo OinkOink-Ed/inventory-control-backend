@@ -1,16 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Receiving } from './entities/Receiving';
 import { DataSource } from 'typeorm';
 import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
-import { CreateReceivingDto } from 'src/Modules/receiving/dto/CreateReceivingDto';
+import { PostCreateReceivingDto } from 'src/Modules/receiving/dto/PostCreateReceivingDto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
 import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
-import { CreateCartridgeReceivingDto } from 'src/Modules/receiving/dto/CreateCartridgeReceivingDto';
+import { ServiceCreateCartridgeReceiving } from 'src/Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { ServiceCreateReceiving } from 'src/Modules/receiving/classes/ServiceCreateReceiving';
+import { ServiceCreateCartridge } from '../cartridge/ServiceCreateCartridge';
 
 @Injectable()
 export class ReceivingService {
@@ -20,21 +19,18 @@ export class ReceivingService {
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
   ) {}
-
-  async create(
-    createDto: RequestCreateReceivingDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(createDto: PostCreateReceivingDto): Promise<SuccessResponse> {
     //Маппинг dto для правильной передачи параметров для создания сущности
     const receivingDto = this.mapper.map(
       createDto,
-      RequestCreateReceivingDto,
-      CreateReceivingDto,
+      PostCreateReceivingDto,
+      ServiceCreateReceiving,
     );
 
     const cartridgeDto = this.mapper.map(
       createDto,
-      RequestCreateReceivingDto,
-      ServiceCreateCartridgeDto,
+      PostCreateReceivingDto,
+      ServiceCreateCartridge,
     );
 
     const queryRunner = this.dataSourse.createQueryRunner();
@@ -58,7 +54,7 @@ export class ReceivingService {
         queryRunner,
       );
 
-      const cartridgeReceivingDtos: CreateCartridgeReceivingDto[] =
+      const cartridgeReceivingDtos: ServiceCreateCartridgeReceiving[] =
         cartridgeIds.map((cartridge) => ({
           cartridge,
           receiving: receiving,
@@ -67,7 +63,7 @@ export class ReceivingService {
       await cartridgeReceivingRepo.insert(cartridgeReceivingDtos);
       await queryRunner.commitTransaction();
       return {
-        statusCode: 201,
+        statusCode: HttpStatus.CREATED,
         message: 'Картриджи успешно приняты',
       };
     } catch (error) {

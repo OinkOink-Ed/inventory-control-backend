@@ -10,8 +10,8 @@ import {
 import { UserService } from './user.service';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { UserBaseRequestDto } from './dto/UserBaseRequestDto';
-import { ResponseGetAllUserDto } from './dto/ResponseGetAllUserDto';
+import { PostCreateuserDto } from './dto/PostCreateUserDto';
+import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -34,15 +34,13 @@ export class UserController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(
-    @Body() createDto: UserBaseRequestDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(@Body() createDto: PostCreateuserDto): Promise<SuccessResponse> {
     return await this.userService.create(createDto);
   }
 
   @Get()
   @ApiCreatedResponse({
-    type: () => ResponseGetAllUserDto,
+    type: () => GetResponseAllUserDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -57,7 +55,7 @@ export class UserController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllUserDto[] | ErrorResponseDto> {
+  async getAll(): Promise<GetResponseAllUserDto[]> {
     return await this.userService.getAll();
   }
 }

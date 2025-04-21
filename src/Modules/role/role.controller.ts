@@ -11,8 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { RoleBaseRequest } from './dto/RoleBaseRequest';
-import { ResponseGetAllRole } from './dto/ResponseGetAllRole';
+import { PostCreateroleDto } from './dto/PostCreateRoleDto';
+import { GetResponseAllRole } from './dto/GetResponseAllRole';
 
 @ApiTags('Role')
 @Controller('role')
@@ -35,15 +35,13 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(
-    @Body() createDto: RoleBaseRequest,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(@Body() createDto: PostCreateroleDto): Promise<SuccessResponse> {
     return await this.roleService.create(createDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: () => ResponseGetAllRole,
+    type: () => GetResponseAllRole,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -58,7 +56,7 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllRole[] | ErrorResponseDto> {
+  async getAll(): Promise<GetResponseAllRole[]> {
     return await this.roleService.getAll();
   }
 }

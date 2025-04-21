@@ -2,12 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
-import { WarehouseBaseRequestDto } from './dto/WarehouseBaseRequestDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
-import { ResponseGetAllWarehouseDto } from './dto/ResponseGetAllWarehouseDto';
-import { SelectFields } from 'types/utils';
-import { ResponseGetAllDetailedWarehouseDto } from './dto/ResponseGetAllDetailedWarehouseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { GetResponseAllDetailedWarehouseDto } from './dto/GetResponseAllDetailedWarehouseDto';
+import { PostCreateWarehouseDto } from './dto/PostCreateWarehouseDto';
+import { GetResponseAllWarehouseDto } from './dto/GetResponseAllWarehouseDto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class WarehouseService {
@@ -16,9 +15,7 @@ export class WarehouseService {
     private readonly repo: Repository<Warehouse>,
   ) {}
 
-  async create(
-    dto: WarehouseBaseRequestDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(dto: PostCreateWarehouseDto): Promise<SuccessResponse> {
     await this.repo.save(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -26,33 +23,25 @@ export class WarehouseService {
     };
   }
 
-  async getAll(): Promise<ResponseGetAllWarehouseDto[] | ErrorResponseDto> {
-    const select: SelectFields<ResponseGetAllWarehouseDto> = {
-      id: true,
-    };
+  async getAll(): Promise<GetResponseAllWarehouseDto[]> {
+    const warehouses = await this.repo.find();
 
-    return await this.repo.find({
-      select,
+    return plainToInstance(GetResponseAllWarehouseDto, warehouses, {
+      excludeExtraneousValues: true,
     });
   }
 
-  async getAllDetailed(): Promise<
-    ResponseGetAllDetailedWarehouseDto[] | ErrorResponseDto
-  > {
-    const select: SelectFields<ResponseGetAllDetailedWarehouseDto> = {
-      id: true,
-      name: true,
-      creator: {
-        id: true,
-        lastname: true,
-        name: true,
-        patronimyc: true,
-      },
-    };
-
-    return await this.repo.find({
-      select,
+  async getAllDetailed(): Promise<GetResponseAllDetailedWarehouseDto[]> {
+    const warehousesDetailed = await this.repo.find({
       relations: ['creator'],
     });
+
+    return plainToInstance(
+      GetResponseAllDetailedWarehouseDto,
+      warehousesDetailed,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 }

@@ -12,8 +12,8 @@ import {
 import { DivisionService } from './division.service';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseRequestDto';
-import { ResponseGetAllDivision } from './dto/ResponseGetAllDivision';
+import { GetReponseAllDivision } from './dto/GetReponseAllDivision';
+import { PostCreateDivisionDto } from './dto/PostCreateDivisionDto';
 
 @ApiTags('Division')
 @Controller('division')
@@ -38,8 +38,8 @@ export class DivisionController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: DivisionBaseRequestDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+    @Body() createDto: PostCreateDivisionDto,
+  ): Promise<SuccessResponse> {
     return await this.divisionService.create(createDto);
   }
 
@@ -49,7 +49,7 @@ export class DivisionController {
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
-    type: () => ResponseGetAllDivision,
+    type: () => GetReponseAllDivision,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -63,7 +63,7 @@ export class DivisionController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<ResponseGetAllDivision[] | ErrorResponseDto> {
+  async getAll(): Promise<GetReponseAllDivision[]> {
     return await this.divisionService.getAll();
   }
 }

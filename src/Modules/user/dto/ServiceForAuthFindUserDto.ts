@@ -1,17 +1,9 @@
-import { PickType } from '@nestjs/mapped-types';
-import { UserBaseResponseDto } from './UserBaseResponseDto';
-import { ApiProperty } from '@nestjs/swagger';
-
-export class ServiceForAuthFindUserDto extends PickType(UserBaseResponseDto, [
-  'id',
-  'name',
-  'username',
-  'patronimyc',
-  'lastname',
-  'password',
-]) {
-  @ApiProperty({
-    type: () => ({ id: Number, roleName: String }),
-  })
+export class ServiceForAuthFindUserDto {
+  id: number;
+  name: string;
+  username: string;
+  patronimyc: string;
+  lastname: string;
+  password: string;
   role: { id: number; roleName: string };
 }

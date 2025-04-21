@@ -19,10 +19,9 @@ import {
 import { CartridgeModelService } from './cartridgeModel.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
-import { RequestCreateModelCartridgeDto } from './dto/RequestCreateModelCartridgeDto';
-import { ResponseGetAllCartridgeModelDto } from './dto/ResponseGetAllCartridgeModelDto';
-import { ResponseUserWithGetAllDetailedCartridgeModelDto } from '../user/dto/ResponseWithGetAllDetailedCartridgeModelDto';
-import { ResponseGetAllDetailedCartridgeModelDto } from './dto/ResponseGetAllDetailedCartridgeModelDto';
+import { PostCreateCartridgeModelDto } from './dto/PostCreateCartridgeModelDto';
+import { GetResponseAllDetailedCartridgeModelDto } from './dto/GetResponseAllDetailedCartridgeModelDto';
+import { GetResponseAllCartridgeModelDto } from './dto/GetResponseAllCartridgeModelDto';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')
@@ -49,15 +48,15 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: RequestCreateModelCartridgeDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+    @Body() createDto: PostCreateCartridgeModelDto,
+  ): Promise<SuccessResponse> {
     return await this.createModelCartridge.create(createDto);
   }
 
   @Get('detailed')
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => ResponseUserWithGetAllDetailedCartridgeModelDto,
+    type: () => GetResponseAllDetailedCartridgeModelDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -73,16 +72,14 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAllDetailed(): Promise<
-    ResponseGetAllDetailedCartridgeModelDto[] | ErrorResponseDto
-  > {
+  async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
     return await this.createModelCartridge.getAllDetailed();
   }
 
   @Get()
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => ResponseGetAllCartridgeModelDto,
+    type: () => GetResponseAllCartridgeModelDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -98,9 +95,7 @@ export class CartridgeModelController {
     type: () => ErrorResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<
-    ResponseGetAllCartridgeModelDto[] | ErrorResponseDto
-  > {
+  async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
     return await this.createModelCartridge.getAll();
   }
 }

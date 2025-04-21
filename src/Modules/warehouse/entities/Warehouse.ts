@@ -14,12 +14,6 @@ export class Warehouse extends Base {
   @Column()
   name: string;
 
-  @Column()
-  openningDate: Date;
-
-  @Column()
-  closingDate: Date;
-
   @Column({
     type: 'enum',
     enum: WarehouseStatus,

@@ -1,12 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
-import { DivisionBaseRequestDto } from 'src/Modules/division/dto/DivisionBaseRequestDto';
 import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
-import { ResponseGetAllDivision } from './dto/ResponseGetAllDivision';
-import { SelectFields } from 'types/utils';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { PostCreateDivisionDto } from './dto/PostCreateDivisionDto';
+import { GetReponseAllDivision } from './dto/GetReponseAllDivision';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DivisionService {
@@ -15,9 +14,7 @@ export class DivisionService {
     private readonly repo: Repository<Division>,
   ) {}
 
-  async create(
-    dto: DivisionBaseRequestDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(dto: PostCreateDivisionDto): Promise<SuccessResponse> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -25,14 +22,11 @@ export class DivisionService {
     };
   }
 
-  async getAll(): Promise<ResponseGetAllDivision[] | ErrorResponseDto> {
-    const select: SelectFields<ResponseGetAllDivision> = {
-      id: true,
-      name: true,
-    };
+  async getAll(): Promise<GetReponseAllDivision[]> {
+    const devisions = await this.repo.find();
 
-    return await this.repo.find({
-      select,
+    return plainToInstance(GetReponseAllDivision, devisions, {
+      excludeExtraneousValues: true,
     });
   }
 }

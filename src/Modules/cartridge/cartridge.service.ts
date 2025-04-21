@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
 import { QueryRunner, Repository } from 'typeorm';
-import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
-import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
-import { ServiceCreateCartridgeDto } from 'src/Modules/cartridge/dto/ServiceCreateCartridgeDto';
-import { SelectFields } from 'types/utils';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { ServiceCreateCartridge } from './interfaces/ServiceCreateCartridge';
+import { GetAllCartridgeInWarehouseDto } from './dto/GetAllCartridgeInWarehouseDto';
+import { GetResponseAllCartridgeInWarehouseDto } from './dto/GetResponseAllCartridgeInWarehouseDto';
+// import { ServiceMoveCartridge } from './interfaces/ServiceMoveCartridge';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CartridgeService {
@@ -16,7 +16,7 @@ export class CartridgeService {
   ) {}
 
   async createMany(
-    dto: ServiceCreateCartridgeDto,
+    dto: ServiceCreateCartridge,
     queryRunner: QueryRunner,
   ): Promise<Array<{ id: number }>> {
     const { count, ...restDto } = dto;
@@ -41,29 +41,26 @@ export class CartridgeService {
     }
   }
 
-  async getAll(
-    dto: RequestGetAllCartridgeInWarehouseDto,
-  ): Promise<ResponseGetAllCartridgeInWarehouseDto[] | ErrorResponseDto> {
-    const select: SelectFields<ResponseGetAllCartridgeInWarehouseDto> = {
-      id: true,
-      model: {
-        id: true,
-        name: true,
-      },
-      state: true,
-      warehouse: {
-        id: true,
-        name: true,
-      },
-      createdAt: true,
-    };
+  // async moveMany(queryRunner: QueryRunner, dto: ServiceMoveCartridge) {
+  //   try {
+  //   } catch (error) {
+  //     await queryRunner.rollbackTransaction();
+  //     throw error;
+  //   } finally {
+  //   }
+  // }
 
-    return await this.repoCartridges.find({
+  async getAll(
+    dto: GetAllCartridgeInWarehouseDto,
+  ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
+    const cartridges = await this.repoCartridges.find({
       where: {
         warehouse: { id: dto.warehouse.id },
       },
-      select,
       relations: ['warehouse', 'model'],
+    });
+    return plainToInstance(GetResponseAllCartridgeInWarehouseDto, cartridges, {
+      excludeExtraneousValues: true,
     });
   }
 }

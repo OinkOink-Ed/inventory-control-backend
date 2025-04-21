@@ -8,6 +8,7 @@ import {
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { MovementService } from 'src/Modules/movement/movement.service';
+import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
 
 @Controller('movement')
 export class MovementController {
@@ -32,8 +33,8 @@ export class MovementController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: RequestCreateReceivingDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+    @Body() createDto: PostCreateMovementDto,
+  ): Promise<SuccessResponse> {
     return await this.movementService.create(createDto);
   }
 }

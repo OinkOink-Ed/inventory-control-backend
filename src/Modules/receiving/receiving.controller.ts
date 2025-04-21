@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { RequestCreateReceivingDto } from 'src/Modules/receiving/dto/ReceivingBaseRequestDto';
+import { PostCreateReceivingDto } from './dto/PostCreateReceivingDto';
 
 @Controller('receiving')
 export class ReceivingController {
@@ -33,8 +33,8 @@ export class ReceivingController {
     type: () => ErrorResponseDto,
   })
   async create(
-    @Body() createDto: RequestCreateReceivingDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+    @Body() createDto: PostCreateReceivingDto,
+  ): Promise<SuccessResponse> {
     return await this.receivingService.create(createDto);
   }
 }

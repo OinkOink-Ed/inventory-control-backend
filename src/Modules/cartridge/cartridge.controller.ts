@@ -9,8 +9,8 @@ import {
 } from '@nestjs/swagger';
 import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { RequestGetAllCartridgeInWarehouseDto } from './dto/RequestGetAllCartridgeInWarehouseDto';
-import { ResponseGetAllCartridgeInWarehouseDto } from './dto/ResponseGetAllCartridgeInWarehouseDto';
+import { GetResponseAllCartridgeInWarehouseDto } from './dto/GetResponseAllCartridgeInWarehouseDto';
+import { GetAllCartridgeInWarehouseDto } from './dto/GetAllCartridgeInWarehouseDto';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')
@@ -21,7 +21,7 @@ export class CartridgeController {
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Список картриджей отправлен',
-    type: () => ResponseGetAllCartridgeInWarehouseDto,
+    type: () => GetResponseAllCartridgeInWarehouseDto,
   })
   @ApiBadRequestResponse({
     description:
@@ -37,8 +37,8 @@ export class CartridgeController {
     type: () => ErrorResponseDto,
   })
   async getAll(
-    @Body() getDto: RequestGetAllCartridgeInWarehouseDto,
-  ): Promise<ResponseGetAllCartridgeInWarehouseDto[] | ErrorResponseDto> {
+    @Body() getDto: GetAllCartridgeInWarehouseDto,
+  ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
     return await this.cartridgeService.getAll(getDto);
   }
 }

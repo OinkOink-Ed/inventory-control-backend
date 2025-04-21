@@ -3,12 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/User';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserBaseRequestDto } from './dto/UserBaseRequestDto';
-import { ServiceForAuthFindUserDto } from './dto/ServiceForAuthFindUserDto';
-import { SelectFields } from 'types/utils';
-import { ResponseGetAllUserDto } from './dto/ResponseGetAllUserDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { PostCreateuserDto } from './dto/PostCreateUserDto';
+import { ServiceForAuthFindUserDto } from './dto/ServiceForAuthFindUserDto';
+import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -17,9 +16,7 @@ export class UserService {
     private readonly repo: Repository<User>,
   ) {}
 
-  async create(
-    dto: UserBaseRequestDto,
-  ): Promise<SuccessResponse | ErrorResponseDto> {
+  async create(dto: PostCreateuserDto): Promise<SuccessResponse> {
     const salt = await bcrypt.genSalt(10);
 
     dto.password = await bcrypt.hash(dto.password, salt);
@@ -33,28 +30,16 @@ export class UserService {
     };
   }
 
-  async findOneForAuth(
-    nickname: string,
-  ): Promise<ServiceForAuthFindUserDto | null> {
-    const select: SelectFields<ServiceForAuthFindUserDto> = {
-      id: true,
-      name: true,
-      username: true,
-      patronimyc: true,
-      lastname: true,
-      password: true,
-      role: {
-        id: true,
-        roleName: true,
-      },
-    };
-
-    return await this.repo.findOne({
+  async findOneForAuth(nickname: string): Promise<ServiceForAuthFindUserDto> {
+    const user = await this.repo.findOne({
       where: {
         username: `${nickname}`,
       },
-      select,
       relations: ['role'],
+    });
+
+    return plainToInstance(ServiceForAuthFindUserDto, user, {
+      excludeExtraneousValues: true,
     });
   }
 
@@ -78,23 +63,13 @@ export class UserService {
   //   });
   // }
 
-  async getAll(): Promise<ResponseGetAllUserDto[] | ErrorResponseDto> {
-    const select: SelectFields<ServiceForAuthFindUserDto> = {
-      id: true,
-      name: true,
-      username: true,
-      patronimyc: true,
-      lastname: true,
-      password: true,
-      role: {
-        id: true,
-        roleName: true,
-      },
-    };
-
-    return await this.repo.find({
-      select,
+  async getAll(): Promise<GetResponseAllUserDto[]> {
+    const users = await this.repo.find({
       relations: ['role'],
+    });
+
+    return plainToInstance(GetResponseAllUserDto, users, {
+      excludeExtraneousValues: true,
     });
   }
 }
