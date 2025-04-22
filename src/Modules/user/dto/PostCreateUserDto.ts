@@ -49,14 +49,20 @@ export class PostCreateuserDto {
   telephone: string;
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   role: { id: number };
 
   @ApiProperty({
-    type: () => () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

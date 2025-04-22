@@ -13,14 +13,20 @@ export class PostCreateKabinetDto {
   number: string;
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   division: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

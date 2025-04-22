@@ -1,4 +1,4 @@
 export enum WarehouseStatus {
-  ISOPEN = 'Is open',
-  UNOPENED = 'Unopened',
+  ISOPEN = 'is open',
+  UNOPENED = 'unopened',
 }

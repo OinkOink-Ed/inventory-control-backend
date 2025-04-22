@@ -3,7 +3,13 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { ServiceCreateCartridge } from 'src/Modules/cartridge/ServiceCreateCartridge';
 import { PostCreateReceivingDto } from 'src/Modules/receiving/dto/PostCreateReceivingDto';
-import { ServiceCreateReceiving } from 'src/Modules/receiving/classes/ServiceCreateReceiving';
+import { ServiceCreateReceiving } from 'src/Modules/receiving/service/ServiceCreateReceiving';
+import { PostCreateMovementDto } from 'src/Modules/movement/dto/PostCreateMovementDto';
+import { ServiceCreateMovement } from 'src/Modules/movement/service/ServiceCreateMovement';
+import { ServiceMoveCartridge } from 'src/Modules/cartridge/service/ServiceMoveCartridge';
+import { PostCreateDecommissioningDto } from 'src/Modules/decommissioning/dto/PostCreateDecommissioningDto';
+import { ServiceCreateDecommissioning } from 'src/Modules/decommissioning/service/ServiceCreateDecommissioning';
+import { ServiceDecommissioningCartridge } from 'src/Modules/cartridge/service/ServiceDecommissioningCartridge';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -15,6 +21,18 @@ export class MapperProfile extends AutomapperProfile {
     return (mapper) => {
       createMap(mapper, PostCreateReceivingDto, ServiceCreateReceiving);
       createMap(mapper, PostCreateReceivingDto, ServiceCreateCartridge);
+      createMap(mapper, PostCreateMovementDto, ServiceCreateMovement);
+      createMap(mapper, PostCreateMovementDto, ServiceMoveCartridge);
+      createMap(
+        mapper,
+        PostCreateDecommissioningDto,
+        ServiceCreateDecommissioning,
+      );
+      createMap(
+        mapper,
+        PostCreateDecommissioningDto,
+        ServiceDecommissioningCartridge,
+      );
     };
   }
 }

@@ -3,11 +3,13 @@ import { InjectMapper } from '@automapper/nestjs';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
-import { ServiceCreateMovement } from './dto/ServiceCreateMovement';
+import { ServiceCreateMovement } from './service/ServiceCreateMovement';
 import { DataSource } from 'typeorm';
 import { Movement } from './entities/Movement';
 import { CartridgeMovement } from './entities/CartridgeMovement';
 import { CartridgeService } from '../cartridge/cartridge.service';
+import { ServiceMoveCartridge } from '../cartridge/service/ServiceMoveCartridge';
+import { ServiceCreateCartridgeMovement } from './interfaces/ServiceCreateCartridgeMovement';
 
 @Injectable()
 export class MovementService {
@@ -23,6 +25,12 @@ export class MovementService {
       createDto,
       PostCreateMovementDto,
       ServiceCreateMovement,
+    );
+
+    const cartridgeDto = this.mapper.map(
+      createDto,
+      PostCreateMovementDto,
+      ServiceMoveCartridge,
     );
 
     const queryRunner = this.dataSourse.createQueryRunner();
@@ -41,10 +49,19 @@ export class MovementService {
       // Получаем id созданной сущности
       const movement = movementResult.identifiers[0].id;
 
-      const cartridgeIds = await this.cartridgeService.createMany(
+      const cartridgeIds = await this.cartridgeService.moveMany(
         cartridgeDto,
         queryRunner,
       );
+
+      const cartridgeMovementDtos: ServiceCreateCartridgeMovement[] =
+        cartridgeIds.map((cartridge) => ({
+          cartridge: { id: cartridge },
+          movement: movement,
+        }));
+
+      await cartridgeMovementRepo.insert(cartridgeMovementDtos);
+      await queryRunner.commitTransaction();
 
       return {
         message: 'Картриджи успешно пермещены',

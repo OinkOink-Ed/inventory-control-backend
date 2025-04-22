@@ -8,12 +8,13 @@ export class GetResponseAllDetailedWarehouseDto {
   name: string;
 
   @ApiProperty({
-    type: () => ({
-      id: Number,
-      lastname: String,
-      name: String,
-      patronimyc: String,
-    }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+      lastname: { type: 'string' },
+      name: { type: 'string' },
+      patronimyc: { type: 'string' },
+    },
   })
   creator: { id: number; lastname: string; name: string; patronimyc: string };
 }

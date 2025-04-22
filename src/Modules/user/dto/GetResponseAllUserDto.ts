@@ -17,7 +17,11 @@ export class GetResponseAllUserDto {
   lastname: string;
 
   @ApiProperty({
-    type: () => ({ id: Number, roleName: String }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+      roleName: { type: 'string' },
+    },
   })
   role: { id: number; roleName: string };
 }

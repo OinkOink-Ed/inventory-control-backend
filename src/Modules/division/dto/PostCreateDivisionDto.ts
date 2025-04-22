@@ -18,14 +18,20 @@ export class PostCreateDivisionDto {
   location: string;
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   warehouse: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

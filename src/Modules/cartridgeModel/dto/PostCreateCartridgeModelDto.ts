@@ -13,7 +13,10 @@ export class PostCreateCartridgeModelDto {
   name: string;
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

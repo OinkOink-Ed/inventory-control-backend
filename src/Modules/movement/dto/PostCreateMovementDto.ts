@@ -3,35 +3,50 @@ import { IsNumber, IsObject, ValidateNested } from 'class-validator';
 
 export class PostCreateMovementDto {
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   model: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   warehouse: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   warehouseFrom: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()
   warehouseWhere: { id: number };
 
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

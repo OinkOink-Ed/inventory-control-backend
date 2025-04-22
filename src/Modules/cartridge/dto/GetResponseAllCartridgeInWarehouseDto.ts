@@ -12,18 +12,20 @@ export class GetResponseAllCartridgeInWarehouseDto {
   state: CartridgeStatus;
 
   @ApiProperty({
-    type: () => ({
-      id: Number,
-      name: String,
-    }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+      name: { type: 'string' },
+    },
   })
   warehouse: { id: number; name: string };
 
   @ApiProperty({
-    type: () => ({
-      id: Number,
-      name: String,
-    }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+      name: { type: 'string' },
+    },
   })
   model: { id: number; name: string };
 

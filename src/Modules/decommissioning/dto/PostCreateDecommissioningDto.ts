@@ -1,21 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNumber,
+  IsNotEmpty,
   IsObject,
-  IsPositive,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 
-export class PostCreateReceivingDto {
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  model: { id: number };
+export class PostCreateDecommissioningDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  comment: string;
 
   @ApiProperty({
     type: 'object',
@@ -37,8 +32,13 @@ export class PostCreateReceivingDto {
   @ValidateNested()
   creator: { id: number };
 
-  @ApiProperty()
-  @IsNumber()
-  @IsPositive()
-  count: number;
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+  })
+  @IsObject()
+  @ValidateNested()
+  model: { id: number };
 }

@@ -3,7 +3,10 @@ import { IsObject, ValidateNested } from 'class-validator';
 
 export class GetAllCartridgeInWarehouseDto {
   @ApiProperty({
-    type: () => ({ id: Number }),
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
   })
   @IsObject()
   @ValidateNested()

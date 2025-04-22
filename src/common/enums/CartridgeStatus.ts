@@ -1,6 +1,6 @@
 export enum CartridgeStatus {
-  RECEIVED = 'Received',
-  MOVED = 'Moved',
-  ISSUED = 'Issued',
-  DECOMMISSIONED = 'Decommissioned',
+  RECEIVED = 'received',
+  MOVED = 'moved',
+  ISSUED = 'issued',
+  DECOMMISSIONED = 'decommissioned',
 }
