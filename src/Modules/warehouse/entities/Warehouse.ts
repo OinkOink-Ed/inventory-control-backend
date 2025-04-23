@@ -24,9 +24,7 @@ export class Warehouse extends Base {
   @OneToOne('Division', (division: Division) => division.warehouse)
   division: Division;
 
-  @ManyToOne('User', (user: User) => user.createdWarehouses, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdWarehouses)
   creator: User;
 
   @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.warehouse)

@@ -6,9 +6,7 @@ import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Receiving extends Base {
-  @ManyToOne('User', (user: User) => user.createdReceiving, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdReceiving)
   creator: User;
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.receiving)

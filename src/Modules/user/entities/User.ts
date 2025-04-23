@@ -39,17 +39,14 @@ export class User extends Base {
   })
   state: UserStatus;
 
-  @ManyToOne('Division', (division: Division) => division.users, {
-    cascade: ['insert', 'update'],
-  })
+  @ManyToOne('Division', (division: Division) => division.users)
   division: Division;
 
-  @ManyToOne('Role', (role: Role) => role.users, { cascade: ['insert'] })
+  @ManyToOne('Role', (role: Role) => role.users)
   role: Role;
 
   @ManyToOne('User', (user: User) => user.createdUsers, {
     nullable: true,
-    cascade: ['insert'],
   })
   creator: User;
 

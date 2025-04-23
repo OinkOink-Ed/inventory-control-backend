@@ -16,9 +16,7 @@ export class Decommissioning extends Base {
   )
   action: CartridgeDecommissioning[];
 
-  @ManyToOne('User', (user: User) => user.createdDecommissioning, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdDecommissioning)
   creator: User;
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.decommissioning)

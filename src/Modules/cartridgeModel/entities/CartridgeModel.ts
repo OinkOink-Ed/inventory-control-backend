@@ -8,9 +8,7 @@ export class CartridgeModel extends Base {
   @Column()
   name: string;
 
-  @ManyToOne('User', (user: User) => user.createdCartridgeModels, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdCartridgeModels)
   creator: User;
 
   @OneToMany('Cartridge', (cartrdge: Cartridge) => cartrdge.model, {

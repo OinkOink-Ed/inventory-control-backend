@@ -9,7 +9,6 @@ export class Role extends Base {
 
   @ManyToOne('User', (user: User) => user.createdRoles, {
     nullable: true,
-    cascade: true,
   })
   creator: User;
 

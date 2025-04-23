@@ -11,7 +11,8 @@ import { PostCreateDecommissioningDto } from 'src/Modules/decommissioning/dto/Po
 import { ServiceCreateDecommissioning } from 'src/Modules/decommissioning/service/ServiceCreateDecommissioning';
 import { ServiceDecommissioningCartridge } from 'src/Modules/cartridge/service/ServiceDecommissioningCartridge';
 import { PostCreateDeliveryDto } from 'src/Modules/delivery/dto/PostCreateDeliveryDto';
-import { ServiceCreateCartridgeDelivery } from 'src/Modules/delivery/service/ServiceCreateCartridgeDelivery';
+import { ServiceDeliveryCartridge } from 'src/Modules/cartridge/service/ServiceDeliveryCartridge';
+import { ServiceCreateDelivery } from 'src/Modules/delivery/service/ServiceCreateDelivery';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -35,8 +36,8 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateDecommissioningDto,
         ServiceDecommissioningCartridge,
       );
-      createMap(mapper, PostCreateDeliveryDto, ServiceCreateCartridgeDelivery);
-      createMap(mapper, PostCreateDeliveryDto, ServiceMoveCartridge);
+      createMap(mapper, PostCreateDeliveryDto, ServiceDeliveryCartridge);
+      createMap(mapper, PostCreateDeliveryDto, ServiceCreateDelivery);
     };
   }
 }

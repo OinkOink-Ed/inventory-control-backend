@@ -6,9 +6,7 @@ import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Movement extends Base {
-  @ManyToOne('User', (user: User) => user.createdMovement, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdMovement)
   creator: User;
 
   @OneToMany(

@@ -12,13 +12,9 @@ export class Kabinet extends Base {
   @OneToMany('Delivery', (delivery: Delivery) => delivery.kabinet)
   delivery: Delivery[];
 
-  @ManyToOne('Division', (division: Division) => division.kabinet, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('Division', (division: Division) => division.kabinet)
   division: Division;
 
-  @ManyToOne('User', (user: User) => user.createdKabinets, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdKabinets)
   creator: User;
 }

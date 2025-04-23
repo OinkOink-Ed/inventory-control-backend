@@ -20,9 +20,7 @@ export class Division extends Base {
   @Column()
   location: string;
 
-  @OneToOne('Warehouse', (warehouse: Warehouse) => warehouse.division, {
-    cascade: ['insert'],
-  })
+  @OneToOne('Warehouse', (warehouse: Warehouse) => warehouse.division)
   @JoinColumn()
   warehouse: Warehouse;
 
@@ -35,8 +33,6 @@ export class Division extends Base {
   @OneToMany('Delivery', (delivery: Delivery) => delivery.division)
   delivery: Delivery[];
 
-  @ManyToOne('User', (user: User) => user.createdDivisions, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdDivisions)
   creator: User;
 }

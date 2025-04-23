@@ -14,9 +14,7 @@ export class Delivery extends Base {
   )
   action: CartridgeDelivery[];
 
-  @ManyToOne('User', (user: User) => user.createdDelivery, {
-    cascade: ['insert'],
-  })
+  @ManyToOne('User', (user: User) => user.createdDelivery)
   creator: User;
 
   @ManyToOne('Kabinet', (kabinet: Kabinet) => kabinet.delivery)

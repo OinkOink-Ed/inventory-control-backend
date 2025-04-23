@@ -9,6 +9,7 @@ import { plainToInstance } from 'class-transformer';
 import { ServiceMoveCartridge } from './service/ServiceMoveCartridge';
 import { ServiceDecommissioningCartridge } from './service/ServiceDecommissioningCartridge';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
+import { ServiceDeliveryCartridge } from './service/ServiceDeliveryCartridge';
 
 @Injectable()
 export class CartridgeService {
@@ -79,6 +80,49 @@ export class CartridgeService {
       }
 
       return updatesIds;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    }
+  }
+
+  async deliveryMany(dto: ServiceDeliveryCartridge, queryRunner: QueryRunner) {
+    try {
+      const { count, model, warehouse } = dto;
+
+      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+      const cartridgeToDelivery = await cartridgeRepo.find({
+        select: ['id'],
+        where: {
+          model,
+          warehouse,
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+        take: count,
+      });
+
+      if (cartridgeToDelivery.length === 0) {
+        throw new Error('Нет картриджей для выдачи');
+      } else if (cartridgeToDelivery.length === count) {
+        throw new Error('Нет такого количества картриджей для выдачи');
+      }
+
+      const deliveryIds: Array<number> = cartridgeToDelivery.map(
+        (row) => row.id,
+      );
+
+      const result = await cartridgeRepo.update(
+        { id: In(deliveryIds) },
+        { state: CartridgeStatus.ISSUED, deletedAt: new Date() },
+      );
+
+      if (result.affected === 0) {
+        throw new Error('Ошибка при попытке выдачи картриджа');
+      }
+
+      return deliveryIds;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
