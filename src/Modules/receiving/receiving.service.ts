@@ -9,7 +9,7 @@ import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeRece
 import { ServiceCreateCartridgeReceiving } from 'src/Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
 import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
 import { ServiceCreateReceiving } from 'src/Modules/receiving/service/ServiceCreateReceiving';
-import { ServiceCreateCartridge } from '../cartridge/ServiceCreateCartridge';
+import { ServiceCreateCartridge } from '../cartridge/service/ServiceCreateCartridge';
 
 @Injectable()
 export class ReceivingService {

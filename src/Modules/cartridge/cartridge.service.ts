@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
-import { QueryRunner, Repository } from 'typeorm';
+import { In, QueryRunner, Repository } from 'typeorm';
 import { ServiceCreateCartridge } from './interfaces/ServiceCreateCartridge';
 import { GetAllCartridgeInWarehouseDto } from './dto/GetAllCartridgeInWarehouseDto';
 import { GetResponseAllCartridgeInWarehouseDto } from './dto/GetResponseAllCartridgeInWarehouseDto';
 import { plainToInstance } from 'class-transformer';
 import { ServiceMoveCartridge } from './service/ServiceMoveCartridge';
-import { CartridgeRawResult } from './interfaces/CartridgeRawResult';
 import { ServiceDecommissioningCartridge } from './service/ServiceDecommissioningCartridge';
 import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
 
@@ -27,8 +26,10 @@ export class CartridgeService {
     // Создаем одинакоыве dto (занимаем память)
     const dtos = Array(count).fill(restDto);
     try {
+      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+
       //Так быстрее если не много
-      const result = await queryRunner.manager.insert(Cartridge, dtos);
+      const result = await cartridgeRepo.insert(dtos);
 
       const createdIds: Array<{ id: number }> = result.identifiers.map(
         (idObj) => idObj.id,
@@ -48,37 +49,30 @@ export class CartridgeService {
     try {
       const { count, model, warehouseFrom, warehouseWhere } = dto;
 
-      const cartridgeToUpdate = (await queryRunner.manager
-        .createQueryBuilder(Cartridge, 'cartridge')
-        .select('cartridge.id')
-        .where(
-          'cartridge.model = :model AND cartridge.warehouse = :warehouseFrom',
-          {
-            model,
-            warehouseFrom,
-          },
-        )
-        .orderBy('cartridge.createdAt', 'ASC')
-        .take(count)
-        .getRawMany()) as CartridgeRawResult[];
+      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+
+      const cartridgeToUpdate = await cartridgeRepo.find({
+        select: ['id'],
+        where: {
+          model,
+          warehouse: warehouseFrom,
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+        take: count,
+      });
 
       if (cartridgeToUpdate.length === 0) {
-        //Придумать как давать ответ
+        throw new Error('Такого количества картриджей нет на складе');
       }
 
-      const updatesIds: Array<number> = cartridgeToUpdate.map(
-        (row) => row.cartridge_id,
-      );
+      const updatesIds: Array<number> = cartridgeToUpdate.map((row) => row.id);
 
-      const result = await queryRunner.manager
-        .createQueryBuilder()
-        .update(Cartridge)
-        .set({
-          warehouse: { id: warehouseWhere },
-          state: CartridgeStatus.MOVED,
-        })
-        .where('id IN (:...ids)', { ids: updatesIds })
-        .execute();
+      const result = await cartridgeRepo.update(
+        { id: In(updatesIds) },
+        { state: CartridgeStatus.MOVED, warehouse: warehouseWhere },
+      );
 
       if (result.affected === 0) {
         throw new Error('Ошибка при попытке перемещения картриджа');
@@ -98,34 +92,34 @@ export class CartridgeService {
     try {
       const { count, model, warehouse } = dto;
 
-      const cartridgeToDecommissioning = (await queryRunner.manager
-        .createQueryBuilder(Cartridge, 'cartridge')
-        .select('cartridge.id')
-        .where(
-          'cartridge.model = :model AND cartridge.warehouse = :warehouse',
-          {
-            model,
-            warehouse,
-          },
-        )
-        .orderBy('cartridge.createdAt', 'ASC')
-        .take(count)
-        .getRawMany()) as CartridgeRawResult[];
+      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+
+      const cartridgeToDecommissioning = await cartridgeRepo.find({
+        select: ['id'],
+        where: {
+          model,
+          warehouse,
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+        take: count,
+      });
 
       if (cartridgeToDecommissioning.length === 0) {
-        //Придумать как давать ответ
+        throw new Error('Нет картриджей для списания');
+      } else if (cartridgeToDecommissioning.length === count) {
+        throw new Error('Нет такого количества картриджей для списания');
       }
 
       const decommissioningIds: Array<number> = cartridgeToDecommissioning.map(
-        (row) => row.cartridge_id,
+        (row) => row.id,
       );
 
-      const result = await queryRunner.manager
-        .createQueryBuilder()
-        .update(Cartridge)
-        .set({ state: CartridgeStatus.DECOMMISSIONED, deletedAt: new Date() })
-        .where('id IN (:...ids)', { ids: decommissioningIds })
-        .execute();
+      const result = await cartridgeRepo.update(
+        { id: In(decommissioningIds) },
+        { state: CartridgeStatus.DECOMMISSIONED, deletedAt: new Date() },
+      );
 
       if (result.affected === 0) {
         throw new Error('Ошибка при попытке списания картриджа');

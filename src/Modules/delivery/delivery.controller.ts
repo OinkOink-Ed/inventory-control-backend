@@ -1,4 +1,40 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiRequestTimeoutResponse,
+} from '@nestjs/swagger';
+import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
+import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { DeliveryService } from 'src/Modules/delivery/delivery.service';
+import { PostCreateDeliveryDto } from 'src/Modules/delivery/dto/PostCreateDeliveryDto';
 
 @Controller('delivery')
-export class DeliveryController {}
+export class DeliveryController {
+  constructor(private readonly deliveryService: DeliveryService) {}
+
+  @Post()
+  @ApiCreatedResponse({
+    description: 'Картриджи успешно выданы',
+    type: () => SuccessResponse,
+  })
+  @ApiBadRequestResponse({
+    description:
+      'Неверный формат данных, дубликат записи или отсутствие связанной записи',
+    type: () => ErrorResponseDto,
+  })
+  @ApiForbiddenResponse({
+    description: 'Доступ запрещен',
+    type: () => ErrorResponseDto,
+  })
+  @ApiRequestTimeoutResponse({
+    description: 'Превышено время ожидания',
+    type: () => ErrorResponseDto,
+  })
+  async create(
+    @Body() createDto: PostCreateDeliveryDto,
+  ): Promise<SuccessResponse> {
+    return await this.deliveryService.create(createDto);
+  }
+}

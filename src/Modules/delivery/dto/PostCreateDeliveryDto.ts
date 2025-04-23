@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class PostCreateMovementDto {
+export class PostCreateDeliveryDto {
   @ApiProperty({
     type: 'object',
     properties: {
@@ -25,27 +25,40 @@ export class PostCreateMovementDto {
   })
   @IsObject()
   @ValidateNested()
+  kabinet: { id: number };
+
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+  })
+  @IsObject()
+  @ValidateNested()
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+  })
+  @IsObject()
+  @ValidateNested()
+  division: { id: number };
+
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+  })
+  @IsObject()
+  @ValidateNested()
   warehouse: { id: number };
 
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  warehouseFrom: { id: number };
-
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  warehouseWhere: { id: number };
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  count: number;
 
   @ApiProperty({
     type: 'object',
@@ -56,9 +69,4 @@ export class PostCreateMovementDto {
   @IsObject()
   @ValidateNested()
   creator: { id: number };
-
-  @ApiProperty()
-  @IsNumber()
-  @IsPositive()
-  count: number;
 }
