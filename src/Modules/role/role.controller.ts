@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RoleService } from './role.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -9,7 +10,7 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { PostCreateroleDto } from './dto/PostCreateRoleDto';
 import { GetResponseAllRole } from './dto/GetResponseAllRole';
@@ -20,8 +21,9 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -35,11 +37,14 @@ export class RoleController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: PostCreateroleDto): Promise<SuccessResponse> {
+  async create(
+    @Body() createDto: PostCreateroleDto,
+  ): Promise<SuccessResponseDto> {
     return await this.roleService.create(createDto);
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseAllRole,
     isArray: true,

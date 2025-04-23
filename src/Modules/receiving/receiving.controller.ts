@@ -2,11 +2,12 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ReceivingService } from './receiving.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { PostCreateReceivingDto } from './dto/PostCreateReceivingDto';
 
@@ -15,9 +16,10 @@ export class ReceivingController {
   constructor(private readonly receivingService: ReceivingService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Картриджи успешно приняты',
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     description:
@@ -34,7 +36,7 @@ export class ReceivingController {
   })
   async create(
     @Body() createDto: PostCreateReceivingDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.receivingService.create(createDto);
   }
 }

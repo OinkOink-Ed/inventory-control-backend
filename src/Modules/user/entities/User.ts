@@ -56,56 +56,36 @@ export class User extends Base {
   @OneToMany('Role', (role: Role) => role.creator, { nullable: true })
   createdRoles: Role[];
 
-  @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator, {
-    nullable: true,
-  })
+  @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator)
   createdWarehouses: Warehouse[];
 
-  @OneToMany('Division', (division: Division) => division.creator, {
-    nullable: true,
-  })
+  @OneToMany('Division', (division: Division) => division.creator)
   createdDivisions: Division[];
 
-  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.creator, {
-    nullable: true,
-  })
+  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.creator)
   createdKabinets: Kabinet[];
 
   @OneToMany(
     'CartridgeModel',
     (cartridgeModel: CartridgeModel) => cartridgeModel.creator,
-    {
-      nullable: true,
-    },
   )
   createdCartridgeModels: CartridgeModel[];
 
-  @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.creator, {
-    nullable: true,
-  })
+  @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.creator)
   createdCartridges: Cartridge[];
 
-  @OneToMany('Movement', (movement: Movement) => movement.creator, {
-    nullable: true,
-  })
+  @OneToMany('Movement', (movement: Movement) => movement.creator)
   createdMovement: Movement[];
 
-  @OneToMany('Receiving', (receiving: Receiving) => receiving.creator, {
-    nullable: true,
-  })
+  @OneToMany('Receiving', (receiving: Receiving) => receiving.creator)
   createdReceiving: Receiving[];
 
   @OneToMany(
     'Decommissioning',
     (decommissioning: Decommissioning) => decommissioning.creator,
-    {
-      nullable: true,
-    },
   )
   createdDecommissioning: Decommissioning[];
 
-  @OneToMany('Delivery', (delivery: Delivery) => delivery.creator, {
-    nullable: true,
-  })
+  @OneToMany('Delivery', (delivery: Delivery) => delivery.creator)
   createdDelivery: Delivery[];
 }

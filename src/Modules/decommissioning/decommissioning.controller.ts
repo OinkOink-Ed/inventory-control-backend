@@ -2,11 +2,12 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { DecommissioningService } from './decommissioning.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { PostCreateDecommissioningDto } from './dto/PostCreateDecommissioningDto';
 
@@ -17,9 +18,10 @@ export class DecommissioningController {
   ) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Картриджи успешно списаны',
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     description:
@@ -36,7 +38,7 @@ export class DecommissioningController {
   })
   async create(
     @Body() createDto: PostCreateDecommissioningDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.decommissioningService.create(createDto);
   }
 }

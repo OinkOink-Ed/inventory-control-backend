@@ -4,7 +4,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CartridgeService } from '../cartridge/cartridge.service';
 import { DataSource } from 'typeorm';
 import { PostCreateDecommissioningDto } from './dto/PostCreateDecommissioningDto';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ServiceCreateDecommissioning } from './service/ServiceCreateDecommissioning';
 import { Decommissioning } from './entities/Decommissioning';
 import { CartridgeDecommissioning } from './entities/CartridgeDecommissioning';
@@ -22,7 +22,7 @@ export class DecommissioningService {
 
   async create(
     createDto: PostCreateDecommissioningDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
     const decommissioningDto = this.mapper.map(
       createDto,

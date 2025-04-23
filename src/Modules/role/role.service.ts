@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/Modules/role/entities/Role';
 import { Repository } from 'typeorm';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateroleDto } from './dto/PostCreateRoleDto';
 import { GetResponseAllRole } from './dto/GetResponseAllRole';
 import { plainToInstance } from 'class-transformer';
@@ -14,7 +14,7 @@ export class RoleService {
     private readonly repo: Repository<Role>,
   ) {}
 
-  async create(dto: PostCreateroleDto): Promise<SuccessResponse> {
+  async create(dto: PostCreateroleDto): Promise<SuccessResponseDto> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,

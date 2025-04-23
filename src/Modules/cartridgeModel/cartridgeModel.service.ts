@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { Repository } from 'typeorm';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateCartridgeModelDto } from './dto/PostCreateCartridgeModelDto';
 import { GetResponseAllCartridgeModelDto } from './dto/GetResponseAllCartridgeModelDto';
 import { GetResponseAllDetailedCartridgeModelDto } from './dto/GetResponseAllDetailedCartridgeModelDto';
@@ -15,7 +15,7 @@ export class CartridgeModelService {
     private readonly repoCartridgeModel: Repository<CartridgeModel>,
   ) {}
 
-  async create(dto: PostCreateCartridgeModelDto): Promise<SuccessResponse> {
+  async create(dto: PostCreateCartridgeModelDto): Promise<SuccessResponseDto> {
     await this.repoCartridgeModel.save(dto);
     return {
       statusCode: HttpStatus.CREATED,

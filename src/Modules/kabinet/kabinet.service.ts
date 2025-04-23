@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Kabinet } from 'src/Modules/kabinet/entities/Kabinet';
 import { Repository } from 'typeorm';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateKabinetDto } from './dto/PostCreateKabinetDto';
 import { GetResponseAllKabinetDto } from './dto/GetResponseAllKabinetDto';
 import { plainToInstance } from 'class-transformer';
@@ -14,7 +14,7 @@ export class KabinetService {
     private readonly repo: Repository<Kabinet>,
   ) {}
 
-  async create(dto: PostCreateKabinetDto): Promise<SuccessResponse> {
+  async create(dto: PostCreateKabinetDto): Promise<SuccessResponseDto> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,

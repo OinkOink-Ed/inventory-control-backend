@@ -18,7 +18,7 @@ import {
 
 import { CartridgeModelService } from './cartridgeModel.service';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateCartridgeModelDto } from './dto/PostCreateCartridgeModelDto';
 import { GetResponseAllDetailedCartridgeModelDto } from './dto/GetResponseAllDetailedCartridgeModelDto';
 import { GetResponseAllCartridgeModelDto } from './dto/GetResponseAllCartridgeModelDto';
@@ -32,7 +32,7 @@ export class CartridgeModelController {
   @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Картриджи успешно добавлены',
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     description:
@@ -49,7 +49,7 @@ export class CartridgeModelController {
   })
   async create(
     @Body() createDto: PostCreateCartridgeModelDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.createModelCartridge.create(createDto);
   }
 

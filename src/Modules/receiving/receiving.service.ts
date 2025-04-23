@@ -7,7 +7,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
 import { ServiceCreateCartridgeReceiving } from 'src/Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ServiceCreateReceiving } from 'src/Modules/receiving/service/ServiceCreateReceiving';
 import { ServiceCreateCartridge } from '../cartridge/service/ServiceCreateCartridge';
 
@@ -19,7 +19,7 @@ export class ReceivingService {
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
   ) {}
-  async create(createDto: PostCreateReceivingDto): Promise<SuccessResponse> {
+  async create(createDto: PostCreateReceivingDto): Promise<SuccessResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
     const receivingDto = this.mapper.map(
       createDto,

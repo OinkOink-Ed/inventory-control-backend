@@ -1,7 +1,7 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
 import { ServiceCreateMovement } from './service/ServiceCreateMovement';
 import { DataSource } from 'typeorm';
@@ -19,7 +19,7 @@ export class MovementService {
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
   ) {}
-  async create(createDto: PostCreateMovementDto): Promise<SuccessResponse> {
+  async create(createDto: PostCreateMovementDto): Promise<SuccessResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
     const movementDto = this.mapper.map(
       createDto,

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -8,7 +9,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { PostCreateuserDto } from './dto/PostCreateUserDto';
 import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
@@ -19,8 +20,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -34,11 +36,14 @@ export class UserController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async create(@Body() createDto: PostCreateuserDto): Promise<SuccessResponse> {
+  async create(
+    @Body() createDto: PostCreateuserDto,
+  ): Promise<SuccessResponseDto> {
     return await this.userService.create(createDto);
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllUserDto,
     isArray: true,

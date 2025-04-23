@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { PostResponseAuthDto } from './dto/PostResponseAuthDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { ServiceForAuthFindUser } from '../user/dto/ServiceForAuthFindUserDto';
+import { ServiceForAuthFindUserDto } from 'src/Modules/user/dto/ServiceForAuthFindUserDto';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
     nickname: string,
     pass: string,
   ): Promise<PostResponseAuthDto | ErrorResponseDto> {
-    const user: ServiceForAuthFindUser | null =
+    const user: ServiceForAuthFindUserDto | null =
       await this.usersService.findOneForAuth(nickname);
 
     if ('error' in user) {

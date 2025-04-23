@@ -10,10 +10,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DivisionService } from './division.service';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { GetReponseAllDivision } from './dto/GetReponseAllDivision';
 import { PostCreateDivisionDto } from './dto/PostCreateDivisionDto';
+import { GetReponseAllDivisionDto } from 'src/Modules/division/dto/GetReponseAllDivisionDto';
 
 @ApiTags('Division')
 @Controller('division')
@@ -23,7 +23,7 @@ export class DivisionController {
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -39,7 +39,7 @@ export class DivisionController {
   })
   async create(
     @Body() createDto: PostCreateDivisionDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.divisionService.create(createDto);
   }
 
@@ -49,7 +49,7 @@ export class DivisionController {
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
-    type: () => GetReponseAllDivision,
+    type: () => GetReponseAllDivisionDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -63,7 +63,7 @@ export class DivisionController {
   @ApiNotFoundResponse({
     type: () => ErrorResponseDto,
   })
-  async getAll(): Promise<GetReponseAllDivision[]> {
+  async getAll(): Promise<GetReponseAllDivisionDto[]> {
     return await this.divisionService.getAll();
   }
 }

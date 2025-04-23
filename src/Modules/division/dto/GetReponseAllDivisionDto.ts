@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetReponseAllDivision {
+export class GetReponseAllDivisionDto {
   @ApiProperty()
   id: number;
 

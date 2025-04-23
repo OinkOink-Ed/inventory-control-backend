@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { GetResponseAllDetailedWarehouseDto } from './dto/GetResponseAllDetailedWarehouseDto';
 import { PostCreateWarehouseDto } from './dto/PostCreateWarehouseDto';
 import { GetResponseAllWarehouseDto } from './dto/GetResponseAllWarehouseDto';
@@ -15,7 +15,7 @@ export class WarehouseService {
     private readonly repo: Repository<Warehouse>,
   ) {}
 
-  async create(dto: PostCreateWarehouseDto): Promise<SuccessResponse> {
+  async create(dto: PostCreateWarehouseDto): Promise<SuccessResponseDto> {
     await this.repo.save(dto);
     return {
       statusCode: HttpStatus.CREATED,

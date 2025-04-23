@@ -11,8 +11,6 @@ export class CartridgeModel extends Base {
   @ManyToOne('User', (user: User) => user.createdCartridgeModels)
   creator: User;
 
-  @OneToMany('Cartridge', (cartrdge: Cartridge) => cartrdge.model, {
-    nullable: true,
-  })
+  @OneToMany('Cartridge', (cartrdge: Cartridge) => cartrdge.model)
   cartridges: Cartridge[];
 }

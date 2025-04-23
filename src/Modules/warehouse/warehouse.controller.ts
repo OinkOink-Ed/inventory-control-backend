@@ -2,13 +2,14 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
 import { PostCreateWarehouseDto } from './dto/PostCreateWarehouseDto';
 import { GetResponseAllWarehouseDto } from './dto/GetResponseAllWarehouseDto';
@@ -20,8 +21,9 @@ export class WarehouseController {
   constructor(private readonly createModelCartridge: WarehouseService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     type: () => ErrorResponseDto,
@@ -37,11 +39,12 @@ export class WarehouseController {
   })
   async create(
     @Body() createDto: PostCreateWarehouseDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.createModelCartridge.create(createDto);
   }
 
   @Get('detailed')
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllDetailedWarehouseDto,
     isArray: true,
@@ -63,6 +66,7 @@ export class WarehouseController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllWarehouseDto,
     isArray: true,

@@ -3,8 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExeptionFilter } from './common/filters/AllExeptionFilter';
-import { AuthModule } from './Modules/auth/auth.module';
-import { CartridgeModule } from './Modules/cartridge/cartridge.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,9 +23,7 @@ async function bootstrap() {
     .addTag('Inventory Control GP')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
-    include: [AuthModule, CartridgeModule],
-  });
+  const document = SwaggerModule.createDocument(app, config, {});
   SwaggerModule.setup('api', app, document, {});
 
   await app.listen(process.env.PORT);

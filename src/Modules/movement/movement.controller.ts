@@ -1,12 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
 import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { SuccessResponse } from 'src/common/dto/SuccessResponseDto';
+import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
 import { MovementService } from 'src/Modules/movement/movement.service';
 import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
 
@@ -15,9 +16,10 @@ export class MovementController {
   constructor(private readonly movementService: MovementService) {}
 
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Картриджи успешно перемещены',
-    type: () => SuccessResponse,
+    type: () => SuccessResponseDto,
   })
   @ApiBadRequestResponse({
     description:
@@ -34,7 +36,7 @@ export class MovementController {
   })
   async create(
     @Body() createDto: PostCreateMovementDto,
-  ): Promise<SuccessResponse> {
+  ): Promise<SuccessResponseDto> {
     return await this.movementService.create(createDto);
   }
 }
