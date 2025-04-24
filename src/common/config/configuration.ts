@@ -1,5 +1,3 @@
-import Joi from 'joi';
-
 export interface DatabaseConfig {
   port: number;
   database: {
@@ -20,13 +18,4 @@ export default (): DatabaseConfig => ({
     password: process.env.DB_PASSWORD,
     name: process.env.DB_DATABASE,
   },
-});
-
-export const validationSchema = Joi.object({
-  JWT_SECRET: Joi.string(),
-  APP_PORT: Joi.number().port(),
-  DB_USER: Joi.string(),
-  DB_PASSWORD: Joi.string(),
-  DB_DATABASE: Joi.string(),
-  DB_HOST: Joi.string(),
 });

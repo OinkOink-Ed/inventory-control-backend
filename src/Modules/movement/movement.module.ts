@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MovementController } from './movement.controller';
-import { MovementService } from './movement.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Movement } from 'src/Modules/movement/entities/Movement';
-import { CartridgeMovement } from 'src/Modules/movement/entities/CartridgeMovement';
-import { CartridgeModule } from '../cartridge/cartridge.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { MapperProfile } from 'src/common/MapperProfile';
+import { Movement } from '@Modules/movement/entities/Movement';
+import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
+import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
+import { MovementController } from '@Modules/movement/movement.controller';
+import { MovementService } from '@Modules/movement/movement.service';
+import { MapperProfile } from '@common/MapperProfile';
 
 @Module({
   imports: [

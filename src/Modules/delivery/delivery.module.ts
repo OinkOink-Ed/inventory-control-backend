@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { DeliveryController } from './delivery.controller';
-import { DeliveryService } from './delivery.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Delivery } from 'src/Modules/delivery/entities/Delivery';
-import { CartridgeDelivery } from 'src/Modules/delivery/entities/CartridgeDelivery';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { MapperProfile } from 'src/common/MapperProfile';
-import { CartridgeModule } from 'src/Modules/cartridge/cartridge.module';
+import { Delivery } from '@Modules/delivery/entities/Delivery';
+import { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
+import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
+import { DeliveryController } from '@Modules/delivery/delivery.controller';
+import { DeliveryService } from '@Modules/delivery/delivery.service';
+import { MapperProfile } from '@common/MapperProfile';
 
 @Module({
   imports: [

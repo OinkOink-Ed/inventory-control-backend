@@ -1,3 +1,7 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { GetAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetAllCartridgeInWarehouseDto';
+import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
 import { Body, Controller, Get } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -7,10 +11,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { GetResponseAllCartridgeInWarehouseDto } from './dto/GetResponseAllCartridgeInWarehouseDto';
-import { GetAllCartridgeInWarehouseDto } from './dto/GetAllCartridgeInWarehouseDto';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')

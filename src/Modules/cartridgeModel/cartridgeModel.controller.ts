@@ -1,3 +1,9 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { CartridgeModelService } from '@Modules/cartridgeModel/cartridgeModel.service';
+import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
+import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllDetailedCartridgeModelDto';
+import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
 import {
   Body,
   Controller,
@@ -15,13 +21,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-
-import { CartridgeModelService } from './cartridgeModel.service';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateCartridgeModelDto } from './dto/PostCreateCartridgeModelDto';
-import { GetResponseAllDetailedCartridgeModelDto } from './dto/GetResponseAllDetailedCartridgeModelDto';
-import { GetResponseAllCartridgeModelDto } from './dto/GetResponseAllCartridgeModelDto';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')

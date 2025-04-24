@@ -1,3 +1,8 @@
+import { Base } from '@common/entities/Base';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
+import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import type { User } from '@Modules/user/entities/User';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import {
   Column,
   Entity,
@@ -6,11 +11,6 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import type { User } from '../../user/entities/User';
-import type { Kabinet } from '../../kabinet/entities/Kabinet';
-import type { Warehouse } from '../../warehouse/entities/Warehouse';
-import type { Delivery } from '../../delivery/entities/Delivery';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Division extends Base {

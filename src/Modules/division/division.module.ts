@@ -1,8 +1,8 @@
+import { DivisionController } from '@Modules/division/division.controller';
+import { DivisionService } from '@Modules/division/division.service';
+import { Division } from '@Modules/division/entities/Division';
 import { Module } from '@nestjs/common';
-import { DivisionController } from './division.controller';
-import { DivisionService } from './division.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Division } from 'src/Modules/division/entities/Division';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Division])],

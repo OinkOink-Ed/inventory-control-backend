@@ -1,13 +1,13 @@
+import { Base } from '@common/entities/Base';
+import { CartridgeStatus } from '@common/enums/CartridgeStatus';
+import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
+import type { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
+import type { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
+import type { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
+import type { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
+import type { User } from '@Modules/user/entities/User';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
-import { CartridgeStatus } from '../../../common/enums/CartridgeStatus';
-import type { Warehouse } from '../../warehouse/entities/Warehouse';
-import type { User } from '../../user/entities/User';
-import type { CartridgeMovement } from '../../movement/entities/CartridgeMovement';
-import type { CartridgeReceiving } from '../../receiving/entities/CartridgeReceiving';
-import type { CartridgeDecommissioning } from '../../decommissioning/entities/CartridgeDecommissioning';
-import type { CartridgeDelivery } from '../../delivery/entities/CartridgeDelivery';
-import { Base } from 'src/common/entities/Base';
-import type { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 
 @Entity()
 export class Cartridge extends Base {

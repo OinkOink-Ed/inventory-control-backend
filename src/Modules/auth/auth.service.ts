@@ -1,10 +1,9 @@
+import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
+import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
+import { UserService } from '@Modules/user/user.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../user/user.service';
-import { PostResponseAuthDto } from './dto/PostResponseAuthDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { ServiceForAuthFindUserDto } from 'src/Modules/user/dto/ServiceForAuthFindUserDto';
 
 @Injectable()
 export class AuthService {
@@ -17,15 +16,12 @@ export class AuthService {
     return this.jwtService.signAsync(payload);
   }
 
-  async signIn(
-    nickname: string,
-    pass: string,
-  ): Promise<PostResponseAuthDto | ErrorResponseDto> {
+  async signIn(nickname: string, pass: string): Promise<PostResponseAuthDto> {
     const user: ServiceForAuthFindUserDto | null =
       await this.usersService.findOneForAuth(nickname);
 
     if ('error' in user) {
-      throw new UnauthorizedException('неверный логин ил пароль');
+      throw new UnauthorizedException('неверный логин или пароль');
     }
 
     const isPasswordValid = await bcrypt.compare(pass, user.password);

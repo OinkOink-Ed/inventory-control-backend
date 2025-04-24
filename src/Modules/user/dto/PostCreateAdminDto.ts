@@ -1,3 +1,4 @@
+import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -7,7 +8,6 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { UserStatus } from 'src/common/enums/UserStatus';
 
 export class PostCreateAdminDto {
   @ApiProperty()

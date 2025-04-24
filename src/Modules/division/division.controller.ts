@@ -1,3 +1,8 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { DivisionService } from '@Modules/division/division.service';
+import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
+import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -9,11 +14,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { DivisionService } from './division.service';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateDivisionDto } from './dto/PostCreateDivisionDto';
-import { GetReponseAllDivisionDto } from 'src/Modules/division/dto/GetReponseAllDivisionDto';
 
 @ApiTags('Division')
 @Controller('division')

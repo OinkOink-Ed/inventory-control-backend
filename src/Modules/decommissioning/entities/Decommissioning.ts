@@ -1,8 +1,8 @@
+import { Base } from '@common/entities/Base';
+import type { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
+import type { User } from '@Modules/user/entities/User';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import type { CartridgeDecommissioning } from './CartridgeDecommissioning';
-import type { User } from '../../user/entities/User';
-import type { Warehouse } from '../../warehouse/entities/Warehouse';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Decommissioning extends Base {

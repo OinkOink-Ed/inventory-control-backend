@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/User';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateUserDto } from './dto/PostCreateUserDto';
-import { ServiceForAuthFindUserDto } from './dto/ServiceForAuthFindUserDto';
-import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
 import { plainToInstance } from 'class-transformer';
-import { PostCreateAdminDto } from './dto/PostCreateAdminDto';
+import { User } from '@Modules/user/entities/User';
+import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
+import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
+import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
 
 @Injectable()
 export class UserService {

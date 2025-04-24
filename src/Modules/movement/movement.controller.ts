@@ -1,3 +1,7 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
+import { MovementService } from '@Modules/movement/movement.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -6,10 +10,6 @@ import {
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { MovementService } from 'src/Modules/movement/movement.service';
-import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
 
 @Controller('movement')
 export class MovementController {

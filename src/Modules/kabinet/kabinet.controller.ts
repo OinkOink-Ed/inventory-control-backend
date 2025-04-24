@@ -1,3 +1,8 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllKabinetDto } from '@Modules/kabinet/dto/GetResponseAllKabinetDto';
+import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
+import { KabinetService } from '@Modules/kabinet/kabinet.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -9,11 +14,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { KabinetService } from './kabinet.service';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateKabinetDto } from './dto/PostCreateKabinetDto';
-import { GetResponseAllKabinetDto } from './dto/GetResponseAllKabinetDto';
 
 @ApiTags('Kabinet')
 @Controller('kabinet')

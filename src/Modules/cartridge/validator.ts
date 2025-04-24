@@ -1,3 +1,4 @@
+import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -7,7 +8,6 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
 import { Repository } from 'typeorm';
 
 // this. оказывается пустым, нужно читать об DI

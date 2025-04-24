@@ -1,5 +1,8 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { DecommissioningService } from '@Modules/decommissioning/decommissioning.service';
+import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
 import { Body, Controller, Post } from '@nestjs/common';
-import { DecommissioningService } from './decommissioning.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -7,9 +10,6 @@ import {
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateDecommissioningDto } from './dto/PostCreateDecommissioningDto';
 
 @Controller('decommissioning')
 export class DecommissioningController {

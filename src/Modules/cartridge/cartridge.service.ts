@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
 import { In, QueryRunner, Repository } from 'typeorm';
-import { ServiceCreateCartridge } from './interfaces/ServiceCreateCartridge';
-import { GetAllCartridgeInWarehouseDto } from './dto/GetAllCartridgeInWarehouseDto';
-import { GetResponseAllCartridgeInWarehouseDto } from './dto/GetResponseAllCartridgeInWarehouseDto';
 import { plainToInstance } from 'class-transformer';
-import { ServiceMoveCartridge } from './service/ServiceMoveCartridge';
-import { ServiceDecommissioningCartridge } from './service/ServiceDecommissioningCartridge';
-import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
-import { ServiceDeliveryCartridge } from './service/ServiceDeliveryCartridge';
+import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
+import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
+import { GetAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetAllCartridgeInWarehouseDto';
+import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
+import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 
 @Injectable()
 export class CartridgeService {

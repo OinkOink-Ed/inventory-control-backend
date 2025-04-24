@@ -1,5 +1,10 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
+import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
+import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
+import { WarehouseService } from '@Modules/warehouse/warehouse.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { WarehouseService } from './warehouse.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -9,11 +14,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateWarehouseDto } from './dto/PostCreateWarehouseDto';
-import { GetResponseAllWarehouseDto } from './dto/GetResponseAllWarehouseDto';
-import { GetResponseAllDetailedWarehouseDto } from './dto/GetResponseAllDetailedWarehouseDto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')

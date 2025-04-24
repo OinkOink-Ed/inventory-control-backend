@@ -1,5 +1,5 @@
+import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { CartridgeStatus } from 'src/common/enums/CartridgeStatus';
 
 export class GetResponseAllCartridgeInWarehouseDto {
   @ApiProperty()

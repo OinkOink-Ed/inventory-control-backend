@@ -1,4 +1,4 @@
-import { Role } from 'src/Modules/role/entities/Role';
+import { Role } from '@Modules/role/entities/Role';
 import { DataSource } from 'typeorm';
 
 export async function seedRoles(dataSourse: DataSource) {

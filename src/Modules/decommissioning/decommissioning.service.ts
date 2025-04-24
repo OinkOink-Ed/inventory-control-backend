@@ -1,15 +1,15 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
+import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
+import { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
+import { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
+import { ServiceCreateCartridgeDecommissioning } from '@Modules/decommissioning/interfaces/ServiceCreateCartridgeMovement';
+import { ServiceCreateDecommissioning } from '@Modules/decommissioning/service/ServiceCreateDecommissioning';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CartridgeService } from '../cartridge/cartridge.service';
 import { DataSource } from 'typeorm';
-import { PostCreateDecommissioningDto } from './dto/PostCreateDecommissioningDto';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ServiceCreateDecommissioning } from './service/ServiceCreateDecommissioning';
-import { Decommissioning } from './entities/Decommissioning';
-import { CartridgeDecommissioning } from './entities/CartridgeDecommissioning';
-import { ServiceDecommissioningCartridge } from '../cartridge/service/ServiceDecommissioningCartridge';
-import { ServiceCreateCartridgeDecommissioning } from './interfaces/ServiceCreateCartridgeMovement';
 
 @Injectable()
 export class DecommissioningService {

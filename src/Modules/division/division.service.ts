@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { Division } from 'src/Modules/division/entities/Division';
 import { Repository } from 'typeorm';
-import { PostCreateDivisionDto } from './dto/PostCreateDivisionDto';
-import { GetReponseAllDivisionDto } from './dto/GetReponseAllDivisionDto';
 import { plainToInstance } from 'class-transformer';
+import { Division } from '@Modules/division/entities/Division';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
+import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
 
 @Injectable()
 export class DivisionService {

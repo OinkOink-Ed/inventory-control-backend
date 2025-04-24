@@ -1,8 +1,8 @@
+import { CartridgeController } from '@Modules/cartridge/cartridge.controller';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
-import { CartridgeController } from 'src/Modules/cartridge/cartridge.controller';
-import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cartridge])],

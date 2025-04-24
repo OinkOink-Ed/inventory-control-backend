@@ -1,8 +1,8 @@
+import { Base } from '@common/entities/Base';
+import type { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
+import type { User } from '@Modules/user/entities/User';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Entity, ManyToOne, OneToMany } from 'typeorm';
-import type { CartridgeMovement } from './CartridgeMovement';
-import type { Warehouse } from '../../warehouse/entities/Warehouse';
-import type { User } from '../../user/entities/User';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Movement extends Base {

@@ -1,8 +1,8 @@
+import { Base } from '@common/entities/Base';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
+import type { Division } from '@Modules/division/entities/Division';
+import type { User } from '@Modules/user/entities/User';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import type { User } from '../../user/entities/User';
-import type { Division } from '../../division/entities/Division';
-import type { Delivery } from '../../delivery/entities/Delivery';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Kabinet extends Base {

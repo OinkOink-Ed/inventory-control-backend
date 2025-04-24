@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
 import { Repository } from 'typeorm';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateCartridgeModelDto } from './dto/PostCreateCartridgeModelDto';
-import { GetResponseAllCartridgeModelDto } from './dto/GetResponseAllCartridgeModelDto';
-import { GetResponseAllDetailedCartridgeModelDto } from './dto/GetResponseAllDetailedCartridgeModelDto';
 import { plainToInstance } from 'class-transformer';
+import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
+import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
+import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllDetailedCartridgeModelDto';
 
 @Injectable()
 export class CartridgeModelService {

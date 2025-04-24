@@ -1,18 +1,18 @@
 import { Mapper, MappingProfile, createMap } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
+import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
+import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
+import { ServiceCreateDecommissioning } from '@Modules/decommissioning/service/ServiceCreateDecommissioning';
+import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
+import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
+import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
+import { ServiceCreateMovement } from '@Modules/movement/service/ServiceCreateMovement';
+import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
+import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
 import { Injectable } from '@nestjs/common';
-import { ServiceCreateCartridge } from 'src/Modules/cartridge/service/ServiceCreateCartridge';
-import { PostCreateReceivingDto } from 'src/Modules/receiving/dto/PostCreateReceivingDto';
-import { ServiceCreateReceiving } from 'src/Modules/receiving/service/ServiceCreateReceiving';
-import { PostCreateMovementDto } from 'src/Modules/movement/dto/PostCreateMovementDto';
-import { ServiceCreateMovement } from 'src/Modules/movement/service/ServiceCreateMovement';
-import { ServiceMoveCartridge } from 'src/Modules/cartridge/service/ServiceMoveCartridge';
-import { PostCreateDecommissioningDto } from 'src/Modules/decommissioning/dto/PostCreateDecommissioningDto';
-import { ServiceCreateDecommissioning } from 'src/Modules/decommissioning/service/ServiceCreateDecommissioning';
-import { ServiceDecommissioningCartridge } from 'src/Modules/cartridge/service/ServiceDecommissioningCartridge';
-import { PostCreateDeliveryDto } from 'src/Modules/delivery/dto/PostCreateDeliveryDto';
-import { ServiceDeliveryCartridge } from 'src/Modules/cartridge/service/ServiceDeliveryCartridge';
-import { ServiceCreateDelivery } from 'src/Modules/delivery/service/ServiceCreateDelivery';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {

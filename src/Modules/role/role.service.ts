@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'src/Modules/role/entities/Role';
 import { Repository } from 'typeorm';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateroleDto } from './dto/PostCreateRoleDto';
-import { GetResponseAllRole } from './dto/GetResponseAllRole';
 import { plainToInstance } from 'class-transformer';
+import { Role } from '@Modules/role/entities/Role';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
+import { GetResponseAllRole } from '@Modules/role/dto/GetResponseAllRole';
 
 @Injectable()
 export class RoleService {

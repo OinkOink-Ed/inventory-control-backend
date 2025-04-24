@@ -1,8 +1,8 @@
+import { Base } from '@common/entities/Base';
+import type { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
+import type { User } from '@Modules/user/entities/User';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Entity, ManyToOne, OneToMany } from 'typeorm';
-import type { User } from '../../user/entities/User';
-import type { Warehouse } from '../../warehouse/entities/Warehouse';
-import type { CartridgeReceiving } from './CartridgeReceiving';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Receiving extends Base {

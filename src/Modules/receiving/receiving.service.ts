@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { Receiving } from './entities/Receiving';
 import { DataSource } from 'typeorm';
-import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
-import { PostCreateReceivingDto } from 'src/Modules/receiving/dto/PostCreateReceivingDto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { CartridgeReceiving } from 'src/Modules/receiving/entities/CartridgeReceiving';
-import { ServiceCreateCartridgeReceiving } from 'src/Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ServiceCreateReceiving } from 'src/Modules/receiving/service/ServiceCreateReceiving';
-import { ServiceCreateCartridge } from '../cartridge/service/ServiceCreateCartridge';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
+import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
+import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
+import { Receiving } from '@Modules/receiving/entities/Receiving';
+import { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
+import { ServiceCreateCartridgeReceiving } from '@Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
 
 @Injectable()
 export class ReceivingService {

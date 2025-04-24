@@ -1,8 +1,8 @@
-import { Division } from 'src/Modules/division/entities/Division';
-import { User } from 'src/Modules/user/entities/User';
+import { Division } from '@Modules/division/entities/Division';
+import { User } from '@Modules/user/entities/User';
 import { DataSource } from 'typeorm';
 
-export async function seedRoles(dataSourse: DataSource) {
+export async function seedDivision(dataSourse: DataSource) {
   const divisionRepo = dataSourse.getRepository(Division);
   const userRepo = dataSourse.getRepository(User);
 
@@ -14,26 +14,27 @@ export async function seedRoles(dataSourse: DataSource) {
     {
       name: 'Подразделение № 1',
       location: 'ул. Конституции СССР 24',
-      creator: systemUser,
+      creator: { id: systemUser.id },
     },
     {
       name: 'Подразделение № 2',
       location: 'ул. Пирогова 10',
-      creator: systemUser,
+      creator: { id: systemUser.id },
     },
     {
       name: 'Подразделение № 3',
       location: 'ул. Донская 62',
-      creator: systemUser,
+      creator: { id: systemUser.id },
     },
     {
       name: 'Подразделение № 4',
       location: 'ул. Абрикосовая 21А',
-      creator: systemUser,
+      creator: { id: systemUser.id },
     },
   ];
 
   await divisionRepo.save(divisions);
+
   console.log('Подразделения успешно созданы');
 
   const divisionsForUser = await divisionRepo.find();
@@ -49,9 +50,6 @@ export async function seedRoles(dataSourse: DataSource) {
     const division = divisionsForUser.find(
       (division) => division.name === pair.divisionName,
     );
-    if (!division) {
-      throw new Error(`Division "${pair.divisionName}" not found`);
-    }
 
     await userRepo.update(
       { username: pair.username },

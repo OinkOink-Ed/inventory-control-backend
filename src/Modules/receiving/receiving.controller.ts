@@ -1,5 +1,8 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
+import { ReceivingService } from '@Modules/receiving/receiving.service';
 import { Body, Controller, Post } from '@nestjs/common';
-import { ReceivingService } from './receiving.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -7,9 +10,6 @@ import {
   ApiForbiddenResponse,
   ApiRequestTimeoutResponse,
 } from '@nestjs/swagger';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateReceivingDto } from './dto/PostCreateReceivingDto';
 
 @Controller('receiving')
 export class ReceivingController {

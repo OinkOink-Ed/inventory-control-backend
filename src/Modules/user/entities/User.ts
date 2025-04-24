@@ -1,16 +1,16 @@
+import { Base } from '@common/entities/Base';
+import { UserStatus } from '@common/enums/UserStatus';
+import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
+import type { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
+import type { Division } from '@Modules/division/entities/Division';
+import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import type { Movement } from '@Modules/movement/entities/Movement';
+import type { Receiving } from '@Modules/receiving/entities/Receiving';
+import type { Role } from '@Modules/role/entities/Role';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { UserStatus } from '../../../common/enums/UserStatus';
-import type { Role } from '../../role/entities/Role';
-import type { Division } from 'src/Modules/division/entities/Division';
-import type { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
-import type { Kabinet } from 'src/Modules/kabinet/entities/Kabinet';
-import type { CartridgeModel } from 'src/Modules/cartridgeModel/entities/CartridgeModel';
-import type { Cartridge } from 'src/Modules/cartridge/entities/Cartridge';
-import type { Movement } from '../../movement/entities/Movement';
-import type { Receiving } from '../../receiving/entities/Receiving';
-import type { Decommissioning } from '../../decommissioning/entities/Decommissioning';
-import type { Delivery } from '../../delivery/entities/Delivery';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class User extends Base {

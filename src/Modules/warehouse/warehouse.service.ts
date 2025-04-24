@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { GetResponseAllDetailedWarehouseDto } from './dto/GetResponseAllDetailedWarehouseDto';
-import { PostCreateWarehouseDto } from './dto/PostCreateWarehouseDto';
-import { GetResponseAllWarehouseDto } from './dto/GetResponseAllWarehouseDto';
 import { plainToInstance } from 'class-transformer';
+import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
+import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
 
 @Injectable()
 export class WarehouseService {

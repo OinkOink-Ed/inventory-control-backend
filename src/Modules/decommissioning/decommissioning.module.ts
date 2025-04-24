@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { DecommissioningController } from './decommissioning.controller';
-import { DecommissioningService } from './decommissioning.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Decommissioning } from 'src/Modules/decommissioning/entities/Decommissioning';
-import { CartridgeDecommissioning } from 'src/Modules/decommissioning/entities/CartridgeDecommissioning';
-import { CartridgeModule } from '../cartridge/cartridge.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { MapperProfile } from 'src/common/MapperProfile';
+import { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
+import { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
+import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
+import { DecommissioningController } from '@Modules/decommissioning/decommissioning.controller';
+import { DecommissioningService } from '@Modules/decommissioning/decommissioning.service';
+import { MapperProfile } from '@common/MapperProfile';
 
 @Module({
   imports: [

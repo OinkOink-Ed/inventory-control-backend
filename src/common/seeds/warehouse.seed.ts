@@ -1,10 +1,10 @@
-import { Division } from 'src/Modules/division/entities/Division';
-import { User } from 'src/Modules/user/entities/User';
-import { Warehouse } from 'src/Modules/warehouse/entities/Warehouse';
+import { WarehouseStatus } from '@common/enums/WarehouseStatus';
+import { Division } from '@Modules/division/entities/Division';
+import { User } from '@Modules/user/entities/User';
+import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { DataSource } from 'typeorm';
-import { WarehouseStatus } from '../enums/WarehouseStatus';
 
-export async function seedRoles(dataSourse: DataSource) {
+export async function seedWarehouse(dataSourse: DataSource) {
   const warehouseRepo = dataSourse.getRepository(Warehouse);
   const divisionRepo = dataSourse.getRepository(Division);
   const userRepo = dataSourse.getRepository(User);
@@ -15,7 +15,7 @@ export async function seedRoles(dataSourse: DataSource) {
   const warehouses = divisions.map((division) => ({
     name: `Склад ${division.name}`,
     state: WarehouseStatus.ISOPEN,
-    creator: systemUser,
+    creator: { id: systemUser.id },
     division: { id: division.id },
   }));
 

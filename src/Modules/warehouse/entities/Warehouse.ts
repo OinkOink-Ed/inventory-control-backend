@@ -1,13 +1,13 @@
+import { Base } from '@common/entities/Base';
+import { WarehouseStatus } from '@common/enums/WarehouseStatus';
+import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import type { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
+import type { Division } from '@Modules/division/entities/Division';
+import type { Movement } from '@Modules/movement/entities/Movement';
+import type { Receiving } from '@Modules/receiving/entities/Receiving';
+import type { User } from '@Modules/user/entities/User';
 import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
-import { WarehouseStatus } from '../../../common/enums/WarehouseStatus';
-import type { Division } from '../../division/entities/Division';
-import type { User } from '../../user/entities/User';
-import type { Cartridge } from '../../cartridge/entities/Cartridge';
-import type { Movement } from '../../movement/entities/Movement';
-import type { Receiving } from '../../receiving/entities/Receiving';
-import type { Decommissioning } from '../../decommissioning/entities/Decommissioning';
-import type { Delivery } from '../../delivery/entities/Delivery';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class Warehouse extends Base {

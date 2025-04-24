@@ -1,7 +1,7 @@
+import { Base } from '@common/entities/Base';
+import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
 import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-import type { Cartridge } from '../../cartridge/entities/Cartridge';
-import type { Delivery } from './Delivery';
-import { Base } from 'src/common/entities/Base';
 
 @Entity()
 export class CartridgeDelivery extends Base {

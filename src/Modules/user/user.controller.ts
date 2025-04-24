@@ -1,3 +1,9 @@
+import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
+import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
+import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
+import { UserService } from '@Modules/user/user.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -8,12 +14,6 @@ import {
   ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserService } from './user.service';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { ErrorResponseDto } from 'src/common/dto/ErrorResponseDto';
-import { PostCreateUserDto } from './dto/PostCreateUserDto';
-import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
-import { PostCreateAdminDto } from './dto/PostCreateAdminDto';
 
 @ApiTags('Users')
 @Controller('users')

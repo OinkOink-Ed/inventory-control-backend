@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Kabinet } from 'src/Modules/kabinet/entities/Kabinet';
 import { Repository } from 'typeorm';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateKabinetDto } from './dto/PostCreateKabinetDto';
-import { GetResponseAllKabinetDto } from './dto/GetResponseAllKabinetDto';
 import { plainToInstance } from 'class-transformer';
+import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseAllKabinetDto } from '@Modules/kabinet/dto/GetResponseAllKabinetDto';
+import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
 
 @Injectable()
 export class KabinetService {

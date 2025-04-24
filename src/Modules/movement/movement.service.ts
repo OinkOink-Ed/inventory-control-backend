@@ -1,15 +1,15 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
+import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
+import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
+import { Movement } from '@Modules/movement/entities/Movement';
+import { ServiceCreateCartridgeMovement } from '@Modules/movement/interfaces/ServiceCreateCartridgeMovement';
+import { ServiceCreateMovement } from '@Modules/movement/service/ServiceCreateMovement';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateMovementDto } from './dto/PostCreateMovementDto';
-import { ServiceCreateMovement } from './service/ServiceCreateMovement';
 import { DataSource } from 'typeorm';
-import { Movement } from './entities/Movement';
-import { CartridgeMovement } from './entities/CartridgeMovement';
-import { CartridgeService } from '../cartridge/cartridge.service';
-import { ServiceMoveCartridge } from '../cartridge/service/ServiceMoveCartridge';
-import { ServiceCreateCartridgeMovement } from './interfaces/ServiceCreateCartridgeMovement';
 
 @Injectable()
 export class MovementService {

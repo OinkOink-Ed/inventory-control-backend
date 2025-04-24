@@ -1,14 +1,16 @@
-import { Role } from 'src/Modules/role/entities/Role';
-import { User } from 'src/Modules/user/entities/User';
 import { DataSource } from 'typeorm';
-import { UserStatus } from '../enums/UserStatus';
 import * as bcrypt from 'bcrypt';
+import { Role } from '@Modules/role/entities/Role';
+import { User } from '@Modules/user/entities/User';
+import { UserStatus } from '@common/enums/UserStatus';
 
 export async function seedUsers(dataSourse: DataSource) {
   const roleRepo = dataSourse.getRepository(Role);
   const userRepo = dataSourse.getRepository(User);
   const salt = await bcrypt.genSalt(10);
   // Я не буду давать проверку на существование пользователей
+
+  const systemRole = await roleRepo.findOneBy({ roleName: 'system' });
 
   const systemUser = await userRepo.save({
     username: 'system',
@@ -18,10 +20,8 @@ export async function seedUsers(dataSourse: DataSource) {
     patronimyc: 'system',
     telephone: '+77777777777',
     state: UserStatus.INACTIVE,
-    deletedAt: new Date(),
+    role: { id: systemRole.id },
   });
-
-  const systemUserId = systemUser.id;
 
   const adminRole = await roleRepo.findOneBy({ roleName: 'admin' });
   const userRole = await roleRepo.findOneBy({ roleName: 'user' });
@@ -35,9 +35,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Игоревич',
       telephone: '+79528360642',
       state: UserStatus.ACTIVE,
-      role: adminRole,
+      role: { id: adminRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'Palich',
@@ -47,9 +47,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Павлович',
       telephone: '+79649403535',
       state: UserStatus.ACTIVE,
-      role: adminRole,
+      role: { id: adminRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'Punker',
@@ -59,9 +59,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Сергеевич',
       telephone: '+79628885162',
       state: UserStatus.ACTIVE,
-      role: adminRole,
+      role: { id: adminRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'Nachalnik',
@@ -71,9 +71,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Сергеевич',
       telephone: '+79180999888',
       state: UserStatus.ACTIVE,
-      role: adminRole,
+      role: { id: adminRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'pdr4',
@@ -83,9 +83,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_1',
       telephone: '+11111111111',
       state: UserStatus.ACTIVE,
-      role: userRole,
+      role: { id: userRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'pdr2',
@@ -95,9 +95,9 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_2',
       telephone: '+22222222222',
       state: UserStatus.ACTIVE,
-      role: userRole,
+      role: { id: userRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
     {
       username: 'pdr3',
@@ -107,15 +107,15 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_3',
       telephone: '+333333333333',
       state: UserStatus.ACTIVE,
-      role: userRole,
+      role: { id: userRole.id },
       division: null,
-      creator: { id: systemUserId },
+      creator: { id: systemUser.id },
     },
   ];
 
   await userRepo.save(users);
   console.log('Пользователи успешно созданы');
 
-  await roleRepo.update({}, { creator: { id: systemUserId } });
+  await roleRepo.update({}, { creator: { id: systemUser.id } });
   console.log('Ролям добавлен создатель system');
 }

@@ -1,14 +1,14 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
+import { CartridgeService } from '@Modules/cartridge/cartridge.service';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
+import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
+import { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
+import { Delivery } from '@Modules/delivery/entities/Delivery';
+import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/interfaces/ServiceCreateCartridgeDelivery';
+import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CartridgeService } from 'src/Modules/cartridge/cartridge.service';
-import { PostCreateDeliveryDto } from 'src/Modules/delivery/dto/PostCreateDeliveryDto';
 import { DataSource } from 'typeorm';
-import { ServiceCreateDelivery } from './service/ServiceCreateDelivery';
-import { ServiceDeliveryCartridge } from '../cartridge/service/ServiceDeliveryCartridge';
-import { Delivery } from './entities/Delivery';
-import { CartridgeDelivery } from './entities/CartridgeDelivery';
-import { ServiceCreateCartridgeDelivery } from './interfaces/ServiceCreateCartridgeDelivery';
 
 @Injectable()
 export class DeliveryService {
