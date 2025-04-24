@@ -39,7 +39,9 @@ export class User extends Base {
   })
   state: UserStatus;
 
-  @ManyToOne('Division', (division: Division) => division.users)
+  @ManyToOne('Division', (division: Division) => division.users, {
+    nullable: true,
+  })
   division: Division;
 
   @ManyToOne('Role', (role: Role) => role.users)
@@ -50,10 +52,10 @@ export class User extends Base {
   })
   creator: User;
 
-  @OneToMany('User', (user: User) => user.creator, { nullable: true })
+  @OneToMany('User', (user: User) => user.creator)
   createdUsers: User[];
 
-  @OneToMany('Role', (role: Role) => role.creator, { nullable: true })
+  @OneToMany('Role', (role: Role) => role.creator)
   createdRoles: Role[];
 
   @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator)

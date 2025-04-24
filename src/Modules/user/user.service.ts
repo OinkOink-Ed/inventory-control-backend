@@ -4,10 +4,11 @@ import { User } from './entities/User';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { SuccessResponseDto } from 'src/common/dto/SuccessResponseDto';
-import { PostCreateuserDto } from './dto/PostCreateUserDto';
+import { PostCreateUserDto } from './dto/PostCreateUserDto';
 import { ServiceForAuthFindUserDto } from './dto/ServiceForAuthFindUserDto';
 import { GetResponseAllUserDto } from './dto/GetResponseAllUserDto';
 import { plainToInstance } from 'class-transformer';
+import { PostCreateAdminDto } from './dto/PostCreateAdminDto';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,21 @@ export class UserService {
     private readonly repo: Repository<User>,
   ) {}
 
-  async create(dto: PostCreateuserDto): Promise<SuccessResponseDto> {
+  async createUser(dto: PostCreateUserDto): Promise<SuccessResponseDto> {
+    const salt = await bcrypt.genSalt(10);
+
+    dto.password = await bcrypt.hash(dto.password, salt);
+
+    console.log(dto);
+
+    await this.repo.insert(dto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Пользователь успешно добавлен',
+    };
+  }
+
+  async createAdmin(dto: PostCreateAdminDto): Promise<SuccessResponseDto> {
     const salt = await bcrypt.genSalt(10);
 
     dto.password = await bcrypt.hash(dto.password, salt);

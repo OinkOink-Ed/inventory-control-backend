@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { UserStatus } from 'src/common/enums/UserStatus';
 
-export class PostCreateUserDto {
+export class PostCreateAdminDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -58,16 +58,6 @@ export class PostCreateUserDto {
   @IsObject()
   @ValidateNested()
   role: { id: number };
-
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  division: { id: number };
 
   @ApiProperty({
     enum: UserStatus,
