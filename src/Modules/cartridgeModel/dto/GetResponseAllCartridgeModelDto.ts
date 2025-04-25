@@ -6,4 +6,7 @@ export class GetResponseAllCartridgeModelDto {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }
