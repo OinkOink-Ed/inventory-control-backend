@@ -1,17 +1,13 @@
-import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllKabinetDto } from '@Modules/kabinet/dto/GetResponseAllKabinetDto';
 import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
 import { KabinetService } from '@Modules/kabinet/kabinet.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
-  ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -25,21 +21,10 @@ export class KabinetController {
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateKabinetDto,
-  ): Promise<SuccessResponseDto | ErrorResponseDto> {
+  ): Promise<SuccessResponseDto> {
     return await this.kabinetService.create(createDto);
   }
 
@@ -49,19 +34,8 @@ export class KabinetController {
     type: () => GetResponseAllKabinetDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
-  async getAll(): Promise<GetResponseAllKabinetDto[] | ErrorResponseDto> {
+  @ApiErrorResponses()
+  async getAll(): Promise<GetResponseAllKabinetDto[]> {
     return await this.kabinetService.getAll();
   }
 }

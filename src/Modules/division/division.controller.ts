@@ -1,17 +1,13 @@
-import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { DivisionService } from '@Modules/division/division.service';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
-  ApiRequestTimeoutResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -25,18 +21,7 @@ export class DivisionController {
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDivisionDto,
   ): Promise<SuccessResponseDto> {
@@ -51,18 +36,7 @@ export class DivisionController {
   @ApiOkResponse({
     type: () => GetReponseAllDivisionDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async getAll(): Promise<GetReponseAllDivisionDto[]> {
     return await this.divisionService.getAll();
   }

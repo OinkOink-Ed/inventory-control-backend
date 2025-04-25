@@ -1,19 +1,11 @@
-import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
 import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { UserService } from '@Modules/user/user.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiRequestTimeoutResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Users')
 @Controller('users')
@@ -25,18 +17,7 @@ export class UserController {
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async createAdmin(
     @Body() createDto: PostCreateAdminDto,
   ): Promise<SuccessResponseDto> {
@@ -48,18 +29,7 @@ export class UserController {
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async createUser(
     @Body() createDto: PostCreateUserDto,
   ): Promise<SuccessResponseDto> {
@@ -72,18 +42,7 @@ export class UserController {
     type: () => GetResponseAllUserDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async getAll(): Promise<GetResponseAllUserDto[]> {
     return await this.userService.getAll();
   }

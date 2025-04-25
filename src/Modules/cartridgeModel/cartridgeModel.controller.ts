@@ -1,4 +1,4 @@
-import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeModelService } from '@Modules/cartridgeModel/cartridgeModel.service';
 import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
@@ -12,15 +12,7 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiRequestTimeoutResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')
@@ -33,19 +25,7 @@ export class CartridgeModelController {
     description: 'Картриджи успешно добавлены',
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    description:
-      'Неверный формат данных, дубликат записи или отсутствие связанно записи',
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    description: 'Доступ запрещен',
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    description: 'Превышено время ожидания',
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateCartridgeModelDto,
   ): Promise<SuccessResponseDto> {
@@ -58,18 +38,7 @@ export class CartridgeModelController {
     type: () => GetResponseAllDetailedCartridgeModelDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   @HttpCode(HttpStatus.OK)
   async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
     return await this.createModelCartridge.getAllDetailed();
@@ -81,18 +50,7 @@ export class CartridgeModelController {
     type: () => GetResponseAllCartridgeModelDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   @HttpCode(HttpStatus.OK)
   async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
     return await this.createModelCartridge.getAll();

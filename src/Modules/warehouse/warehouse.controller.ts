@@ -1,19 +1,11 @@
-import { ErrorResponseDto } from '@common/dto/ErrorResponseDto';
+import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
 import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { WarehouseService } from '@Modules/warehouse/warehouse.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiRequestTimeoutResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -25,18 +17,7 @@ export class WarehouseController {
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateWarehouseDto,
   ): Promise<SuccessResponseDto> {
@@ -49,18 +30,7 @@ export class WarehouseController {
     type: () => GetResponseAllDetailedWarehouseDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async getAllDetailed(): Promise<GetResponseAllDetailedWarehouseDto[]> {
     return await this.createModelCartridge.getAllDetailed();
   }
@@ -71,18 +41,7 @@ export class WarehouseController {
     type: () => GetResponseAllWarehouseDto,
     isArray: true,
   })
-  @ApiBadRequestResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiRequestTimeoutResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiForbiddenResponse({
-    type: () => ErrorResponseDto,
-  })
-  @ApiNotFoundResponse({
-    type: () => ErrorResponseDto,
-  })
+  @ApiErrorResponses()
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
     return await this.createModelCartridge.getAll();
   }
