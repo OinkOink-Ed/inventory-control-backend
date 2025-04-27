@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { User } from '@Modules/user/entities/User';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -45,15 +45,23 @@ export class UserService {
     };
   }
 
-  async findOneForAuth(nickname: string): Promise<ServiceForAuthFindUserDto> {
+  async findOneForAuth(username: string): Promise<ServiceForAuthFindUserDto> {
     const user = await this.repo.findOne({
       where: {
-        username: `${nickname}`,
+        username: `${username}`,
+      },
+      select: {
+        role: {
+          id: true,
+          roleName: true,
+        },
       },
       relations: ['role'],
     });
 
-    return plainToInstance(ServiceForAuthFindUserDto, user, {
+    const plainUser = instanceToPlain(user, { exposeUnsetFields: false });
+
+    return plainToInstance(ServiceForAuthFindUserDto, plainUser, {
       excludeExtraneousValues: true,
     });
   }
@@ -83,7 +91,11 @@ export class UserService {
       relations: ['role'],
     });
 
-    return plainToInstance(GetResponseAllUserDto, users, {
+    const plainUsers = users.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(GetResponseAllUserDto, plainUsers, {
       excludeExtraneousValues: true,
     });
   }

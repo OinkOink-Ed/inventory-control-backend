@@ -16,9 +16,9 @@ export class AuthService {
     return this.jwtService.signAsync(payload);
   }
 
-  async signIn(nickname: string, pass: string): Promise<PostResponseAuthDto> {
+  async signIn(username: string, pass: string): Promise<PostResponseAuthDto> {
     const user: ServiceForAuthFindUserDto | null =
-      await this.usersService.findOneForAuth(nickname);
+      await this.usersService.findOneForAuth(username);
 
     if ('error' in user) {
       throw new UnauthorizedException('неверный логин или пароль');

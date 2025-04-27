@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
 import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -26,9 +26,17 @@ export class CartridgeModelService {
   async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
     const cartridgeModels = await this.repoCartridgeModel.find();
 
-    return plainToInstance(GetResponseAllCartridgeModelDto, cartridgeModels, {
-      excludeExtraneousValues: true,
-    });
+    const plainCartridgeModels = cartridgeModels.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(
+      GetResponseAllCartridgeModelDto,
+      plainCartridgeModels,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
@@ -36,9 +44,13 @@ export class CartridgeModelService {
       relations: ['creator'],
     });
 
+    const plainCartridgeModelsDetailed = cartridgeModelsDetailed.map(
+      (warehouse) => instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
     return plainToInstance(
       GetResponseAllDetailedCartridgeModelDto,
-      cartridgeModelsDetailed,
+      plainCartridgeModelsDetailed,
       {
         excludeExtraneousValues: true,
       },

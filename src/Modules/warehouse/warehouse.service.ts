@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -36,9 +36,13 @@ export class WarehouseService {
       relations: ['creator'],
     });
 
+    const plainWarehousesDetailed = warehousesDetailed.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
     return plainToInstance(
       GetResponseAllDetailedWarehouseDto,
-      warehousesDetailed,
+      plainWarehousesDetailed,
       {
         excludeExtraneousValues: true,
       },

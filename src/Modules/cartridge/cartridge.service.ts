@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, QueryRunner, Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
 import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
@@ -185,8 +185,17 @@ export class CartridgeService {
       },
       relations: ['warehouse', 'model'],
     });
-    return plainToInstance(GetResponseAllCartridgeInWarehouseDto, cartridges, {
-      excludeExtraneousValues: true,
-    });
+
+    const plainCartridges = cartridges.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(
+      GetResponseAllCartridgeInWarehouseDto,
+      plainCartridges,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 }

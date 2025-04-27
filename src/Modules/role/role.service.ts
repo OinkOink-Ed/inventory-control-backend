@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Role } from '@Modules/role/entities/Role';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
@@ -25,7 +25,11 @@ export class RoleService {
   async getAll(): Promise<GetResponseAllRole[]> {
     const roles = await this.repo.find();
 
-    return plainToInstance(GetResponseAllRole, roles, {
+    const plainRoles = roles.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(GetResponseAllRole, plainRoles, {
       excludeExtraneousValues: true,
     });
   }

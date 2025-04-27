@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Division } from '@Modules/division/entities/Division';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
@@ -23,9 +23,13 @@ export class DivisionService {
   }
 
   async getAll(): Promise<GetReponseAllDivisionDto[]> {
-    const devisions = await this.repo.find();
+    const divisions = await this.repo.find();
 
-    return plainToInstance(GetReponseAllDivisionDto, devisions, {
+    const plainDivisions = divisions.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(GetReponseAllDivisionDto, plainDivisions, {
       excludeExtraneousValues: true,
     });
   }
