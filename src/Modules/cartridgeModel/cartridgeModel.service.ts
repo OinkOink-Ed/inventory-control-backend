@@ -44,8 +44,8 @@ export class CartridgeModelService {
       relations: ['creator'],
     });
 
-    const plainCartridgeModelsDetailed = cartridgeModelsDetailed.map(
-      (warehouse) => instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    const plainCartridgeModelsDetailed = cartridgeModelsDetailed.map((item) =>
+      instanceToPlain(item, { exposeUnsetFields: false }),
     );
 
     return plainToInstance(

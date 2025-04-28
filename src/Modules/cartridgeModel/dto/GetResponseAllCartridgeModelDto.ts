@@ -12,5 +12,5 @@ export class GetResponseAllCartridgeModelDto {
 
   @Expose()
   @ApiProperty()
-  createdAt: Date;
+  createdAt: string;
 }

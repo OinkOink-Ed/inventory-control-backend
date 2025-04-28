@@ -91,8 +91,8 @@ export class UserService {
       relations: ['role'],
     });
 
-    const plainUsers = users.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    const plainUsers = users.map((item) =>
+      instanceToPlain(item, { exposeUnsetFields: false }),
     );
 
     return plainToInstance(GetResponseAllUserDto, plainUsers, {

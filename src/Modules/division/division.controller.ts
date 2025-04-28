@@ -35,6 +35,7 @@ export class DivisionController {
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetReponseAllDivisionDto,
+    isArray: true,
   })
   @ApiErrorResponses()
   async getAll(): Promise<GetReponseAllDivisionDto[]> {

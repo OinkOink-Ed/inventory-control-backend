@@ -25,8 +25,8 @@ export class DivisionService {
   async getAll(): Promise<GetReponseAllDivisionDto[]> {
     const divisions = await this.repo.find();
 
-    const plainDivisions = divisions.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    const plainDivisions = divisions.map((item) =>
+      instanceToPlain(item, { exposeUnsetFields: false }),
     );
 
     return plainToInstance(GetReponseAllDivisionDto, plainDivisions, {
