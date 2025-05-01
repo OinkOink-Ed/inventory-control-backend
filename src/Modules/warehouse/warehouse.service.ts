@@ -26,7 +26,11 @@ export class WarehouseService {
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
     const warehouses = await this.repo.find();
 
-    return plainToInstance(GetResponseAllWarehouseDto, warehouses, {
+    const plainWarehouses = warehouses.map((warehouse) =>
+      instanceToPlain(warehouse, { exposeUnsetFields: false }),
+    );
+
+    return plainToInstance(GetResponseAllWarehouseDto, plainWarehouses, {
       excludeExtraneousValues: true,
     });
   }

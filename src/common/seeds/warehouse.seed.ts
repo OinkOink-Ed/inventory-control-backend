@@ -13,6 +13,7 @@ export async function seedWarehouse(dataSourse: DataSource) {
   const divisions = await divisionRepo.find();
 
   const warehouses = divisions.map((division) => ({
+    //Нужно сменить на номер
     name: `Склад ${division.name}`,
     state: WarehouseStatus.ISOPEN,
     creator: { id: systemUser.id },
