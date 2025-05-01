@@ -1,5 +1,6 @@
 import configuration from '@common/config/configuration';
 import { validationSchema } from '@common/config/validationShema';
+import { AuthGuard } from '@common/guards/AuthGuard';
 import { AuthModule } from '@Modules/auth/auth.module';
 import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
 import { CartridgeModelModule } from '@Modules/cartridgeModel/cartridgeModel.module';
@@ -53,10 +54,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     WarehouseModule,
   ],
   providers: [
-    // {
-    //   provide: 'APP_GUARD',
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

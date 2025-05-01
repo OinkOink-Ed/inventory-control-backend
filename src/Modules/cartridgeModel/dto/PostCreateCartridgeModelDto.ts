@@ -1,10 +1,7 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 export class PostCreateCartridgeModelDto {
   @ApiProperty()
@@ -17,8 +14,10 @@ export class PostCreateCartridgeModelDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'], // Указываем, что id обязателен
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  creator: { id: number };
+  @IsNotEmpty()
+  creator: ObjectIdDto;
 }

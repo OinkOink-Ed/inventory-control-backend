@@ -1,10 +1,7 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 export class PostCreateDecommissioningDto {
   @ApiProperty()
@@ -17,28 +14,31 @@ export class PostCreateDecommissioningDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: { id: number };
+  warehouse: ObjectIdDto;
 
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  creator: { id: number };
+  creator: ObjectIdDto;
 
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: { id: number };
+  model: ObjectIdDto;
 }

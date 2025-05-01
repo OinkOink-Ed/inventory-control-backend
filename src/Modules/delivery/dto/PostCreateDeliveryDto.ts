@@ -1,10 +1,7 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNumber,
-  IsObject,
-  IsPositive,
-  ValidateNested,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
 
 export class PostCreateDeliveryDto {
   @ApiProperty({
@@ -12,48 +9,44 @@ export class PostCreateDeliveryDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: { id: number };
+  model: ObjectIdDto;
 
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  kabinet: { id: number };
+  kabinet: ObjectIdDto;
 
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  division: { id: number };
+  division: ObjectIdDto;
 
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: { id: number };
+  warehouse: ObjectIdDto;
 
   @ApiProperty()
   @IsNumber()
@@ -65,8 +58,9 @@ export class PostCreateDeliveryDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  creator: { id: number };
+  creator: ObjectIdDto;
 }

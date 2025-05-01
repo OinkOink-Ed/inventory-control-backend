@@ -1,11 +1,13 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsIn,
   IsNotEmpty,
-  IsObject,
   IsString,
   Matches,
-  Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
 
@@ -14,28 +16,28 @@ export class PostCreateAdminDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/^\S+$/)
-  @Min(4)
+  @MinLength(4)
   username: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/^\S+$/)
-  @Min(8)
+  @MinLength(8)
   password: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/^\S+$/)
-  @Min(4)
+  @MinLength(4)
   name: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/^\S+$/)
-  @Min(4)
+  @MinLength(4)
   lastname: string;
 
   @ApiProperty()
@@ -54,14 +56,16 @@ export class PostCreateAdminDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  role: { id: number };
+  role: ObjectIdDto;
 
   @ApiProperty({
     enum: UserStatus,
   })
+  @IsIn([UserStatus.ACTIVE])
   state: UserStatus.ACTIVE;
 
   @ApiProperty({
@@ -69,8 +73,9 @@ export class PostCreateAdminDto {
     properties: {
       id: { type: 'number' },
     },
+    required: ['id'],
   })
-  @IsObject()
+  @Type(() => ObjectIdDto)
   @ValidateNested()
-  creator: { id: number };
+  creator: ObjectIdDto;
 }
