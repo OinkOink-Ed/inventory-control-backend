@@ -23,4 +23,14 @@ export class AuthController {
       sighInDto.password,
     );
   }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: () => PostResponseAuthDto,
+  })
+  @ApiErrorResponses()
+  async refreshToken(@Body() refreshToken: string) {
+    return await this.authService.refreshToken(refreshToken);
+  }
 }

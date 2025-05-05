@@ -6,4 +6,9 @@ export class PostResponseAuthDto {
   @IsString()
   @IsNotEmpty()
   access_token: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  refresh_token: string;
 }

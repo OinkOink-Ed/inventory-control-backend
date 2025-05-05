@@ -83,5 +83,5 @@ export class PostCreateUserDto {
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  creator: UserStatus;
+  creator: ObjectIdDto;
 }

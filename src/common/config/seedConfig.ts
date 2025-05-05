@@ -14,5 +14,5 @@ export const seedConfig: DataSourceOptions = {
   password: appConfig.database.password,
   database: appConfig.database.name,
   entities: ['src/Modules/**/*{.ts,.js}'], // Путь к сущностям не в продакшн
-  synchronize: false, // Не используй true в продакшене
+  synchronize: true, // Не используй true в продакшене
 };

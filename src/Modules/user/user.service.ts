@@ -22,8 +22,6 @@ export class UserService {
 
     dto.password = await bcrypt.hash(dto.password, salt);
 
-    console.log(dto);
-
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -66,25 +64,16 @@ export class UserService {
     });
   }
 
-  // async findOne(nickname: string): Promise<ReadUserDto | undefined> {
-  //   return await this.repo.findOne({
-  //     where: {
-  //       username: `${nickname}`,
-  //     },
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //       username: true,
-  //       patronimyc: true,
-  //       lastname: true,
-  //       role: {
-  //         id: true,
-  //         roleName: true,
-  //       },
-  //     },
-  //     relations: ['role'],
-  //   });
-  // }
+  async findOne(username: string) {
+    return await this.repo.findOne({
+      where: {
+        username: `${username}`,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
 
   async getAll(): Promise<GetResponseAllUserDto[]> {
     const users = await this.repo.find({

@@ -18,6 +18,10 @@ export class ErrorResponseDto400 extends ErrorResponseDto {
   @ApiProperty({ type: 'number', enum: [400] })
   statusCode: 400;
 }
+export class ErrorResponseDto401 extends ErrorResponseDto {
+  @ApiProperty({ type: 'number', enum: [401] })
+  statusCode: 401;
+}
 export class ErrorResponseDto403 extends ErrorResponseDto {
   @ApiProperty({ type: 'number', enum: [403] })
   statusCode: 403;

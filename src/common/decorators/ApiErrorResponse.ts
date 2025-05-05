@@ -1,5 +1,6 @@
 import {
   ErrorResponseDto400,
+  ErrorResponseDto401,
   ErrorResponseDto403,
   ErrorResponseDto404,
   ErrorResponseDto408,
@@ -16,6 +17,7 @@ interface ErrorResponseConfig {
 
 const statusToDtoMap = {
   400: ErrorResponseDto400,
+  401: ErrorResponseDto401,
   403: ErrorResponseDto403,
   404: ErrorResponseDto404,
   408: ErrorResponseDto408,
@@ -28,6 +30,10 @@ export function ApiErrorResponses(errors: ErrorResponseConfig[] = []) {
       status: 400,
       description:
         'Неверный формат данных, дубликат записи или отсутствие связанной записи',
+    },
+    {
+      status: 401,
+      description: 'Авторизация не пройдена',
     },
     {
       status: 403,

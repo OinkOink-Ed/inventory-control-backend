@@ -1,26 +1,49 @@
 import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
+import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
 import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
 import { UserService } from '@Modules/user/user.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    @InjectRepository(RefreshToken)
+    private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  generateToken(payload: any) {
-    return this.jwtService.signAsync(payload);
+  async generateToken(payload: any): Promise<PostResponseAuthDto> {
+    const access_token = await this.jwtService.signAsync(payload);
+
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: '1d',
+    });
+
+    const user = await this.usersService.findOne(payload.sub.id);
+
+    const refreshTokenEntity = this.refreshRepo.create({
+      token: refresh_token,
+      user: { id: user.id },
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    await this.refreshRepo.save(refreshTokenEntity);
+
+    return { access_token, refresh_token };
   }
 
   async signIn(username: string, pass: string): Promise<PostResponseAuthDto> {
     const user: ServiceForAuthFindUserDto | null =
       await this.usersService.findOneForAuth(username);
 
-    if ('error' in user) {
+    if (!user) {
       throw new UnauthorizedException('неверный логин или пароль');
     }
 
@@ -32,8 +55,40 @@ export class AuthService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...profile } = user;
-    return {
-      access_token: await this.generateToken({ sub: profile }),
-    };
+    return await this.generateToken({ sub: profile });
+  }
+
+  async refreshToken(refreshToken: string) {
+    const tokenEntity = await this.refreshRepo.findOne({
+      where: { token: refreshToken },
+      relations: ['user'],
+    });
+
+    if (!tokenEntity || tokenEntity.expiresAt < new Date()) {
+      throw new UnauthorizedException(
+        'Недействительный или истёкший refresh_token',
+      );
+    }
+
+    //Но пассворд то нет
+    let payload: { sub: ServiceForAuthFindUserDto };
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
+    } catch (error) {
+      throw new UnauthorizedException(error, 'Недействительный refresh_token');
+    }
+
+    const user = await this.usersService.findOneForAuth(payload.sub.username);
+    if (!user || 'error' in user) {
+      throw new UnauthorizedException('Пользователь не найден');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...profile } = user;
+    const newAccessToken = await this.jwtService.signAsync({ sub: profile });
+
+    return { access_token: newAccessToken };
   }
 }
