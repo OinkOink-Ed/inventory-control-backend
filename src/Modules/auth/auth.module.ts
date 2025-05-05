@@ -6,6 +6,7 @@ import { AuthController } from '@Modules/auth/auth.controller';
 import { AuthService } from '@Modules/auth/auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
+import { TokenCleanupService } from '@Modules/token/token.service';
 
 @Module({
   imports: [
@@ -16,13 +17,13 @@ import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: '30m',
+          expiresIn: '60m',
         },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, TokenCleanupService],
 })
 export class AuthModule {}

@@ -23,7 +23,16 @@ export class KabinetService {
   }
 
   async getAll(): Promise<GetResponseAllKabinetDto[]> {
-    const kabinets = await this.repo.find();
+    const kabinets = await this.repo.find({
+      select: {
+        id: true,
+        number: true,
+        division: {
+          name: true,
+        },
+      },
+      relations: ['division'],
+    });
 
     const plainKabinets = kabinets.map((warehouse) =>
       instanceToPlain(warehouse, { exposeUnsetFields: false }),

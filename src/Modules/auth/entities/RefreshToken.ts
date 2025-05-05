@@ -1,15 +1,15 @@
 import type { User } from '@Modules/user/entities/User';
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class RefreshToken {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   token: string;
 
-  @OneToOne('User', (user: User) => user.id)
-  @JoinColumn()
+  @ManyToOne('User', (user: User) => user.id)
   user: User;
 
   @Column()

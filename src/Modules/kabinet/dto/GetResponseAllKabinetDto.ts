@@ -9,4 +9,14 @@ export class GetResponseAllKabinetDto {
   @Expose()
   @ApiProperty()
   number: string;
+
+  @Expose()
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+    },
+    required: ['name'],
+  })
+  division: { name: string };
 }

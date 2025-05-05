@@ -2,12 +2,16 @@ import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
 import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
 import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
 import { UserService } from '@Modules/user/user.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { ServiceRefreshDto } from './dto/ServiceRefreshDto';
+import { PostlogoutDto } from './dto/PostLogoutDto';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { PostRefreshDto } from './dto/PostRefreshDto';
 
 @Injectable()
 export class AuthService {
@@ -27,14 +31,15 @@ export class AuthService {
       expiresIn: '1d',
     });
 
-    const user = await this.usersService.findOne(payload.sub.id);
+    const user = await this.usersService.findOne(payload.sub.username);
 
-    const refreshTokenEntity = this.refreshRepo.create({
+    const refreshTokenEntity: ServiceRefreshDto = {
       token: refresh_token,
       user: { id: user.id },
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    await this.refreshRepo.save(refreshTokenEntity);
+      expiresAt: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    };
+
+    await this.refreshRepo.insert(refreshTokenEntity);
 
     return { access_token, refresh_token };
   }
@@ -44,7 +49,7 @@ export class AuthService {
       await this.usersService.findOneForAuth(username);
 
     if (!user) {
-      throw new UnauthorizedException('неверный логин или пароль');
+      throw new UnauthorizedException('Неверный логин или пароль');
     }
 
     const isPasswordValid = await bcrypt.compare(pass, user.password);
@@ -58,9 +63,9 @@ export class AuthService {
     return await this.generateToken({ sub: profile });
   }
 
-  async refreshToken(refreshToken: string) {
+  async refreshToken(refreshToken: PostRefreshDto): Promise<PostRefreshDto> {
     const tokenEntity = await this.refreshRepo.findOne({
-      where: { token: refreshToken },
+      where: { token: refreshToken.token },
       relations: ['user'],
     });
 
@@ -73,7 +78,7 @@ export class AuthService {
     //Но пассворд то нет
     let payload: { sub: ServiceForAuthFindUserDto };
     try {
-      payload = await this.jwtService.verifyAsync(refreshToken, {
+      payload = await this.jwtService.verifyAsync(refreshToken.token, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
     } catch (error) {
@@ -89,6 +94,18 @@ export class AuthService {
     const { password, ...profile } = user;
     const newAccessToken = await this.jwtService.signAsync({ sub: profile });
 
-    return { access_token: newAccessToken };
+    return { token: newAccessToken };
+  }
+
+  async logout(dto: PostlogoutDto): Promise<SuccessResponseDto> {
+    const res = await this.refreshRepo.delete({ token: dto.token });
+
+    if (res.affected == 0) {
+      throw new UnauthorizedException('Вы не авторизованы в системе!');
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Успешный выход из системы',
+    };
   }
 }
