@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { GetResponseAllKabinetDto } from '@Modules/kabinet/dto/GetResponseAllKabinetDto';
+import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
 import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
 
 @Injectable()
@@ -22,8 +22,11 @@ export class KabinetService {
     };
   }
 
-  async getAll(): Promise<GetResponseAllKabinetDto[]> {
+  async getKAbinetsByDivisionId(
+    divisionid: number,
+  ): Promise<GetResponseKabinetsDto[]> {
     const kabinets = await this.repo.find({
+      where: { division: { id: divisionid } },
       select: {
         id: true,
         number: true,
@@ -38,7 +41,7 @@ export class KabinetService {
       instanceToPlain(warehouse, { exposeUnsetFields: false }),
     );
 
-    return plainToInstance(GetResponseAllKabinetDto, plainKabinets, {
+    return plainToInstance(GetResponseKabinetsDto, plainKabinets, {
       excludeExtraneousValues: true,
     });
   }

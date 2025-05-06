@@ -7,7 +7,6 @@ import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreate
 import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
 import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
 import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
-import { GetAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetAllCartridgeInWarehouseDto';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 
@@ -176,12 +175,25 @@ export class CartridgeService {
     }
   }
 
-  async getAll(
-    dto: GetAllCartridgeInWarehouseDto,
+  async getCartridgesById(
+    warehouseId: number,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
     const cartridges = await this.repoCartridges.find({
       where: {
-        warehouse: { id: dto.warehouse.id },
+        warehouse: { id: warehouseId },
+      },
+      select: {
+        id: true,
+        state: true,
+        warehouse: {
+          id: true,
+          name: true,
+        },
+        model: {
+          id: true,
+          name: true,
+        },
+        createdAt: true,
       },
       relations: ['warehouse', 'model'],
     });

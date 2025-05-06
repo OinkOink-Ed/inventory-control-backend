@@ -27,7 +27,7 @@ export class Division extends Base {
   @OneToMany('User', (user: User) => user.division)
   users: User[];
 
-  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.division)
+  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.id)
   kabinet: Kabinet[];
 
   @OneToMany('Delivery', (delivery: Delivery) => delivery.division)

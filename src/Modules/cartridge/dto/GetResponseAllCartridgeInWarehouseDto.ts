@@ -21,6 +21,7 @@ export class GetResponseAllCartridgeInWarehouseDto {
       id: { type: 'number' },
       name: { type: 'string' },
     },
+    required: ['id', 'name'],
   })
   warehouse: { id: number; name: string };
 
@@ -31,10 +32,11 @@ export class GetResponseAllCartridgeInWarehouseDto {
       id: { type: 'number' },
       name: { type: 'string' },
     },
+    required: ['id', 'name'],
   })
   model: { id: number; name: string };
 
   @Expose()
   @ApiProperty()
-  createdAt: Date;
+  createdAt: string;
 }

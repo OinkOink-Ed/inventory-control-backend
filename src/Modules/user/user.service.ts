@@ -80,6 +80,8 @@ export class UserService {
       relations: ['role'],
     });
 
+    console.log(users);
+
     const plainUsers = users.map((item) =>
       instanceToPlain(item, { exposeUnsetFields: false }),
     );

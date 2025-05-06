@@ -1,8 +1,7 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { GetAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetAllCartridgeInWarehouseDto';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Cartridges')
@@ -10,16 +9,17 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 export class CartridgeController {
   constructor(private readonly cartridgeService: CartridgeService) {}
 
-  @Get()
+  @Get(':warehouseId')
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Список картриджей отправлен',
     type: () => GetResponseAllCartridgeInWarehouseDto,
+    isArray: true,
   })
   @ApiErrorResponses()
-  async getAll(
-    @Body() getDto: GetAllCartridgeInWarehouseDto,
+  async getCartridgesById(
+    @Param('warehouseId') warehouseId: number,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
-    return await this.cartridgeService.getAll(getDto);
+    return await this.cartridgeService.getCartridgesById(warehouseId);
   }
 }

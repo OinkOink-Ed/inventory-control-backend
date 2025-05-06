@@ -1,9 +1,16 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { GetResponseAllKabinetDto } from '@Modules/kabinet/dto/GetResponseAllKabinetDto';
+import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
 import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
 import { KabinetService } from '@Modules/kabinet/kabinet.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -11,8 +18,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('Kabinet')
-@Controller('kabinet')
+@ApiTags('Kabinets')
+@Controller('kabinets')
 export class KabinetController {
   constructor(private readonly kabinetService: KabinetService) {}
 
@@ -28,14 +35,16 @@ export class KabinetController {
     return await this.kabinetService.create(createDto);
   }
 
-  @Get()
+  @Get(':divisionId')
   @ApiBearerAuth()
   @ApiOkResponse({
-    type: () => GetResponseAllKabinetDto,
+    type: () => GetResponseKabinetsDto,
     isArray: true,
   })
   @ApiErrorResponses()
-  async getAll(): Promise<GetResponseAllKabinetDto[]> {
-    return await this.kabinetService.getAll();
+  async getKAbinetsByDivisionId(
+    @Param('divisionId', ParseIntPipe) divisionId: number,
+  ): Promise<GetResponseKabinetsDto[]> {
+    return await this.kabinetService.getKAbinetsByDivisionId(divisionId);
   }
 }

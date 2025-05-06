@@ -9,4 +9,8 @@ export class GetReponseAllDivisionDto {
   @Expose()
   @ApiProperty()
   name: string;
+
+  @Expose()
+  @ApiProperty()
+  location: string;
 }
