@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { DecommissioningService } from '@Modules/decommissioning/decommissioning.service';
 import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
@@ -20,7 +21,9 @@ export class DecommissioningController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDecommissioningDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.decommissioningService.create(createDto);
   }
 }

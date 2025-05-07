@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
 import { MovementService } from '@Modules/movement/movement.service';
@@ -18,7 +19,9 @@ export class MovementController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateMovementDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.movementService.create(createDto);
   }
 }

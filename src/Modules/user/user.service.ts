@@ -7,8 +7,9 @@ import { User } from '@Modules/user/entities/User';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
-import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
+import { ServiceForAuthFindUserDto } from '@Modules/user/service/ServiceForAuthFindUserDto';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
+import { ServiceFindUserDto } from '@Modules/user/service/ServiceFindUserDto';
 
 @Injectable()
 export class UserService {
@@ -49,8 +50,9 @@ export class UserService {
         username: `${username}`,
       },
       select: {
+        id: true,
+        password: true,
         role: {
-          id: true,
           roleName: true,
         },
       },
@@ -64,14 +66,24 @@ export class UserService {
     });
   }
 
-  async findOne(username: string) {
-    return await this.repo.findOne({
+  async findOne(userId: number): Promise<ServiceFindUserDto> {
+    const user = await this.repo.findOne({
       where: {
-        username: `${username}`,
+        id: userId,
       },
       select: {
         id: true,
+        role: {
+          roleName: true,
+        },
       },
+      relations: ['role'],
+    });
+
+    const plainUser = instanceToPlain(user, { exposeUnsetFields: false });
+
+    return plainToInstance(ServiceFindUserDto, plainUser, {
+      excludeExtraneousValues: true,
     });
   }
 

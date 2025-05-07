@@ -19,12 +19,12 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
     //Указываем массив путей, где TS будет искать файлы с определениями типов
-    "typeRoots": ["node_modules/@types", "types"],
+    "typeRoots": ["node_modules/@types", "src/common/filters/types"],
     "paths": {
       "@Modules/*": ["Modules/*"],
       "@common/*": ["common/*"]
     }
   },
   //Массив путей или шаблонов, которые указывают TS какие файлы включать в процесс компиляции и проверки типов
-  "include": ["src/**/*", "types/**/*"]
+  "include": ["src/**/*", "src/common/filters/types/**/*"]
 }

@@ -68,14 +68,5 @@ export class PostCreateAdminDto {
   @IsIn([UserStatus.ACTIVE])
   state: UserStatus.ACTIVE;
 
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-    required: ['id'],
-  })
-  @Type(() => ObjectIdDto)
-  @ValidateNested()
-  creator: ObjectIdDto;
+  creator: { id: number };
 }

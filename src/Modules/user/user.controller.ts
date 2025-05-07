@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
 import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
@@ -20,7 +21,9 @@ export class UserController {
   @ApiErrorResponses()
   async createAdmin(
     @Body() createDto: PostCreateAdminDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.userService.createAdmin(createDto);
   }
 
@@ -32,7 +35,9 @@ export class UserController {
   @ApiErrorResponses()
   async createUser(
     @Body() createDto: PostCreateUserDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.userService.createUser(createDto);
   }
 

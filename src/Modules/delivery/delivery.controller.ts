@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { DeliveryService } from '@Modules/delivery/delivery.service';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
@@ -18,7 +19,9 @@ export class DeliveryController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDeliveryDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.deliveryService.create(createDto);
   }
 }

@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { DivisionService } from '@Modules/division/division.service';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
@@ -24,7 +25,9 @@ export class DivisionController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDivisionDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.divisionService.create(createDto);
   }
 

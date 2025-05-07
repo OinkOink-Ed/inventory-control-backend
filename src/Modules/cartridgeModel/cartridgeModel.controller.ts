@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeModelService } from '@Modules/cartridgeModel/cartridgeModel.service';
 import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
@@ -28,7 +29,9 @@ export class CartridgeModelController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateCartridgeModelDto,
+    @User() userData: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userData;
     return await this.createModelCartridge.create(createDto);
   }
 

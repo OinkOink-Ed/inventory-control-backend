@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllRole } from '@Modules/role/dto/GetResponseAllRole';
 import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
@@ -24,7 +25,9 @@ export class RoleController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateroleDto,
+    @User() userDto: { id: number },
   ): Promise<SuccessResponseDto> {
+    createDto.creator = userDto;
     return await this.roleService.create(createDto);
   }
 

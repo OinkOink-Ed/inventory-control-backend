@@ -1,6 +1,6 @@
 import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
 import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
-import { ServiceForAuthFindUserDto } from '@Modules/user/dto/ServiceForAuthFindUserDto';
+import { ServiceForAuthFindUserDto } from '@Modules/user/service/ServiceForAuthFindUserDto';
 import { UserService } from '@Modules/user/user.service';
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -8,10 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { ServiceRefreshDto } from './dto/ServiceRefreshDto';
+import { ServiceRefreshDto } from './service/ServiceRefreshDto';
 import { PostlogoutDto } from './dto/PostLogoutDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostRefreshDto } from './dto/PostRefreshDto';
+import { ServiceFindUserDto } from '@Modules/user/service/ServiceFindUserDto';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,9 @@ export class AuthService {
     private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  async generateToken(payload: any): Promise<PostResponseAuthDto> {
+  async generateToken(payload: {
+    sub: { id: number; role: { roleName: string } };
+  }): Promise<PostResponseAuthDto> {
     const access_token = await this.jwtService.signAsync(payload);
 
     const refresh_token = await this.jwtService.signAsync(payload, {
@@ -31,7 +34,7 @@ export class AuthService {
       expiresIn: '1d',
     });
 
-    const user = await this.usersService.findOne(payload.sub.username);
+    const user = await this.usersService.findOne(payload.sub.id);
 
     const refreshTokenEntity: ServiceRefreshDto = {
       token: refresh_token,
@@ -76,7 +79,7 @@ export class AuthService {
     }
 
     //Но пассворд то нет
-    let payload: { sub: ServiceForAuthFindUserDto };
+    let payload: { sub: ServiceFindUserDto };
     try {
       payload = await this.jwtService.verifyAsync(refreshToken.token, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -85,14 +88,13 @@ export class AuthService {
       throw new UnauthorizedException(error, 'Недействительный refresh_token');
     }
 
-    const user = await this.usersService.findOneForAuth(payload.sub.username);
+    const user = await this.usersService.findOne(payload.sub.id);
     if (!user || 'error' in user) {
       throw new UnauthorizedException('Пользователь не найден');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...profile } = user;
-    const newAccessToken = await this.jwtService.signAsync({ sub: profile });
+    const newAccessToken = await this.jwtService.signAsync({ sub: user });
 
     return { token: newAccessToken };
   }

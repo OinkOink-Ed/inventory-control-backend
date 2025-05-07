@@ -20,14 +20,5 @@ export class PostCreateKabinetDto {
   @ValidateNested()
   division: ObjectIdDto;
 
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-    },
-    required: ['id'],
-  })
-  @Type(() => ObjectIdDto)
-  @ValidateNested()
-  creator: ObjectIdDto;
+  creator: { id: number };
 }
