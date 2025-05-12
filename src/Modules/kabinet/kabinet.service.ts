@@ -27,13 +27,6 @@ export class KabinetService {
   ): Promise<GetResponseKabinetsDto[]> {
     const kabinets = await this.repo.find({
       where: { division: { id: divisionid } },
-      select: {
-        id: true,
-        number: true,
-        division: {
-          name: true,
-        },
-      },
       relations: ['division'],
     });
 

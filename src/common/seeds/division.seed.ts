@@ -55,6 +55,11 @@ export async function seedDivision(dataSourse: DataSource) {
       { username: pair.username },
       { division: { id: division.id } },
     );
+
+    await userRepo.update(
+      { role: { roleName: 'admin' } },
+      { division: { id: 1 } },
+    );
   }
 
   console.log('Пользователи роли user успешно связаны с подразделениями');

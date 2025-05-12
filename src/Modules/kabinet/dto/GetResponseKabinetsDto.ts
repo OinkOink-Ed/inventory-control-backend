@@ -19,4 +19,8 @@ export class GetResponseKabinetsDto {
     required: ['name'],
   })
   division: { name: string };
+
+  @Expose()
+  @ApiProperty()
+  createdAt: string;
 }

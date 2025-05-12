@@ -89,7 +89,7 @@ export class UserService {
 
   async getAll(): Promise<GetResponseAllUserDto[]> {
     const users = await this.repo.find({
-      relations: ['role'],
+      relations: ['role', 'division'],
     });
 
     const plainUsers = users.map((item) =>

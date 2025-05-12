@@ -42,6 +42,7 @@ export class CartridgeModelService {
   async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
     const cartridgeModelsDetailed = await this.repoCartridgeModel.find({
       relations: ['creator'],
+      withDeleted: true,
     });
 
     const plainCartridgeModelsDetailed = cartridgeModelsDetailed.map((item) =>

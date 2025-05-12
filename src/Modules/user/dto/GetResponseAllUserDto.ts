@@ -1,3 +1,4 @@
+import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
@@ -31,4 +32,21 @@ export class GetResponseAllUserDto {
     },
   })
   role: { id: number; roleName: string };
+
+  @Expose()
+  @ApiProperty({
+    enum: UserStatus,
+    enumName: 'UserStatus',
+  })
+  state: UserStatus;
+
+  @Expose()
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+      name: { type: 'string' },
+    },
+  })
+  division: { id: number; name: string };
 }

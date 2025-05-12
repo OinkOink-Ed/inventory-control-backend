@@ -21,4 +21,8 @@ export class GetResponseAllDetailedCartridgeModelDto {
     },
   })
   creator: { id: number; lastname: string; name: string; patronimyc: string };
+
+  @Expose()
+  @ApiProperty()
+  createdAt: string;
 }

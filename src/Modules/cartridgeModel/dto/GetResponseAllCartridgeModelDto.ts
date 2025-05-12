@@ -9,8 +9,4 @@ export class GetResponseAllCartridgeModelDto {
   @Expose()
   @ApiProperty()
   name: string;
-
-  @Expose()
-  @ApiProperty()
-  createdAt: string;
 }
