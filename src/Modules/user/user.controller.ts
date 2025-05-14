@@ -21,9 +21,9 @@ export class UserController {
   @ApiErrorResponses()
   async createAdmin(
     @Body() createDto: PostCreateAdminDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.userService.createAdmin(createDto);
   }
 
@@ -35,9 +35,9 @@ export class UserController {
   @ApiErrorResponses()
   async createUser(
     @Body() createDto: PostCreateUserDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.userService.createUser(createDto);
   }
 

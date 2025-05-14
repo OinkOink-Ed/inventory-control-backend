@@ -19,9 +19,9 @@ export class MovementController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateMovementDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.movementService.create(createDto);
   }
 }

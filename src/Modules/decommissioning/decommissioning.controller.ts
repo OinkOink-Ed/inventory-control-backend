@@ -21,9 +21,9 @@ export class DecommissioningController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDecommissioningDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.decommissioningService.create(createDto);
   }
 }

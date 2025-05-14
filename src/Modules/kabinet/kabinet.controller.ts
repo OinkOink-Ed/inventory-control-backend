@@ -25,9 +25,9 @@ export class KabinetController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateKabinetDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.kabinetService.create(createDto);
   }
 

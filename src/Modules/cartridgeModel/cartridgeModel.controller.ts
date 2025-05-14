@@ -29,9 +29,9 @@ export class CartridgeModelController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateCartridgeModelDto,
-    @User() userData: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userData;
+    createDto.creator = { id: userData.sub.id };
     return await this.createModelCartridge.create(createDto);
   }
 

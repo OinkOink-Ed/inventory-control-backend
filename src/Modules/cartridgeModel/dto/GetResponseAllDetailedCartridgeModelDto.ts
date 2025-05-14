@@ -20,7 +20,12 @@ export class GetResponseAllDetailedCartridgeModelDto {
       patronimyc: { type: 'string' },
     },
   })
-  creator: { id: number; lastname: string; name: string; patronimyc: string };
+  creator: {
+    id: number;
+    lastname: string;
+    name: string;
+    patronimyc: string;
+  };
 
   @Expose()
   @ApiProperty()

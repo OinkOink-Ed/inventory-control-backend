@@ -19,9 +19,9 @@ export class ReceivingController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateReceivingDto,
-    @User() userDto: { id: number },
+    @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = userDto;
+    createDto.creator = { id: userData.sub.id };
     return await this.receivingService.create(createDto);
   }
 }
