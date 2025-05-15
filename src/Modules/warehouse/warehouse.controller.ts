@@ -5,13 +5,13 @@ import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetRe
 import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { WarehouseService } from '@Modules/warehouse/warehouse.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly createModelCartridge: WarehouseService) {}
+  constructor(private readonly warehouseService: WarehouseService) {}
 
   @Post()
   @ApiBearerAuth()
@@ -24,18 +24,19 @@ export class WarehouseController {
     @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
     createDto.creator = { id: userData.sub.id };
-    return await this.createModelCartridge.create(createDto);
+    return await this.warehouseService.create(createDto);
   }
 
-  @Get('detailed')
+  @Get('detailed/:warehouseId')
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllDetailedWarehouseDto,
-    isArray: true,
   })
   @ApiErrorResponses()
-  async getAllDetailed(): Promise<GetResponseAllDetailedWarehouseDto[]> {
-    return await this.createModelCartridge.getAllDetailed();
+  async getDetailedByWarehouseId(
+    @Param('warehouseId') warehouseId: number,
+  ): Promise<GetResponseAllDetailedWarehouseDto> {
+    return await this.warehouseService.getDetailedByWarehouseId(warehouseId);
   }
 
   @Get()
@@ -46,6 +47,6 @@ export class WarehouseController {
   })
   @ApiErrorResponses()
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
-    return await this.createModelCartridge.getAll();
+    return await this.warehouseService.getAll();
   }
 }

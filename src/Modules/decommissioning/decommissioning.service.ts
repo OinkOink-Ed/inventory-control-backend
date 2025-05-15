@@ -62,6 +62,8 @@ export class DecommissioningService {
 
       const cartridgeDecommissioningDtos: ServiceCreateCartridgeDecommissioning[] =
         cartridgeIds.map((cartridge) => ({
+          createDto: PostCreateDecommissioningDto,
+          comment: createDto.comment,
           cartridge: { id: cartridge },
           decommissioning: decommissioning,
         }));

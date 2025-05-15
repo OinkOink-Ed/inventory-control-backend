@@ -24,7 +24,13 @@ export class CartridgeService {
     const { count, ...restDto } = dto;
 
     // Создаем одинакоыве dto (занимаем память)
-    const dtos = Array(count).fill(restDto);
+    const dtos = Array.from({ length: count }, () => ({
+      model: { id: restDto.model.id },
+      warehouse: { id: restDto.warehouse.id },
+      creator: { id: restDto.creator.id },
+      state: restDto.state || CartridgeStatus.RECEIVED,
+    }));
+
     try {
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
@@ -32,30 +38,27 @@ export class CartridgeService {
       const result = await cartridgeRepo.insert(dtos);
 
       const createdIds: Array<{ id: number }> = result.identifiers.map(
-        (idObj) => idObj.id,
+        (idObj) => ({ id: idObj.id }),
       );
 
-      await queryRunner.commitTransaction();
       return createdIds;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
-    } finally {
-      await queryRunner.release();
     }
   }
 
   async moveMany(dto: ServiceMoveCartridge, queryRunner: QueryRunner) {
     try {
-      const { count, model, warehouseFrom, warehouseWhere } = dto;
+      const { count, model, warehouseFrom, warehouseWhere, state } = dto;
 
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
       const cartridgeToUpdate = await cartridgeRepo.find({
-        select: ['id'],
+        select: { id: true, createdAt: true },
         where: {
-          model,
-          warehouse: warehouseFrom,
+          model: { id: model.id },
+          warehouse: { id: warehouseFrom.id },
+          state: CartridgeStatus.RECEIVED,
         },
         order: {
           createdAt: 'ASC',
@@ -71,7 +74,7 @@ export class CartridgeService {
 
       const result = await cartridgeRepo.update(
         { id: In(updatesIds) },
-        { state: CartridgeStatus.MOVED, warehouse: warehouseWhere },
+        { state: state, warehouse: warehouseWhere },
       );
 
       if (result.affected === 0) {
@@ -80,21 +83,21 @@ export class CartridgeService {
 
       return updatesIds;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
     }
   }
 
   async deliveryMany(dto: ServiceDeliveryCartridge, queryRunner: QueryRunner) {
     try {
-      const { count, model, warehouse } = dto;
+      const { count, model, warehouse, state } = dto;
 
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
       const cartridgeToDelivery = await cartridgeRepo.find({
-        select: ['id'],
+        select: { id: true, createdAt: true },
         where: {
-          model,
-          warehouse,
+          model: { id: model.id },
+          warehouse: { id: warehouse.id },
+          state: CartridgeStatus.RECEIVED || CartridgeStatus.MOVED,
         },
         order: {
           createdAt: 'ASC',
@@ -104,7 +107,7 @@ export class CartridgeService {
 
       if (cartridgeToDelivery.length === 0) {
         throw new Error('Нет картриджей для выдачи');
-      } else if (cartridgeToDelivery.length === count) {
+      } else if (cartridgeToDelivery.length < count) {
         throw new Error('Нет такого количества картриджей для выдачи');
       }
 
@@ -114,7 +117,7 @@ export class CartridgeService {
 
       const result = await cartridgeRepo.update(
         { id: In(deliveryIds) },
-        { state: CartridgeStatus.ISSUED, deletedAt: new Date() },
+        { state: state, deletedAt: new Date() },
       );
 
       if (result.affected === 0) {
@@ -133,15 +136,16 @@ export class CartridgeService {
     queryRunner: QueryRunner,
   ) {
     try {
-      const { count, model, warehouse } = dto;
+      const { count, model, warehouse, state } = dto;
 
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
       const cartridgeToDecommissioning = await cartridgeRepo.find({
-        select: ['id'],
+        select: { id: true, createdAt: true },
         where: {
-          model,
-          warehouse,
+          model: { id: model.id },
+          warehouse: { id: warehouse.id },
+          state: CartridgeStatus.RECEIVED || CartridgeStatus.MOVED,
         },
         order: {
           createdAt: 'ASC',
@@ -151,7 +155,7 @@ export class CartridgeService {
 
       if (cartridgeToDecommissioning.length === 0) {
         throw new Error('Нет картриджей для списания');
-      } else if (cartridgeToDecommissioning.length === count) {
+      } else if (cartridgeToDecommissioning.length < count) {
         throw new Error('Нет такого количества картриджей для списания');
       }
 
@@ -161,7 +165,7 @@ export class CartridgeService {
 
       const result = await cartridgeRepo.update(
         { id: In(decommissioningIds) },
-        { state: CartridgeStatus.DECOMMISSIONED, deletedAt: new Date() },
+        { state: state, deletedAt: new Date() },
       );
 
       if (result.affected === 0) {
@@ -170,6 +174,7 @@ export class CartridgeService {
 
       return decommissioningIds;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
       throw error;
     }

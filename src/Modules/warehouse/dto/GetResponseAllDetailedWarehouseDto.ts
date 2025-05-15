@@ -3,22 +3,23 @@ import { Expose } from 'class-transformer';
 
 export class GetResponseAllDetailedWarehouseDto {
   @Expose()
-  @ApiProperty()
-  id: number;
-
-  @Expose()
-  @ApiProperty()
-  name: string;
-
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
       id: { type: 'number' },
-      lastname: { type: 'string' },
-      name: { type: 'string' },
-      patronimyc: { type: 'string' },
+      kabinets: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            id: { type: 'number' },
+            number: { type: 'string' },
+          },
+          required: ['id', 'number'],
+        },
+      },
     },
+    required: ['id', 'kabinets'],
   })
-  creator: { id: number; lastname: string; name: string; patronimyc: string };
+  division: { id: number; kabinets: Array<{ id: number; number: string }> };
 }

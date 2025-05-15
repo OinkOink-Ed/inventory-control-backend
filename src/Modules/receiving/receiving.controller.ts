@@ -1,6 +1,7 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
 import { ReceivingService } from '@Modules/receiving/receiving.service';
 import { Body, Controller, Post } from '@nestjs/common';
@@ -22,6 +23,7 @@ export class ReceivingController {
     @User() userData: { sub: { id: number } },
   ): Promise<SuccessResponseDto> {
     createDto.creator = { id: userData.sub.id };
+    createDto.state = CartridgeStatus.RECEIVED;
     return await this.receivingService.create(createDto);
   }
 }

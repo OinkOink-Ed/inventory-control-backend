@@ -14,7 +14,6 @@ export class Cartridge extends Base {
   @Column({
     type: 'enum',
     enum: CartridgeStatus,
-    default: CartridgeStatus.RECEIVED,
   })
   state: CartridgeStatus;
 

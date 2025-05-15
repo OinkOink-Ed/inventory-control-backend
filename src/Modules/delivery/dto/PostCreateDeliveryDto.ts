@@ -1,4 +1,5 @@
 import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
@@ -54,4 +55,5 @@ export class PostCreateDeliveryDto {
   count: number;
 
   creator: { id: number };
+  state: CartridgeStatus.ISSUED;
 }

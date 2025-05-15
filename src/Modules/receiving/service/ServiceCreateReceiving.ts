@@ -1,4 +1,6 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+
 export class ServiceCreateReceiving {
-  warehouse: { id: number };
-  creator: { id: number };
+  warehouse: ObjectIdDto;
+  creator: ObjectIdDto;
 }

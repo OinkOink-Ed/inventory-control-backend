@@ -12,7 +12,7 @@ export class Kabinet extends Base {
   @OneToMany('Delivery', (delivery: Delivery) => delivery.kabinet)
   delivery: Delivery[];
 
-  @ManyToOne('Division', (division: Division) => division.id)
+  @ManyToOne('Division', (division: Division) => division.kabinets)
   division: Division;
 
   @ManyToOne('User', (user: User) => user.createdKabinets)

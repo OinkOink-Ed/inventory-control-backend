@@ -1,10 +1,12 @@
 import { Division } from '@Modules/division/entities/Division';
+import { Role } from '@Modules/role/entities/Role';
 import { User } from '@Modules/user/entities/User';
 import { DataSource } from 'typeorm';
 
 export async function seedDivision(dataSourse: DataSource) {
   const divisionRepo = dataSourse.getRepository(Division);
   const userRepo = dataSourse.getRepository(User);
+  const roleRepo = dataSourse.getRepository(Role);
 
   const systemUser = await userRepo.findOneBy({ username: 'system' });
 
@@ -55,12 +57,10 @@ export async function seedDivision(dataSourse: DataSource) {
       { username: pair.username },
       { division: { id: division.id } },
     );
-
-    await userRepo.update(
-      { role: { roleName: 'admin' } },
-      { division: { id: 1 } },
-    );
   }
+  const role = await roleRepo.findOne({ where: { roleName: 'admin' } });
 
-  console.log('Пользователи роли user успешно связаны с подразделениями');
+  await userRepo.update({ role: { id: role.id } }, { division: { id: 1 } });
+
+  console.log('Пользователи успешно связаны с подразделениями');
 }

@@ -6,7 +6,6 @@ import { CartridgeService } from '@Modules/cartridge/cartridge.service';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
 import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
-import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
 import { Receiving } from '@Modules/receiving/entities/Receiving';
 import { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
 import { ServiceCreateCartridgeReceiving } from '@Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
@@ -27,12 +26,6 @@ export class ReceivingService {
       ServiceCreateReceiving,
     );
 
-    const cartridgeDto = this.mapper.map(
-      createDto,
-      PostCreateReceivingDto,
-      ServiceCreateCartridge,
-    );
-
     const queryRunner = this.dataSourse.createQueryRunner();
 
     await queryRunner.connect();
@@ -45,14 +38,17 @@ export class ReceivingService {
         queryRunner.manager.getRepository(CartridgeReceiving);
 
       const receivingResult = await receivingRepo.insert(receivingDto);
+
       // Получаем id созданной сущности
       const receiving = receivingResult.identifiers[0].id;
 
       //Лучше передать транзакцию нежели создавать новую
       const cartridgeIds = await this.cartridgeService.createMany(
-        cartridgeDto,
+        createDto,
         queryRunner,
       );
+
+      console.log({ cartridgeIds });
 
       const cartridgeReceivingDtos: ServiceCreateCartridgeReceiving[] =
         cartridgeIds.map((cartridge) => ({

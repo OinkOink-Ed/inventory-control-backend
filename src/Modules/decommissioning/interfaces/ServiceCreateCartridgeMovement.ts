@@ -1,9 +1,8 @@
-export interface ServiceCreateCartridgeDecommissioning {
-  cartridge: {
-    id: number;
-  };
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 
-  decommissioning: {
-    id: number;
-  };
+export interface ServiceCreateCartridgeDecommissioning {
+  comment: string;
+  cartridge: ObjectIdDto;
+
+  decommissioning: ObjectIdDto;
 }

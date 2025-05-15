@@ -35,14 +35,28 @@ export class WarehouseService {
     });
   }
 
-  async getAllDetailed(): Promise<GetResponseAllDetailedWarehouseDto[]> {
-    const warehousesDetailed = await this.repo.find({
-      relations: ['creator'],
+  async getDetailedByWarehouseId(
+    warehouseId: number,
+  ): Promise<GetResponseAllDetailedWarehouseDto> {
+    const warehousesDetailed = await this.repo.findOne({
+      select: {
+        division: {
+          id: true,
+          kabinets: {
+            id: true,
+            number: true,
+          },
+        },
+      },
+      where: {
+        id: warehouseId,
+      },
+      relations: ['division', 'division.kabinets'],
     });
 
-    const plainWarehousesDetailed = warehousesDetailed.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
-    );
+    const plainWarehousesDetailed = instanceToPlain(warehousesDetailed, {
+      exposeUnsetFields: false,
+    });
 
     return plainToInstance(
       GetResponseAllDetailedWarehouseDto,
