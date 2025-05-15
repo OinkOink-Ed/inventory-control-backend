@@ -26,14 +26,22 @@ export async function seedCartridge(dataSourse: DataSource) {
   // Я не буду давать проверку на существование ролей
 
   const cartridges = warehouseIds.flatMap((warehouseId) =>
-    cartrdigeModelIds.flatMap((modelId) =>
-      Array.from({ length: 5 }, () => ({
-        state: CartridgeStatus.RECEIVED,
-        model: { id: modelId },
-        warehouse: { id: warehouseId },
-        creator: { id: systemUser.id },
-      })),
-    ),
+    cartrdigeModelIds.flatMap((modelId) => {
+      if (warehouseId === 1)
+        return Array.from({ length: 5 }, () => ({
+          state: CartridgeStatus.RECEIVED,
+          model: { id: modelId },
+          warehouse: { id: warehouseId },
+          creator: { id: systemUser.id },
+        }));
+      else
+        return Array.from({ length: 5 }, () => ({
+          state: CartridgeStatus.MOVED,
+          model: { id: modelId },
+          warehouse: { id: warehouseId },
+          creator: { id: systemUser.id },
+        }));
+    }),
   );
 
   await cartridgeRepo.save(cartridges);

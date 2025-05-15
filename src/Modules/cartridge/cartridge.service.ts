@@ -174,7 +174,6 @@ export class CartridgeService {
 
       return decommissioningIds;
     } catch (error) {
-      console.log(error);
       await queryRunner.rollbackTransaction();
       throw error;
     }

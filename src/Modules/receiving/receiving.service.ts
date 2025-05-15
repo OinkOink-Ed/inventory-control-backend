@@ -48,8 +48,6 @@ export class ReceivingService {
         queryRunner,
       );
 
-      console.log({ cartridgeIds });
-
       const cartridgeReceivingDtos: ServiceCreateCartridgeReceiving[] =
         cartridgeIds.map((cartridge) => ({
           cartridge,
