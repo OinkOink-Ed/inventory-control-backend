@@ -1,5 +1,6 @@
 import { Base } from '@common/entities/Base';
 import type { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
+import type { Staff } from '@Modules/staff/entities/Staff';
 import type { User } from '@Modules/user/entities/User';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Entity, ManyToOne, OneToMany } from 'typeorm';
@@ -11,6 +12,9 @@ export class Receiving extends Base {
 
   @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.receiving)
   warehouse: Warehouse;
+
+  @ManyToOne('Staff', (staff: Staff) => staff.id)
+  whoAccepted: Staff;
 
   @OneToMany(
     'CartridgeReceiving',

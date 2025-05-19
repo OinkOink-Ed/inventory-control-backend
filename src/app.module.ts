@@ -11,6 +11,7 @@ import { KabinetModule } from '@Modules/kabinet/kabinet.module';
 import { MovementModule } from '@Modules/movement/movement.module';
 import { ReceivingModule } from '@Modules/receiving/receiving.module';
 import { RoleModule } from '@Modules/role/role.module';
+import { StaffModule } from '@Modules/staff/staff.module';
 import { UserModule } from '@Modules/user/user.module';
 import { WarehouseModule } from '@Modules/warehouse/warehouse.module';
 import { Module } from '@nestjs/common';
@@ -52,6 +53,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     MovementModule,
     ReceivingModule,
     RoleModule,
+    StaffModule,
     UserModule,
     WarehouseModule,
   ],

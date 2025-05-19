@@ -7,6 +7,7 @@ import { seedRoles } from '@common/seeds/role.seed';
 import { seedUsers } from '@common/seeds/user.seed';
 import { seedWarehouse } from '@common/seeds/warehouse.seed';
 import { DataSource } from 'typeorm';
+import { seedStaffs } from './staff.seed';
 
 async function runSeeds() {
   const dataSourse = new DataSource(seedConfig);
@@ -15,6 +16,7 @@ async function runSeeds() {
   try {
     await seedRoles(dataSourse);
     await seedUsers(dataSourse);
+    await seedStaffs(dataSourse);
     await seedDivision(dataSourse);
     await seedWarehouse(dataSourse);
     await seedKabinet(dataSourse);

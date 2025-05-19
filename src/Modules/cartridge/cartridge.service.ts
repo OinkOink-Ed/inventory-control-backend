@@ -97,7 +97,7 @@ export class CartridgeService {
         where: {
           model: { id: model.id },
           warehouse: { id: warehouse.id },
-          state: CartridgeStatus.RECEIVED || CartridgeStatus.MOVED,
+          state: In[CartridgeStatus.RECEIVED || CartridgeStatus.MOVED],
         },
         order: {
           createdAt: 'ASC',

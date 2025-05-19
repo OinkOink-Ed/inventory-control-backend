@@ -9,6 +9,7 @@ import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import type { Movement } from '@Modules/movement/entities/Movement';
 import type { Receiving } from '@Modules/receiving/entities/Receiving';
 import type { Role } from '@Modules/role/entities/Role';
+import type { Staff } from '@Modules/staff/entities/Staff';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
@@ -57,6 +58,9 @@ export class User extends Base {
 
   @OneToMany('Role', (role: Role) => role.creator)
   createdRoles: Role[];
+
+  @OneToMany('Staff', (staff: Staff) => staff.creator)
+  createdStaffs: Staff[];
 
   @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator)
   createdWarehouses: Warehouse[];
