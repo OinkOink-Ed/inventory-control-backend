@@ -58,10 +58,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     WarehouseModule,
   ],
   providers: [
-    {
-      provide: 'APP_GUARD',
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule {}

@@ -4,8 +4,9 @@ import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { DeliveryService } from '@Modules/delivery/delivery.service';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
+import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
 
 @Controller('delivery')
 export class DeliveryController {
@@ -25,5 +26,17 @@ export class DeliveryController {
     createDto.creator = { id: userData.sub.id };
     createDto.state = CartridgeStatus.ISSUED;
     return await this.deliveryService.create(createDto);
+  }
+
+  @Get('detailed/:warehouseId')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetDeliveryByWarehouseIdDto,
+  })
+  @ApiErrorResponses()
+  async getDetailedByWarehouseId(
+    @Param('warehouseId') warehouseId: number,
+  ): Promise<GetDeliveryByWarehouseIdDto[]> {
+    return await this.deliveryService.getDetailedByWarehouseId(warehouseId);
   }
 }

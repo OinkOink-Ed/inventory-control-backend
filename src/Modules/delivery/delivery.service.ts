@@ -8,7 +8,10 @@ import { Delivery } from '@Modules/delivery/entities/Delivery';
 import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/interfaces/ServiceCreateCartridgeDelivery';
 import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+// import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { DataSource, Repository } from 'typeorm';
+import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
 
 @Injectable()
 export class DeliveryService {
@@ -16,6 +19,8 @@ export class DeliveryService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
+    @InjectRepository(Delivery)
+    private readonly deliveryRepo: Repository<Delivery>,
     private readonly dataSourse: DataSource,
   ) {}
 
@@ -67,6 +72,57 @@ export class DeliveryService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getDetailedByWarehouseId(
+    warehouseId: number,
+  ): Promise<GetDeliveryByWarehouseIdDto[]> {
+    const queryRunner = this.dataSourse.createQueryRunner();
+
+    try {
+      // Подключаемся к базе данных
+      await queryRunner.connect();
+
+      // Выполняем нативный SQL-запрос
+      const deliverys = await queryRunner.query(
+        `
+        SELECT delivery.id 'id',
+               warehouse.name 'warehouse',
+               division.name 'division',
+               kabinet.number 'kabinet',
+               user.lastname 'lastname',
+               user.name 'name',
+               user.patronimyc 'patronimyc',
+               cartridge_model.name 'modelname',
+               COUNT(delivery.id) as count,
+               delivery.createdAt 'createdAt'
+        FROM delivery
+        JOIN cartridge_delivery ON cartridge_delivery.deliveryId = delivery.id
+        JOIN warehouse ON warehouse.id = delivery.warehouseId
+        JOIN division ON division.id = delivery.divisionId
+        JOIN kabinet ON kabinet.id = delivery.kabinetId
+        JOIN user ON user.id = delivery.creatorId
+        JOIN cartridge ON cartridge.id = cartridge_delivery.cartridgeId
+        JOIN cartridge_model ON cartridge_model.id = cartridge.modelId
+        WHERE delivery.warehouseId = ?
+        GROUP BY delivery.id, cartridge_model.name
+        `,
+        [warehouseId],
+      );
+
+      // const plainDeliverys = deliverys.map((delivery) =>
+      //   instanceToPlain(delivery, { exposeUnsetFields: false }),
+      // );
+
+      // return plainToInstance(GetDeliveryByWarehouseIdDto, plainDeliverys, {
+      //   excludeExtraneousValues: true,
+      // });
+      return deliverys;
+    } catch (error) {
+      console.log(error);
     } finally {
       await queryRunner.release();
     }
