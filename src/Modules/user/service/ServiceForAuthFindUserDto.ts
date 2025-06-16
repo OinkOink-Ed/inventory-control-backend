@@ -1,4 +1,9 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+class Role {
+  @Expose()
+  roleName: string;
+}
 
 export class ServiceForAuthFindUserDto {
   @Expose()
@@ -8,5 +13,6 @@ export class ServiceForAuthFindUserDto {
   password: string;
 
   @Expose()
-  role: { roleName: string };
+  @Type(() => Role)
+  role: Role;
 }

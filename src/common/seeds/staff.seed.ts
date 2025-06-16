@@ -859,6 +859,7 @@ export async function seedStaffs(dataSourse: DataSource) {
       lastname: 'Супрунова',
       name: 'Анна',
       patronimyc: 'Викторовна',
+      financiallyResponsiblePerson: true,
       creator: { id: systemUser.id },
     },
     {
@@ -955,6 +956,7 @@ export async function seedStaffs(dataSourse: DataSource) {
       lastname: 'Храпалева',
       name: 'Анна',
       patronimyc: 'Ивановна',
+      financiallyResponsiblePerson: true,
       creator: { id: systemUser.id },
     },
     {
@@ -1051,6 +1053,7 @@ export async function seedStaffs(dataSourse: DataSource) {
       lastname: 'Шмалий',
       name: 'Анна',
       patronimyc: 'Викторовна',
+      financiallyResponsiblePerson: true,
       creator: { id: systemUser.id },
     },
     {

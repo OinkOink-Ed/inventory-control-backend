@@ -1,6 +1,22 @@
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+class Warehouse {
+  @Expose()
+  id: number;
+
+  @Expose()
+  name: string;
+}
+
+class Model {
+  @Expose()
+  id: number;
+
+  @Expose()
+  name: string;
+}
 
 export class GetResponseAllCartridgeInWarehouseDto {
   @Expose()
@@ -23,7 +39,8 @@ export class GetResponseAllCartridgeInWarehouseDto {
     },
     required: ['id', 'name'],
   })
-  warehouse: { id: number; name: string };
+  @Type(() => Warehouse)
+  warehouse: Warehouse;
 
   @Expose()
   @ApiProperty({
@@ -34,9 +51,10 @@ export class GetResponseAllCartridgeInWarehouseDto {
     },
     required: ['id', 'name'],
   })
-  model: { id: number; name: string };
+  @Type(() => Model)
+  model: Model;
 
   @Expose()
-  @ApiProperty()
-  createdAt: string;
+  @ApiProperty({ type: 'string' })
+  createdAt: Date;
 }

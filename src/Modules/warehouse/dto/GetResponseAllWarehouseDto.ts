@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import type { Warehouse } from '../entities/Warehouse';
 
-export class GetResponseAllWarehouseDto {
-  @Expose()
+export class GetResponseAllWarehouseDto
+  implements Pick<Warehouse, 'id' | 'name'>
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 }

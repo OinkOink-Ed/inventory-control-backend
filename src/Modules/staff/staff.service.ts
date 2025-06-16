@@ -4,8 +4,8 @@ import { Staff } from './entities/Staff';
 import { Repository } from 'typeorm';
 import { PostCreateStaffDto } from './dto/PostCreateStaffDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { GetResponseAllStaffDto } from './dto/GetResponseAllStaffDto';
+import { GetResponseDetailedStaffById } from './dto/GetResponseDetailedStaffById';
 
 @Injectable()
 export class StaffService {
@@ -23,21 +23,36 @@ export class StaffService {
   }
 
   async getAll(): Promise<GetResponseAllStaffDto[]> {
-    const staffs = await this.repo.find({
+    return await this.repo.find({
       select: {
         id: true,
-        name: true,
         lastname: true,
+        name: true,
         patronimyc: true,
+        financiallyResponsiblePerson: true,
       },
     });
+  }
 
-    const plainCartridges = staffs.map((staff) =>
-      instanceToPlain(staff, { exposeUnsetFields: false }),
-    );
+  async getDeteiledById(id: number): Promise<GetResponseDetailedStaffById[]> {
+    const query = this.repo
+      .createQueryBuilder('staff')
+      .leftJoinAndSelect('staff.acceptedCartridge', 'delivery')
+      .leftJoin('delivery.kabinet', 'kabinet')
+      .leftJoin('delivery.division', 'division')
+      .leftJoin('delivery.action', 'action')
+      .leftJoin('action.cartridge', 'cartridge')
+      .leftJoin('cartridge.model', 'model')
+      .where('staff.id = :id', { id })
+      .select([
+        'delivery.id AS id',
+        'kabinet.number AS kabinet',
+        'division.name AS division',
+        'model.name AS model',
+        'COUNT(action.id) AS count',
+      ])
+      .groupBy('delivery.id, kabinet.number, division.name, model.name');
 
-    return plainToInstance(GetResponseAllStaffDto, plainCartridges, {
-      excludeExtraneousValues: true,
-    });
+    return await query.getRawMany<GetResponseDetailedStaffById>();
   }
 }

@@ -56,6 +56,10 @@ export class MapperProfile extends AutomapperProfile {
           (dest) => dest.creator,
           mapFrom((src) => ({ id: src.creator.id })),
         ),
+        forMember(
+          (dest) => dest.whoAccepted,
+          mapFrom((src) => ({ id: src.whoAccepted.id })),
+        ),
       );
       createMap(
         mapper,
@@ -164,6 +168,10 @@ export class MapperProfile extends AutomapperProfile {
         forMember(
           (dest) => dest.kabinet,
           mapFrom((src) => ({ id: src.kabinet.id })),
+        ),
+        forMember(
+          (dest) => dest.accepting,
+          mapFrom((src) => ({ id: src.accepting.id })),
         ),
       );
     };

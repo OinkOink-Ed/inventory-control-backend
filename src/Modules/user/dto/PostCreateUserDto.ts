@@ -9,9 +9,39 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import type { User } from '../entities/User';
+import type { Role } from '@Modules/role/entities/Role';
+import { CreatorType } from '@common/dto/types';
+import type { Division } from '@Modules/division/entities/Division';
+
+type AssertUserHasRoleAndCreatorAndDivision = User extends {
+  role: any;
+  creator: any;
+  division: any;
+}
+  ? User
+  : never;
+
+type RoleType = { role: Pick<Role, 'id'> };
+type DivisionType = { role: Pick<Division, 'id'> };
 
 //Валится валидация
-export class PostCreateUserDto {
+export class PostCreateUserDto
+  implements
+    Pick<
+      AssertUserHasRoleAndCreatorAndDivision,
+      | 'username'
+      | 'password'
+      | 'name'
+      | 'lastname'
+      | 'patronimyc'
+      | 'telephone'
+      | 'state'
+    >,
+    CreatorType,
+    RoleType,
+    DivisionType
+{
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)

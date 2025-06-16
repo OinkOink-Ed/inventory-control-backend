@@ -1,5 +1,6 @@
 import { Base } from '@common/entities/Base';
-import type { Receiving } from '@Modules/receiving/entities/Receiving';
+import type { Delivery } from '@Modules/delivery/entities/Delivery';
+import type { Movement } from '@Modules/movement/entities/Movement';
 import type { User } from '@Modules/user/entities/User';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
@@ -14,8 +15,14 @@ export class Staff extends Base {
   @Column()
   patronimyc: string;
 
-  @OneToMany('Receiving', (receiving: Receiving) => receiving.whoAccepted)
-  acceptedCartridge: Receiving[];
+  @Column({ default: false })
+  financiallyResponsiblePerson: boolean;
+
+  @OneToMany('Delivery', (delivery: Delivery) => delivery.accepting)
+  acceptedCartridge: Delivery[];
+
+  @OneToMany('Movement', (movement: Movement) => movement.whoAccepted)
+  acceptedMovedCartridge: Movement[];
 
   @ManyToOne('User', (user: User) => user.createdStaffs, {
     nullable: true,

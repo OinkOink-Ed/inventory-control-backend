@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
@@ -25,17 +24,9 @@ export class KabinetService {
   async getKAbinetsByDivisionId(
     divisionid: number,
   ): Promise<GetResponseKabinetsDto[]> {
-    const kabinets = await this.repo.find({
+    return await this.repo.find({
       where: { division: { id: divisionid } },
-      relations: ['division'],
-    });
-
-    const plainKabinets = kabinets.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
-    );
-
-    return plainToInstance(GetResponseKabinetsDto, plainKabinets, {
-      excludeExtraneousValues: true,
+      relations: { division: true },
     });
   }
 }

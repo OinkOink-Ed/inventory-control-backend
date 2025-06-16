@@ -1,20 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import type { Staff } from '../entities/Staff';
 
-export class GetResponseAllStaffDto {
-  @Expose()
+export class GetResponseAllStaffDto
+  implements
+    Pick<
+      Staff,
+      'id' | 'name' | 'lastname' | 'financiallyResponsiblePerson' | 'patronimyc'
+    >
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 
-  @Expose()
   @ApiProperty()
   patronimyc: string;
 
-  @Expose()
   @ApiProperty()
   lastname: string;
+
+  @ApiProperty()
+  financiallyResponsiblePerson: boolean;
 }

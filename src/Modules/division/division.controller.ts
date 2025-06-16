@@ -4,7 +4,15 @@ import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { DivisionService } from '@Modules/division/division.service';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Post,
+  SerializeOptions,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -34,6 +42,11 @@ export class DivisionController {
   //нужно ещё guard для проверки роли запилить
   //И после обработать лоигку вызова того или иного метода
   //Пока что тяжело для понимания, нужно оставить на потом
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: GetReponseAllDivisionDto,
+    excludeExtraneousValues: true,
+  })
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({

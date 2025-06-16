@@ -10,8 +10,31 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import type { User } from '../entities/User';
+import { CreatorType } from '@common/dto/types';
+import type { Role } from '@Modules/role/entities/Role';
 
-export class PostCreateAdminDto {
+type AssertUserHasRoleAndCreator = User extends { role: any; creator: any }
+  ? User
+  : never;
+
+type RoleType = { role: Pick<Role, 'id'> };
+
+export class PostCreateAdminDto
+  implements
+    Pick<
+      AssertUserHasRoleAndCreator,
+      | 'username'
+      | 'password'
+      | 'name'
+      | 'lastname'
+      | 'patronimyc'
+      | 'telephone'
+      | 'state'
+    >,
+    CreatorType,
+    RoleType
+{
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

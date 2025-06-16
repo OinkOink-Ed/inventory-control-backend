@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -24,46 +23,28 @@ export class WarehouseService {
   }
 
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
-    const warehouses = await this.repo.find();
-
-    const plainWarehouses = warehouses.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
-    );
-
-    return plainToInstance(GetResponseAllWarehouseDto, plainWarehouses, {
-      excludeExtraneousValues: true,
+    return await this.repo.find({
+      select: {
+        id: true,
+        name: true,
+      },
     });
   }
 
   async getDetailedByWarehouseId(
     warehouseId: number,
-  ): Promise<GetResponseAllDetailedWarehouseDto> {
-    const warehousesDetailed = await this.repo.findOne({
-      select: {
-        division: {
-          id: true,
-          kabinets: {
-            id: true,
-            number: true,
-          },
-        },
-      },
-      where: {
-        id: warehouseId,
-      },
-      relations: ['division', 'division.kabinets'],
-    });
+  ): Promise<GetResponseAllDetailedWarehouseDto[]> {
+    const result = this.repo
+      .createQueryBuilder('warehouse')
+      .leftJoinAndSelect('warehouse.division', 'division')
+      .leftJoin('division.kabinets', 'kabinet')
+      .select([
+        'division.id AS divisionId',
+        'kabinet.id AS kabinetId',
+        'kabinet.number AS number',
+      ])
+      .where('warehouse.id = :id', { id: warehouseId });
 
-    const plainWarehousesDetailed = instanceToPlain(warehousesDetailed, {
-      exposeUnsetFields: false,
-    });
-
-    return plainToInstance(
-      GetResponseAllDetailedWarehouseDto,
-      plainWarehousesDetailed,
-      {
-        excludeExtraneousValues: true,
-      },
-    );
+    return result.getRawMany<GetResponseAllDetailedWarehouseDto>();
   }
 }

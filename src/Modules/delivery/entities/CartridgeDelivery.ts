@@ -9,6 +9,6 @@ export class CartridgeDelivery extends Base {
   delivery: Delivery;
 
   @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionDelivery)
-  @JoinColumn()
+  @JoinColumn({ name: 'cartridge' })
   cartridge: Cartridge;
 }

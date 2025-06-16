@@ -49,6 +49,17 @@ export class PostCreateMovementDto {
   @ValidateNested()
   warehouseWhere: ObjectIdDto;
 
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+    required: ['id'],
+  })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
+  whoAccepted: ObjectIdDto;
+
   creator: { id: number };
   state: CartridgeStatus.MOVED;
 

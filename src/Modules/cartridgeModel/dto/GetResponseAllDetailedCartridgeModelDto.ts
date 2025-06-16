@@ -1,5 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+class Creator {
+  @Expose()
+  id: number;
+
+  @Expose()
+  lastname: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  patronimyc: string;
+}
 
 export class GetResponseAllDetailedCartridgeModelDto {
   @Expose()
@@ -20,14 +34,10 @@ export class GetResponseAllDetailedCartridgeModelDto {
       patronimyc: { type: 'string' },
     },
   })
-  creator: {
-    id: number;
-    lastname: string;
-    name: string;
-    patronimyc: string;
-  };
+  @Type(() => Creator)
+  creator: Creator;
 
   @Expose()
-  @ApiProperty()
-  createdAt: string;
+  @ApiProperty({ type: 'string' })
+  createdAt: Date;
 }

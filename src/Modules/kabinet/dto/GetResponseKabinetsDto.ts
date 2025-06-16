@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+class Division {
+  @Expose()
+  name: string;
+}
 
 export class GetResponseKabinetsDto {
   @Expose()
@@ -18,9 +23,10 @@ export class GetResponseKabinetsDto {
     },
     required: ['name'],
   })
-  division: { name: string };
+  @Type(() => Division)
+  division: Division;
 
   @Expose()
-  @ApiProperty()
-  createdAt: string;
+  @ApiProperty({ type: 'string' })
+  createdAt: Date;
 }

@@ -5,7 +5,14 @@ import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetRe
 import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { WarehouseService } from '@Modules/warehouse/warehouse.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Warehouse')
@@ -34,8 +41,8 @@ export class WarehouseController {
   })
   @ApiErrorResponses()
   async getDetailedByWarehouseId(
-    @Param('warehouseId') warehouseId: number,
-  ): Promise<GetResponseAllDetailedWarehouseDto> {
+    @Param('warehouseId', ParseIntPipe) warehouseId: number,
+  ): Promise<GetResponseAllDetailedWarehouseDto[]> {
     return await this.warehouseService.getDetailedByWarehouseId(warehouseId);
   }
 

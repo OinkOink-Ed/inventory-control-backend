@@ -39,6 +39,6 @@ export class GetDeliveryByWarehouseIdDto {
   count: number;
 
   @Expose()
-  @ApiProperty()
-  createdAt: string;
+  @ApiProperty({ type: 'string' })
+  createdAt: Date;
 }

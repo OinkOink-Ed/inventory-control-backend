@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, QueryRunner, Repository } from 'typeorm';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
 import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
@@ -9,6 +8,8 @@ import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeli
 import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
+import { NoCartridgesException } from '@common/filters/types/NoCartridgesException';
+import { InsufficientCartridgesException } from '@common/filters/types/InsufficientCartridgesException';
 
 @Injectable()
 export class CartridgeService {
@@ -106,9 +107,9 @@ export class CartridgeService {
       });
 
       if (cartridgeToDelivery.length === 0) {
-        throw new Error('Нет картриджей для выдачи');
+        throw new NoCartridgesException();
       } else if (cartridgeToDelivery.length < count) {
-        throw new Error('Нет такого количества картриджей для выдачи');
+        throw new InsufficientCartridgesException();
       }
 
       const deliveryIds: Array<number> = cartridgeToDelivery.map(
@@ -117,7 +118,7 @@ export class CartridgeService {
 
       const result = await cartridgeRepo.update(
         { id: In(deliveryIds) },
-        { state: state, deletedAt: new Date() },
+        { state: state },
       );
 
       if (result.affected === 0) {
@@ -126,7 +127,6 @@ export class CartridgeService {
 
       return deliveryIds;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
     }
   }
@@ -145,7 +145,7 @@ export class CartridgeService {
         where: {
           model: { id: model.id },
           warehouse: { id: warehouse.id },
-          state: CartridgeStatus.RECEIVED || CartridgeStatus.MOVED,
+          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
         },
         order: {
           createdAt: 'ASC',
@@ -165,7 +165,7 @@ export class CartridgeService {
 
       const result = await cartridgeRepo.update(
         { id: In(decommissioningIds) },
-        { state: state, deletedAt: new Date() },
+        { state: state },
       );
 
       if (result.affected === 0) {
@@ -174,7 +174,6 @@ export class CartridgeService {
 
       return decommissioningIds;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       throw error;
     }
   }
@@ -182,36 +181,12 @@ export class CartridgeService {
   async getCartridgesById(
     warehouseId: number,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
-    const cartridges = await this.repoCartridges.find({
+    return await this.repoCartridges.find({
       where: {
         warehouse: { id: warehouseId },
+        state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
       },
-      select: {
-        id: true,
-        state: true,
-        warehouse: {
-          id: true,
-          name: true,
-        },
-        model: {
-          id: true,
-          name: true,
-        },
-        createdAt: true,
-      },
-      relations: ['warehouse', 'model'],
+      relations: { warehouse: true, model: true },
     });
-
-    const plainCartridges = cartridges.map((warehouse) =>
-      instanceToPlain(warehouse, { exposeUnsetFields: false }),
-    );
-
-    return plainToInstance(
-      GetResponseAllCartridgeInWarehouseDto,
-      plainCartridges,
-      {
-        excludeExtraneousValues: true,
-      },
-    );
   }
 }

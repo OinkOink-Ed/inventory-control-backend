@@ -4,7 +4,16 @@ import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { DeliveryService } from '@Modules/delivery/delivery.service';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  SerializeOptions,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
 
@@ -28,6 +37,11 @@ export class DeliveryController {
     return await this.deliveryService.create(createDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: GetDeliveryByWarehouseIdDto,
+    excludeExtraneousValues: true,
+  })
   @Get('detailed/:warehouseId')
   @ApiBearerAuth()
   @ApiCreatedResponse({

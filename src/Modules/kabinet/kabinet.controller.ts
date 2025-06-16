@@ -4,7 +4,16 @@ import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
 import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
 import { KabinetService } from '@Modules/kabinet/kabinet.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  SerializeOptions,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -31,6 +40,11 @@ export class KabinetController {
     return await this.kabinetService.create(createDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    type: GetResponseKabinetsDto,
+    excludeExtraneousValues: true,
+  })
   @Get(':divisionId')
   @ApiBearerAuth()
   @ApiOkResponse({

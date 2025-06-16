@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { User } from '@Modules/user/entities/User';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -35,8 +35,6 @@ export class UserService {
 
     dto.password = await bcrypt.hash(dto.password, salt);
 
-    console.log(dto);
-
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -49,19 +47,10 @@ export class UserService {
       where: {
         username: `${username}`,
       },
-      select: {
-        id: true,
-        password: true,
-        role: {
-          roleName: true,
-        },
-      },
       relations: ['role'],
     });
 
-    const plainUser = instanceToPlain(user, { exposeUnsetFields: false });
-
-    return plainToInstance(ServiceForAuthFindUserDto, plainUser, {
+    return plainToInstance(ServiceForAuthFindUserDto, user, {
       excludeExtraneousValues: true,
     });
   }
@@ -71,33 +60,27 @@ export class UserService {
       where: {
         id: userId,
       },
-      select: {
-        id: true,
-        role: {
-          roleName: true,
-        },
-      },
       relations: ['role'],
     });
 
-    const plainUser = instanceToPlain(user, { exposeUnsetFields: false });
-
-    return plainToInstance(ServiceFindUserDto, plainUser, {
+    return plainToInstance(ServiceFindUserDto, user, {
       excludeExtraneousValues: true,
     });
   }
 
   async getAll(): Promise<GetResponseAllUserDto[]> {
-    const users = await this.repo.find({
+    return await this.repo.find({
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        patronimyc: true,
+        username: true,
+        state: true,
+        division: { id: true, name: true },
+        role: { id: true, roleName: true },
+      },
       relations: ['role', 'division'],
-    });
-
-    const plainUsers = users.map((item) =>
-      instanceToPlain(item, { exposeUnsetFields: false }),
-    );
-
-    return plainToInstance(GetResponseAllUserDto, plainUsers, {
-      excludeExtraneousValues: true,
     });
   }
 }

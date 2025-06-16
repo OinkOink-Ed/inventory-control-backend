@@ -1,29 +1,40 @@
 import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import type { User } from '../entities/User';
+import type { Role } from '@Modules/role/entities/Role';
+import type { Division } from '@Modules/division/entities/Division';
 
-export class GetResponseAllUserDto {
-  @Expose()
+type AssertUserHasRoleAndDivision = User extends { role: any; division: any }
+  ? User
+  : never;
+
+type RoleType = { role: Pick<Role, 'id' | 'roleName'> };
+type Divisiontype = { division: Pick<Division, 'id' | 'name'> };
+
+export class GetResponseAllUserDto
+  implements
+    Pick<
+      AssertUserHasRoleAndDivision,
+      'id' | 'name' | 'username' | 'patronimyc' | 'lastname' | 'state'
+    >,
+    RoleType,
+    Divisiontype
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 
-  @Expose()
   @ApiProperty()
   username: string;
 
-  @Expose()
   @ApiProperty()
   patronimyc: string;
 
-  @Expose()
   @ApiProperty()
   lastname: string;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
@@ -33,14 +44,12 @@ export class GetResponseAllUserDto {
   })
   role: { id: number; roleName: string };
 
-  @Expose()
   @ApiProperty({
     enum: UserStatus,
     enumName: 'UserStatus',
   })
   state: UserStatus;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
