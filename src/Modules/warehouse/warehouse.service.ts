@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -23,12 +23,12 @@ export class WarehouseService {
   }
 
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
-    return await this.repo.find({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
+    const select: FindOptionsSelect<GetResponseAllWarehouseDto> = {
+      id: true,
+      name: true,
+    };
+
+    return await this.repo.find({ select });
   }
 
   async getDetailedByWarehouseId(
