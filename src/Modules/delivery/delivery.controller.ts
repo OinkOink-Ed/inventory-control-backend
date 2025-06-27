@@ -6,13 +6,13 @@ import { DeliveryService } from '@Modules/delivery/delivery.service';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
 import {
   Body,
-  ClassSerializerInterceptor,
+  // ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   Post,
-  SerializeOptions,
-  UseInterceptors,
+  // SerializeOptions,
+  // UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
@@ -37,11 +37,11 @@ export class DeliveryController {
     return await this.deliveryService.create(createDto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: GetDeliveryByWarehouseIdDto,
-    excludeExtraneousValues: true,
-  })
+  // @UseInterceptors(ClassSerializerInterceptor)
+  // @SerializeOptions({
+  //   type: GetDeliveryByWarehouseIdDto,
+  //   excludeExtraneousValues: true,
+  // })
   @Get('detailed/:warehouseId')
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -50,7 +50,7 @@ export class DeliveryController {
   @ApiErrorResponses()
   async getDetailedByWarehouseId(
     @Param('warehouseId') warehouseId: number,
-  ): Promise<GetDeliveryByWarehouseIdDto[]> {
+  ): Promise<GetDeliveryByWarehouseIdDto[] | void> {
     return await this.deliveryService.getDetailedByWarehouseId(warehouseId);
   }
 }

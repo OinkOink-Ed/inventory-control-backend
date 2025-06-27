@@ -1,4 +1,5 @@
 import {
+  ErrorResponseDto,
   ErrorResponseDto400,
   ErrorResponseDto401,
   ErrorResponseDto403,
@@ -12,19 +13,19 @@ import { ApiResponse, ApiResponseOptions } from '@nestjs/swagger';
 interface ErrorResponseConfig {
   status: number;
   description: string;
-  type?: any; // Для случаев, если нужен отдельный DTO
+  type?: new () => ErrorResponseDto; // Для случаев, если нужен отдельный DTO
 }
 
-const statusToDtoMap = {
-  400: ErrorResponseDto400,
-  401: ErrorResponseDto401,
-  403: ErrorResponseDto403,
-  404: ErrorResponseDto404,
-  408: ErrorResponseDto408,
-  500: ErrorResponseDto500,
-};
+const statusToDtoMap = new Map<number, new () => ErrorResponseDto>([
+  [400, ErrorResponseDto400],
+  [401, ErrorResponseDto401],
+  [403, ErrorResponseDto403],
+  [404, ErrorResponseDto404],
+  [408, ErrorResponseDto408],
+  [500, ErrorResponseDto500],
+]);
 
-export function ApiErrorResponses(errors: ErrorResponseConfig[] = []) {
+export function ApiErrorResponses() {
   const defaultErrors: ErrorResponseConfig[] = [
     {
       status: 400,
@@ -53,14 +54,13 @@ export function ApiErrorResponses(errors: ErrorResponseConfig[] = []) {
     },
   ];
 
-  const errorResponses: ApiResponseOptions[] = [
-    ...defaultErrors,
-    ...errors,
-  ].map(({ status, description, type }) => ({
-    status,
-    description,
-    type: type || statusToDtoMap[status], // Используем маппинг или базовый DTO
-  }));
+  const errorResponses: ApiResponseOptions[] = [...defaultErrors].map(
+    ({ status, description, type }) => ({
+      status,
+      description,
+      type: type || statusToDtoMap.get(status), // Используем маппинг или базовый DTO
+    }),
+  );
 
   return applyDecorators(
     ...errorResponses.map((options) => ApiResponse(options)),

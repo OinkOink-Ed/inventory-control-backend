@@ -13,7 +13,7 @@ const AppDataSource = new DataSource({
   password: config.database.password,
   database: config.database.name,
   entities: ['src/Modules/**/*{.ts,.js}'], // Путь к сущностям не в продакшн
-  migrations: ['src/migrations/**/*{.ts,.js}'], // Пусть к миграциям не в продакшн
+  migrations: ['src/migrations/**/*{.ts,.js}'], // Путь к миграциям не в продакшн
   migrationsTableName: 'migrations',
 });
 

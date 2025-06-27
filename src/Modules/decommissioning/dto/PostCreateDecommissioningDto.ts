@@ -9,8 +9,33 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import type { Decommissioning } from '../entities/Decommissioning';
+import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import type { User } from '@Modules/user/entities/User';
 
-export class PostCreateDecommissioningDto {
+type AssertDecommissionigHasWarehouse =
+  Decommissioning extends Pick<Decommissioning, 'warehouse' | 'creator'>
+    ? Decommissioning
+    : never;
+
+type AssertDecommissioningModelAndCreator =
+  Cartridge extends Pick<Cartridge, 'model'> ? Cartridge : never;
+
+type WarehouseType = Pick<Warehouse, 'id'>;
+type CreatorType = Pick<User, 'id'>;
+type CartridgeModelType = Pick<Cartridge, 'id'>;
+
+export class PostCreateDecommissioningDto
+  implements
+    Pick<
+      Decommissioning &
+        Cartridge &
+        AssertDecommissionigHasWarehouse &
+        AssertDecommissioningModelAndCreator,
+      'comment' | 'creator' | 'model' | 'state' | 'warehouse'
+    >
+{
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -30,9 +55,9 @@ export class PostCreateDecommissioningDto {
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: ObjectIdDto;
+  warehouse: WarehouseType;
 
-  creator: { id: number };
+  creator: CreatorType;
   state: CartridgeStatus.DECOMMISSIONED;
 
   @ApiProperty({
@@ -44,5 +69,5 @@ export class PostCreateDecommissioningDto {
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: ObjectIdDto;
+  model: CartridgeModelType;
 }

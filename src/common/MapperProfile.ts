@@ -32,8 +32,8 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateReceivingDto,
         ServiceCreateReceiving,
         forMember(
-          (dest) => dest.warehouse,
-          mapFrom((src) => ({ id: src.warehouse.id })),
+          (dest: ServiceCreateReceiving) => dest.warehouse,
+          mapFrom((src: PostCreateReceivingDto) => ({ id: src.warehouse.id })),
         ),
         forMember(
           (dest) => dest.creator,
@@ -45,20 +45,24 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateMovementDto,
         ServiceCreateMovement,
         forMember(
-          (dest) => dest.warehouseFrom,
-          mapFrom((src) => ({ id: src.warehouseFrom.id })),
+          (dest: ServiceCreateMovement) => dest.warehouseFrom,
+          mapFrom((src: PostCreateMovementDto) => ({
+            id: src.warehouseFrom.id,
+          })),
         ),
         forMember(
-          (dest) => dest.warehouseWhere,
-          mapFrom((src) => ({ id: src.warehouseWhere.id })),
+          (dest: ServiceCreateMovement) => dest.warehouseWhere,
+          mapFrom((src: PostCreateMovementDto) => ({
+            id: src.warehouseWhere.id,
+          })),
         ),
         forMember(
-          (dest) => dest.creator,
-          mapFrom((src) => ({ id: src.creator.id })),
+          (dest: ServiceCreateMovement) => dest.creator,
+          mapFrom((src: PostCreateMovementDto) => ({ id: src.creator.id })),
         ),
         forMember(
-          (dest) => dest.whoAccepted,
-          mapFrom((src) => ({ id: src.whoAccepted.id })),
+          (dest: ServiceCreateMovement) => dest.whoAccepted,
+          mapFrom((src: PostCreateMovementDto) => ({ id: src.whoAccepted.id })),
         ),
       );
       createMap(
@@ -66,24 +70,28 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateMovementDto,
         ServiceMoveCartridge,
         forMember(
-          (dest) => dest.warehouseFrom,
-          mapFrom((src) => ({ id: src.warehouseFrom.id })),
+          (dest: ServiceMoveCartridge) => dest.warehouseFrom,
+          mapFrom((src: PostCreateMovementDto) => ({
+            id: src.warehouseFrom.id,
+          })),
         ),
         forMember(
-          (dest) => dest.warehouseWhere,
-          mapFrom((src) => ({ id: src.warehouseWhere.id })),
+          (dest: ServiceMoveCartridge) => dest.warehouseWhere,
+          mapFrom((src: PostCreateMovementDto) => ({
+            id: src.warehouseWhere.id,
+          })),
         ),
         forMember(
-          (dest) => dest.model,
-          mapFrom((src) => ({ id: src.model.id })),
+          (dest: ServiceMoveCartridge) => dest.model,
+          mapFrom((src: PostCreateMovementDto) => ({ id: src.model.id })),
         ),
         forMember(
-          (dest) => dest.count,
-          mapFrom((src) => src.count),
+          (dest: ServiceMoveCartridge) => dest.count,
+          mapFrom((src: PostCreateMovementDto) => src.count),
         ),
         forMember(
-          (dest) => dest.state,
-          mapFrom((src) => src.state),
+          (dest: ServiceMoveCartridge) => dest.state,
+          mapFrom((src: PostCreateMovementDto) => src.state),
         ),
       );
       createMap(
@@ -91,16 +99,20 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateDecommissioningDto,
         ServiceCreateDecommissioning,
         forMember(
-          (dest) => dest.creator,
-          mapFrom((src) => ({ id: src.creator.id })),
+          (dest: ServiceCreateDecommissioning) => dest.creator,
+          mapFrom((src: PostCreateDecommissioningDto) => ({
+            id: src.creator.id,
+          })),
         ),
         forMember(
-          (dest) => dest.warehouse,
-          mapFrom((src) => ({ id: src.warehouse.id })),
+          (dest: ServiceCreateDecommissioning) => dest.warehouse,
+          mapFrom((src: PostCreateDecommissioningDto) => ({
+            id: src.warehouse.id,
+          })),
         ),
         forMember(
-          (dest) => dest.comment,
-          mapFrom((src) => src.comment),
+          (dest: ServiceCreateDecommissioning) => dest.comment,
+          mapFrom((src: PostCreateDecommissioningDto) => src.comment),
         ),
       );
       createMap(
@@ -108,20 +120,24 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateDecommissioningDto,
         ServiceDecommissioningCartridge,
         forMember(
-          (dest) => dest.model,
-          mapFrom((src) => ({ id: src.model.id })),
+          (dest: ServiceDecommissioningCartridge) => dest.model,
+          mapFrom((src: PostCreateDecommissioningDto) => ({
+            id: src.model.id,
+          })),
         ),
         forMember(
-          (dest) => dest.warehouse,
-          mapFrom((src) => ({ id: src.warehouse.id })),
+          (dest: ServiceDecommissioningCartridge) => dest.warehouse,
+          mapFrom((src: PostCreateDecommissioningDto) => ({
+            id: src.warehouse.id,
+          })),
         ),
         forMember(
-          (dest) => dest.state,
-          mapFrom((src) => src.state),
+          (dest: ServiceDecommissioningCartridge) => dest.state,
+          mapFrom((src: PostCreateDecommissioningDto) => src.state),
         ),
         forMember(
-          (dest) => dest.count,
-          mapFrom((src) => src.count),
+          (dest: ServiceDecommissioningCartridge) => dest.count,
+          mapFrom((src: PostCreateDecommissioningDto) => src.count),
         ),
       );
       createMap(
@@ -129,24 +145,24 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateDeliveryDto,
         ServiceDeliveryCartridge,
         forMember(
-          (dest) => dest.model,
-          mapFrom((src) => ({ id: src.model.id })),
+          (dest: ServiceDeliveryCartridge) => dest.model,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.model.id })),
         ),
         forMember(
-          (dest) => dest.creator,
-          mapFrom((src) => ({ id: src.creator.id })),
+          (dest: ServiceDeliveryCartridge) => dest.creator,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.creator.id })),
         ),
         forMember(
-          (dest) => dest.warehouse,
-          mapFrom((src) => ({ id: src.warehouse.id })),
+          (dest: ServiceDeliveryCartridge) => dest.warehouse,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.warehouse.id })),
         ),
         forMember(
-          (dest) => dest.state,
-          mapFrom((src) => src.state),
+          (dest: ServiceDeliveryCartridge) => dest.state,
+          mapFrom((src: PostCreateDeliveryDto) => src.state),
         ),
         forMember(
-          (dest) => dest.count,
-          mapFrom((src) => src.count),
+          (dest: ServiceDeliveryCartridge) => dest.count,
+          mapFrom((src: PostCreateDeliveryDto) => src.count),
         ),
       );
       createMap(
@@ -154,24 +170,24 @@ export class MapperProfile extends AutomapperProfile {
         PostCreateDeliveryDto,
         ServiceCreateDelivery,
         forMember(
-          (dest) => dest.division,
-          mapFrom((src) => ({ id: src.division.id })),
+          (dest: ServiceCreateDelivery) => dest.division,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.division.id })),
         ),
         forMember(
-          (dest) => dest.creator,
-          mapFrom((src) => ({ id: src.creator.id })),
+          (dest: ServiceCreateDelivery) => dest.creator,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.creator.id })),
         ),
         forMember(
-          (dest) => dest.warehouse,
-          mapFrom((src) => ({ id: src.warehouse.id })),
+          (dest: ServiceCreateDelivery) => dest.warehouse,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.warehouse.id })),
         ),
         forMember(
-          (dest) => dest.kabinet,
-          mapFrom((src) => ({ id: src.kabinet.id })),
+          (dest: ServiceCreateDelivery) => dest.kabinet,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.kabinet.id })),
         ),
         forMember(
-          (dest) => dest.accepting,
-          mapFrom((src) => ({ id: src.accepting.id })),
+          (dest: ServiceCreateDelivery) => dest.accepting,
+          mapFrom((src: PostCreateDeliveryDto) => ({ id: src.accepting.id })),
         ),
       );
     };

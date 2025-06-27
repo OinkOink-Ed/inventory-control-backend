@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { ServiceRefreshDto } from './service/ServiceRefreshDto';
+import { ServiceRefresh } from './service/ServiceRefresh';
 import { PostlogoutDto } from './dto/PostLogoutDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostRefreshDto } from './dto/PostRefreshDto';
@@ -36,9 +36,9 @@ export class AuthService {
 
     const user = await this.usersService.findOne(payload.sub.id);
 
-    const refreshTokenEntity: ServiceRefreshDto = {
+    const refreshTokenEntity: ServiceRefresh = {
       token: refresh_token,
-      user: { id: user.id },
+      user: { id: user?.id ? user.id : 0 },
       expiresAt: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     };
 

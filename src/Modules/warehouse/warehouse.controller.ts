@@ -28,9 +28,9 @@ export class WarehouseController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateWarehouseDto,
-    @User() userData: { sub: { id: number } },
+    @User('sub') userData: { id: number },
   ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
+    createDto.creator = { id: userData.id };
     return await this.warehouseService.create(createDto);
   }
 

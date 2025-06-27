@@ -7,14 +7,11 @@ import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel
 import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Post,
-  SerializeOptions,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
@@ -38,11 +35,6 @@ export class CartridgeModelController {
     return await this.createModelCartridge.create(createDto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: GetResponseAllDetailedCartridgeModelDto,
-    excludeExtraneousValues: true,
-  })
   @Get('detailed')
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -55,11 +47,6 @@ export class CartridgeModelController {
     return await this.createModelCartridge.getAllDetailed();
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: GetResponseAllCartridgeModelDto,
-    excludeExtraneousValues: true,
-  })
   @Get()
   @ApiBearerAuth()
   @ApiCreatedResponse({

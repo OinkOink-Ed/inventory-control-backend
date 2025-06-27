@@ -11,11 +11,11 @@ export async function seedCartridgeModel(dataSourse: DataSource) {
   // Я не буду давать проверку на существование ролей
 
   const models = [
-    { name: 'C285', creator: { id: systemUser.id } },
-    { name: 'C725', creator: { id: systemUser.id } },
-    { name: '259A', creator: { id: systemUser.id } },
-    { name: '259X', creator: { id: systemUser.id } },
-    { name: '1075', creator: { id: systemUser.id } },
+    { name: 'C285', creator: { id: systemUser?.id } },
+    { name: 'C725', creator: { id: systemUser?.id } },
+    { name: '259A', creator: { id: systemUser?.id } },
+    { name: '259X', creator: { id: systemUser?.id } },
+    { name: '1075', creator: { id: systemUser?.id } },
   ];
 
   await cartrdgeModelRepo.save(models);

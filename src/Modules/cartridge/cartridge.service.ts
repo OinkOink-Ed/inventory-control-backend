@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, QueryRunner, Repository } from 'typeorm';
+import { FindOptionsSelect, In, QueryRunner, Repository } from 'typeorm';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
 import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
@@ -17,6 +17,11 @@ export class CartridgeService {
     @InjectRepository(Cartridge)
     private readonly repoCartridges: Repository<Cartridge>,
   ) {}
+
+  selectFieldsToUpdate: FindOptionsSelect<{ id: true; cretedAt: true }> = {
+    id: true,
+    cretedAt: true,
+  };
 
   async createMany(
     dto: ServiceCreateCartridge,
@@ -55,7 +60,7 @@ export class CartridgeService {
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
       const cartridgeToUpdate = await cartridgeRepo.find({
-        select: { id: true, createdAt: true },
+        select: this.selectFieldsToUpdate,
         where: {
           model: { id: model.id },
           warehouse: { id: warehouseFrom.id },
@@ -93,12 +98,13 @@ export class CartridgeService {
       const { count, model, warehouse, state } = dto;
 
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+
       const cartridgeToDelivery = await cartridgeRepo.find({
-        select: { id: true, createdAt: true },
+        select: this.selectFieldsToUpdate,
         where: {
           model: { id: model.id },
           warehouse: { id: warehouse.id },
-          state: In[CartridgeStatus.RECEIVED || CartridgeStatus.MOVED],
+          state: In([CartridgeStatus.RECEIVED || CartridgeStatus.MOVED]),
         },
         order: {
           createdAt: 'ASC',
@@ -141,7 +147,7 @@ export class CartridgeService {
       const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
       const cartridgeToDecommissioning = await cartridgeRepo.find({
-        select: { id: true, createdAt: true },
+        select: this.selectFieldsToUpdate,
         where: {
           model: { id: model.id },
           warehouse: { id: warehouse.id },
@@ -181,11 +187,20 @@ export class CartridgeService {
   async getCartridgesById(
     warehouseId: number,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
+    const select: FindOptionsSelect<GetResponseAllCartridgeInWarehouseDto> = {
+      id: true,
+      model: { id: true, name: true },
+      state: true,
+      warehouse: { id: true, name: true },
+      createdAt: true,
+    };
+
     return await this.repoCartridges.find({
       where: {
         warehouse: { id: warehouseId },
         state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
       },
+      select,
       relations: { warehouse: true, model: true },
     });
   }

@@ -3,18 +3,26 @@ import { ApiProperty } from '@nestjs/swagger';
 import type { User } from '../entities/User';
 import type { Role } from '@Modules/role/entities/Role';
 import type { Division } from '@Modules/division/entities/Division';
+import { AssertTManyProperty } from '@common/utils/typesUtils';
 
-type AssertUserHasRoleAndDivision = User extends { role: any; division: any }
-  ? User
-  : never;
+type StrictRole = Pick<Role, 'id' | 'roleName'>;
+type StrictDivision = Pick<Division, 'id' | 'name'>;
 
-type RoleType = { role: Pick<Role, 'id' | 'roleName'> };
-type Divisiontype = { division: Pick<Division, 'id' | 'name'> };
+type RoleType = { role: StrictRole };
+type Divisiontype = { division: StrictDivision };
+
+type Assert = AssertTManyProperty<
+  User,
+  {
+    role: Pick<Role, 'id' | 'roleName'>;
+    division: Pick<Division, 'id' | 'name'>;
+  }
+>;
 
 export class GetResponseAllUserDto
   implements
     Pick<
-      AssertUserHasRoleAndDivision,
+      User & Assert,
       'id' | 'name' | 'username' | 'patronimyc' | 'lastname' | 'state'
     >,
     RoleType,
@@ -41,8 +49,9 @@ export class GetResponseAllUserDto
       id: { type: 'number' },
       roleName: { type: 'string' },
     },
+    required: ['id', 'roleName'],
   })
-  role: { id: number; roleName: string };
+  role: StrictRole;
 
   @ApiProperty({
     enum: UserStatus,
@@ -56,6 +65,7 @@ export class GetResponseAllUserDto
       id: { type: 'number' },
       name: { type: 'string' },
     },
+    required: ['id', 'name'],
   })
-  division: { id: number; name: string };
+  division: StrictDivision;
 }

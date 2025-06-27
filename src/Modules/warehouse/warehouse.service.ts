@@ -34,15 +34,32 @@ export class WarehouseService {
   async getDetailedByWarehouseId(
     warehouseId: number,
   ): Promise<GetResponseAllDetailedWarehouseDto[]> {
+    // Определяем поля для select
+    const selectFields: (keyof GetResponseAllDetailedWarehouseDto)[] = [
+      'divisionId',
+      'kabinetId',
+      'number',
+    ];
+
+    // Объект маппинга полей DTO на SQL-выражения
+    //Record - ключи использует из DTO, и указывает тип значения ключа
+    const fieldToSqlMap: Record<
+      keyof GetResponseAllDetailedWarehouseDto,
+      string
+    > = {
+      divisionId: 'division.id AS divisionId',
+      kabinetId: 'kabinet.id AS kabinetId',
+      number: 'kabinet.number AS number',
+    };
+
+    // Формируем SQL-выражения
+    const selectExpressions = selectFields.map((field) => fieldToSqlMap[field]);
+
     const result = this.repo
       .createQueryBuilder('warehouse')
       .leftJoinAndSelect('warehouse.division', 'division')
       .leftJoin('division.kabinets', 'kabinet')
-      .select([
-        'division.id AS divisionId',
-        'kabinet.id AS kabinetId',
-        'kabinet.number AS number',
-      ])
+      .select(selectExpressions)
       .where('warehouse.id = :id', { id: warehouseId });
 
     return result.getRawMany<GetResponseAllDetailedWarehouseDto>();

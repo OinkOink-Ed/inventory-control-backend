@@ -20,7 +20,7 @@ export async function seedUsers(dataSourse: DataSource) {
     patronimyc: 'system',
     telephone: '+77777777777',
     state: UserStatus.INACTIVE,
-    role: { id: systemRole.id },
+    role: { id: systemRole?.id },
   });
 
   const adminRole = await roleRepo.findOneBy({ roleName: 'admin' });
@@ -35,8 +35,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Игоревич',
       telephone: '+79528360642',
       state: UserStatus.ACTIVE,
-      role: { id: adminRole.id },
-      division: null,
+      role: { id: adminRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -47,8 +47,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Павлович',
       telephone: '+79649403535',
       state: UserStatus.ACTIVE,
-      role: { id: adminRole.id },
-      division: null,
+      role: { id: adminRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -59,8 +59,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Сергеевич',
       telephone: '+79628885162',
       state: UserStatus.ACTIVE,
-      role: { id: adminRole.id },
-      division: null,
+      role: { id: adminRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -71,8 +71,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Сергеевич',
       telephone: '+79180999888',
       state: UserStatus.ACTIVE,
-      role: { id: adminRole.id },
-      division: null,
+      role: { id: adminRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -83,8 +83,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_1',
       telephone: '+11111111111',
       state: UserStatus.ACTIVE,
-      role: { id: userRole.id },
-      division: null,
+      role: { id: userRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -95,8 +95,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_2',
       telephone: '+22222222222',
       state: UserStatus.ACTIVE,
-      role: { id: userRole.id },
-      division: null,
+      role: { id: userRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
     {
@@ -107,8 +107,8 @@ export async function seedUsers(dataSourse: DataSource) {
       patronimyc: 'Пользователь_3',
       telephone: '+333333333333',
       state: UserStatus.ACTIVE,
-      role: { id: userRole.id },
-      division: null,
+      role: { id: userRole?.id },
+      division: undefined,
       creator: { id: systemUser.id },
     },
   ];

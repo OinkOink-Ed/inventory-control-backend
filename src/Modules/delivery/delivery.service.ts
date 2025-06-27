@@ -9,10 +9,8 @@ import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/interfaces/Ser
 import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
-// import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DeliveryService {
@@ -21,7 +19,6 @@ export class DeliveryService {
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
     @InjectRepository(Delivery)
-    private readonly deliveryRepo: Repository<Delivery>,
     private readonly dataSourse: DataSource,
   ) {}
 
@@ -83,7 +80,7 @@ export class DeliveryService {
 
   async getDetailedByWarehouseId(
     warehouseId: number,
-  ): Promise<GetDeliveryByWarehouseIdDto[]> {
+  ): Promise<GetDeliveryByWarehouseIdDto[] | void> {
     const queryRunner = this.dataSourse.createQueryRunner();
 
     try {

@@ -1,8 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { plainToInstance } from 'class-transformer';
 import { User } from '@Modules/user/entities/User';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -42,44 +41,53 @@ export class UserService {
     };
   }
 
-  async findOneForAuth(username: string): Promise<ServiceForAuthFindUserDto> {
-    const user = await this.repo.findOne({
+  async findOneForAuth(
+    username: string,
+  ): Promise<ServiceForAuthFindUserDto | null> {
+    const select: FindOptionsSelect<ServiceForAuthFindUserDto> = {
+      id: true,
+      password: true,
+      role: { roleName: true },
+    };
+
+    return await this.repo.findOne({
       where: {
         username: `${username}`,
       },
+      select,
       relations: ['role'],
-    });
-
-    return plainToInstance(ServiceForAuthFindUserDto, user, {
-      excludeExtraneousValues: true,
     });
   }
 
-  async findOne(userId: number): Promise<ServiceFindUserDto> {
-    const user = await this.repo.findOne({
+  async findOne(userId: number): Promise<ServiceFindUserDto | null> {
+    const select: FindOptionsSelect<ServiceFindUserDto> = {
+      id: true,
+      role: { roleName: true },
+    };
+
+    return await this.repo.findOne({
       where: {
         id: userId,
       },
+      select,
       relations: ['role'],
-    });
-
-    return plainToInstance(ServiceFindUserDto, user, {
-      excludeExtraneousValues: true,
     });
   }
 
   async getAll(): Promise<GetResponseAllUserDto[]> {
+    const select: FindOptionsSelect<GetResponseAllUserDto> = {
+      id: true,
+      name: true,
+      lastname: true,
+      patronimyc: true,
+      username: true,
+      state: true,
+      division: { id: true, name: true },
+      role: { id: true, roleName: true },
+    };
+
     return await this.repo.find({
-      select: {
-        id: true,
-        name: true,
-        lastname: true,
-        patronimyc: true,
-        username: true,
-        state: true,
-        division: { id: true, name: true },
-        role: { id: true, roleName: true },
-      },
+      select,
       relations: ['role', 'division'],
     });
   }

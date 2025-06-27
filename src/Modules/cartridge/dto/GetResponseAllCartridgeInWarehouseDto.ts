@@ -1,36 +1,39 @@
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import type { Cartridge } from '../entities/Cartridge';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
+import { AssertTManyProperty } from '@common/utils/typesUtils';
 
-class Warehouse {
-  @Expose()
-  id: number;
+type Assert = AssertTManyProperty<
+  Cartridge,
+  {
+    warehouse: Pick<Warehouse, 'id' | 'name'>;
+    model: Pick<CartridgeModel, 'id' | 'name'>;
+  }
+>;
 
-  @Expose()
-  name: string;
-}
+type StrictCartridgeModelType = Pick<CartridgeModel, 'id' | 'name'>;
+type StrictWarehouseType = Pick<Warehouse, 'id' | 'name'>;
 
-class Model {
-  @Expose()
-  id: number;
+type CartridgeModelType = { model: StrictCartridgeModelType };
+type WarehouseType = { warehouse: StrictWarehouseType };
 
-  @Expose()
-  name: string;
-}
-
-export class GetResponseAllCartridgeInWarehouseDto {
-  @Expose()
+export class GetResponseAllCartridgeInWarehouseDto
+  implements
+    Pick<Assert & Cartridge, 'id' | 'state' | 'createdAt'>,
+    CartridgeModelType,
+    WarehouseType
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty({
     enum: CartridgeStatus,
     enumName: 'CartridgeStatus',
   })
   state: CartridgeStatus;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
@@ -39,10 +42,8 @@ export class GetResponseAllCartridgeInWarehouseDto {
     },
     required: ['id', 'name'],
   })
-  @Type(() => Warehouse)
-  warehouse: Warehouse;
+  warehouse: StrictWarehouseType;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
@@ -51,10 +52,8 @@ export class GetResponseAllCartridgeInWarehouseDto {
     },
     required: ['id', 'name'],
   })
-  @Type(() => Model)
-  model: Model;
+  model: StrictCartridgeModelType;
 
-  @Expose()
   @ApiProperty({ type: 'string' })
   createdAt: Date;
 }

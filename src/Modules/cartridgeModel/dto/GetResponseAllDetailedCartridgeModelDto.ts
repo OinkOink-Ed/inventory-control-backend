@@ -1,30 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import type { CartridgeModel } from '../entities/CartridgeModel';
+import type { User } from '@Modules/user/entities/User';
+import { AssertTManyProperty } from '@common/utils/typesUtils';
 
-class Creator {
-  @Expose()
-  id: number;
+export type Assert = AssertTManyProperty<
+  CartridgeModel,
+  {
+    creator: Pick<User, 'id' | 'lastname' | 'name' | 'patronimyc'>;
+  }
+>;
 
-  @Expose()
-  lastname: string;
+type StrictCreatorType = Pick<User, 'id' | 'lastname' | 'name' | 'patronimyc'>;
+type CreatorType = { creator: StrictCreatorType };
 
-  @Expose()
-  name: string;
-
-  @Expose()
-  patronimyc: string;
-}
-
-export class GetResponseAllDetailedCartridgeModelDto {
-  @Expose()
+export class GetResponseAllDetailedCartridgeModelDto
+  implements
+    Pick<CartridgeModel & Assert, 'id' | 'name' | 'createdAt'>,
+    CreatorType
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
@@ -33,11 +32,10 @@ export class GetResponseAllDetailedCartridgeModelDto {
       name: { type: 'string' },
       patronimyc: { type: 'string' },
     },
+    required: ['id', 'lastname', 'name', 'patronimyc'],
   })
-  @Type(() => Creator)
-  creator: Creator;
+  creator: StrictCreatorType;
 
-  @Expose()
   @ApiProperty({ type: 'string' })
   createdAt: Date;
 }

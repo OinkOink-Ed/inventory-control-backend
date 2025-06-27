@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
 import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -23,12 +23,25 @@ export class CartridgeModelService {
   }
 
   async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
-    return await this.repoCartridgeModel.find();
+    const select: FindOptionsSelect<GetResponseAllCartridgeModelDto> = {
+      id: true,
+      name: true,
+    };
+
+    return await this.repoCartridgeModel.find({ select });
   }
 
   async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
+    const select: FindOptionsSelect<GetResponseAllDetailedCartridgeModelDto> = {
+      id: true,
+      name: true,
+      creator: { id: true, lastname: true, name: true, patronimyc: true },
+      createdAt: true,
+    };
+
     return await this.repoCartridgeModel.find({
       relations: { creator: true },
+      select,
       withDeleted: true,
     });
   }

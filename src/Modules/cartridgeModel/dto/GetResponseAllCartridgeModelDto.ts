@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { CartridgeModel } from '../entities/CartridgeModel';
 
-export class GetResponseAllCartridgeModelDto {
-  @Expose()
+export class GetResponseAllCartridgeModelDto
+  implements Pick<CartridgeModel, 'id' | 'name'>
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 }

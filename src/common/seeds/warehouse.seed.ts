@@ -16,7 +16,7 @@ export async function seedWarehouse(dataSourse: DataSource) {
     //Нужно сменить на номер
     name: `Склад ${division.name}`,
     state: WarehouseStatus.ISOPEN,
-    creator: { id: systemUser.id },
+    creator: { id: systemUser?.id },
     division: { id: division.id },
   }));
 

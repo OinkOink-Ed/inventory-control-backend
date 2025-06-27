@@ -11,19 +11,25 @@ import {
   ValidateNested,
 } from 'class-validator';
 import type { User } from '../entities/User';
-import { CreatorType } from '@common/dto/types';
 import type { Role } from '@Modules/role/entities/Role';
+import { AssertTManyProperty } from '@common/utils/typesUtils';
 
-type AssertUserHasRoleAndCreator = User extends { role: any; creator: any }
-  ? User
-  : never;
+type Assert = AssertTManyProperty<
+  User,
+  {
+    role: Pick<Role, 'id'>;
+  }
+>;
+type StrictRole = Pick<Role, 'id'>;
+type RoleType = { role: StrictRole };
 
-type RoleType = { role: Pick<Role, 'id'> };
+type StrictCreator = Pick<User, 'id'>;
+type CreatorType = { creator: StrictCreator };
 
 export class PostCreateAdminDto
   implements
     Pick<
-      AssertUserHasRoleAndCreator,
+      User & Assert,
       | 'username'
       | 'password'
       | 'name'
@@ -83,7 +89,7 @@ export class PostCreateAdminDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  role: ObjectIdDto;
+  role: StrictRole;
 
   @ApiProperty({
     enum: UserStatus,
@@ -91,5 +97,5 @@ export class PostCreateAdminDto
   @IsIn([UserStatus.ACTIVE])
   state: UserStatus.ACTIVE;
 
-  creator: { id: number };
+  creator: StrictCreator;
 }

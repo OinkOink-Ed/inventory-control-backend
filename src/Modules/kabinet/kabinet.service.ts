@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
@@ -24,8 +24,16 @@ export class KabinetService {
   async getKAbinetsByDivisionId(
     divisionid: number,
   ): Promise<GetResponseKabinetsDto[]> {
+    const select: FindOptionsSelect<GetResponseKabinetsDto> = {
+      id: true,
+      division: { name: true },
+      number: true,
+      createdAt: true,
+    };
+
     return await this.repo.find({
       where: { division: { id: divisionid } },
+      select,
       relations: { division: true },
     });
   }

@@ -16,22 +16,22 @@ export async function seedDivision(dataSourse: DataSource) {
     {
       name: 'Подразделение № 1',
       location: 'ул. Конституции СССР 24',
-      creator: { id: systemUser.id },
+      creator: { id: systemUser?.id },
     },
     {
       name: 'Подразделение № 2',
       location: 'ул. Пирогова 10',
-      creator: { id: systemUser.id },
+      creator: { id: systemUser?.id },
     },
     {
       name: 'Подразделение № 3',
       location: 'ул. Донская 62',
-      creator: { id: systemUser.id },
+      creator: { id: systemUser?.id },
     },
     {
       name: 'Подразделение № 4',
       location: 'ул. Абрикосовая 21А',
-      creator: { id: systemUser.id },
+      creator: { id: systemUser?.id },
     },
   ];
 
@@ -55,12 +55,12 @@ export async function seedDivision(dataSourse: DataSource) {
 
     await userRepo.update(
       { username: pair.username },
-      { division: { id: division.id } },
+      { division: { id: division?.id } },
     );
   }
   const role = await roleRepo.findOne({ where: { roleName: 'admin' } });
 
-  await userRepo.update({ role: { id: role.id } }, { division: { id: 1 } });
+  await userRepo.update({ role: { id: role?.id } }, { division: { id: 1 } });
 
   console.log('Пользователи успешно связаны с подразделениями');
 }

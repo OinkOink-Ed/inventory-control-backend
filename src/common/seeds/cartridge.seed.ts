@@ -32,14 +32,14 @@ export async function seedCartridge(dataSourse: DataSource) {
           state: CartridgeStatus.RECEIVED,
           model: { id: modelId },
           warehouse: { id: warehouseId },
-          creator: { id: systemUser.id },
+          creator: { id: systemUser?.id },
         }));
       else
         return Array.from({ length: 5 }, () => ({
           state: CartridgeStatus.MOVED,
           model: { id: modelId },
           warehouse: { id: warehouseId },
-          creator: { id: systemUser.id },
+          creator: { id: systemUser?.id },
         }));
     }),
   );
