@@ -13,28 +13,40 @@ import type { Decommissioning } from '../entities/Decommissioning';
 import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import type { User } from '@Modules/user/entities/User';
+import { AssertTManyProperty } from '@common/utils/typesUtils';
 
-type AssertDecommissionigHasWarehouse =
-  Decommissioning extends Pick<Decommissioning, 'warehouse' | 'creator'>
-    ? Decommissioning
-    : never;
+type AssertDecommissioning = AssertTManyProperty<
+  Decommissioning,
+  {
+    warehouse: Pick<Warehouse, 'id'>;
+    creator: Pick<User, 'id'>;
+  }
+>;
 
-type AssertDecommissioningModelAndCreator =
-  Cartridge extends Pick<Cartridge, 'model'> ? Cartridge : never;
+type AssertCartridge = AssertTManyProperty<
+  Cartridge,
+  {
+    model: Pick<Cartridge, 'id'>;
+  }
+>;
 
-type WarehouseType = Pick<Warehouse, 'id'>;
-type CreatorType = Pick<User, 'id'>;
-type CartridgeModelType = Pick<Cartridge, 'id'>;
+type StrictWarehouseType = Pick<Warehouse, 'id'>;
+type StrictCreatorType = Pick<User, 'id'>;
+type StrictCartridgeModelType = Pick<Cartridge, 'id'>;
+
+type WarehouseType = { warehouse: Pick<Warehouse, 'id'> };
+type CreatorType = { creator: Pick<User, 'id'> };
+type CartridgeModelType = { model: Pick<Cartridge, 'id'> };
 
 export class PostCreateDecommissioningDto
   implements
     Pick<
-      Decommissioning &
-        Cartridge &
-        AssertDecommissionigHasWarehouse &
-        AssertDecommissioningModelAndCreator,
-      'comment' | 'creator' | 'model' | 'state' | 'warehouse'
-    >
+      Decommissioning & Cartridge & AssertCartridge & AssertDecommissioning,
+      'comment' | 'state'
+    >,
+    WarehouseType,
+    CreatorType,
+    CartridgeModelType
 {
   @ApiProperty()
   @IsString()
@@ -55,9 +67,9 @@ export class PostCreateDecommissioningDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: WarehouseType;
+  warehouse: StrictWarehouseType;
 
-  creator: CreatorType;
+  creator: StrictCreatorType;
   state: CartridgeStatus.DECOMMISSIONED;
 
   @ApiProperty({
@@ -69,5 +81,5 @@ export class PostCreateDecommissioningDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: CartridgeModelType;
+  model: StrictCartridgeModelType;
 }

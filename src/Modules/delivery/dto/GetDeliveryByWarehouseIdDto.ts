@@ -1,44 +1,37 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import type { Delivery } from '../entities/Delivery';
+import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 
-export class GetDeliveryByWarehouseIdDto {
-  @Expose()
+export class GetDeliveryByWarehouseIdDto
+  implements Pick<Delivery, 'id'>, Pick<Warehouse, 'name'>
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   warehouse: string;
 
-  @Expose()
   @ApiProperty()
   division: string;
 
-  @Expose()
   @ApiProperty()
   kabinet: string;
 
-  @Expose()
   @ApiProperty()
   lastname: string;
 
-  @Expose()
   @ApiProperty()
   name: string;
 
-  @Expose()
   @ApiProperty()
   patronimyc: string;
 
-  @Expose()
   @ApiProperty()
   modelname: string;
 
-  @Expose()
   @ApiProperty()
   count: number;
 
-  @Expose()
   @ApiProperty({ type: 'string' })
   createdAt: Date;
 }
