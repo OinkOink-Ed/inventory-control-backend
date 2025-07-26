@@ -2,12 +2,12 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge';
 import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
 import { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
 import { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
 import { ServiceCreateCartridgeDecommissioning } from '@Modules/decommissioning/interfaces/ServiceCreateCartridgeMovement';
-import { ServiceCreateDecommissioning } from '@Modules/decommissioning/service/ServiceCreateDecommissioning';
+import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesForMapped/ServiceCreateDecommissioning';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 

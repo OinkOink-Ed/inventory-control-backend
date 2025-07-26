@@ -1,23 +1,26 @@
 import {
   Mapper,
   MappingProfile,
+  autoMap,
   createMap,
   forMember,
   mapFrom,
 } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
-import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
+import { ServiceMoveCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge';
 import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
-import { ServiceCreateDecommissioning } from '@Modules/decommissioning/service/ServiceCreateDecommissioning';
+import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesForMapped/ServiceCreateDecommissioning';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
-import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
+import { ServiceCreateDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateDelivery';
 import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
 import { ServiceCreateMovement } from '@Modules/movement/service/ServiceCreateMovement';
 import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
 import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
 import { Injectable } from '@nestjs/common';
+import { GetDeliveryByWarehouseIdService } from '@Modules/delivery/ClassesForMapped/GetDeliveryByWarehouseIdService';
+import { GetDeliveryByWarehouseIdDto } from '@Modules/delivery/dto/GetDeliveryByWarehouseIdDto';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -85,14 +88,16 @@ export class MapperProfile extends AutomapperProfile {
           (dest: ServiceMoveCartridge) => dest.model,
           mapFrom((src: PostCreateMovementDto) => ({ id: src.model.id })),
         ),
-        forMember(
-          (dest: ServiceMoveCartridge) => dest.count,
-          mapFrom((src: PostCreateMovementDto) => src.count),
-        ),
-        forMember(
-          (dest: ServiceMoveCartridge) => dest.state,
-          mapFrom((src: PostCreateMovementDto) => src.state),
-        ),
+        autoMap('count'),
+        // forMember(
+        //   (dest: ServiceMoveCartridge) => dest.count,
+        //   mapFrom((src: PostCreateMovementDto) => src.count),
+        // ),
+        autoMap('state'),
+        // forMember(
+        //   (dest: ServiceMoveCartridge) => dest.state,
+        //   mapFrom((src: PostCreateMovementDto) => src.state),
+        // ),
       );
       createMap(
         mapper,
@@ -110,10 +115,11 @@ export class MapperProfile extends AutomapperProfile {
             id: src.warehouse.id,
           })),
         ),
-        forMember(
-          (dest: ServiceCreateDecommissioning) => dest.comment,
-          mapFrom((src: PostCreateDecommissioningDto) => src.comment),
-        ),
+        autoMap('comment'),
+        // forMember(
+        //   (dest: ServiceCreateDecommissioning) => dest.comment,
+        //   mapFrom((src: PostCreateDecommissioningDto) => src.comment),
+        // ),
       );
       createMap(
         mapper,
@@ -131,14 +137,12 @@ export class MapperProfile extends AutomapperProfile {
             id: src.warehouse.id,
           })),
         ),
-        forMember(
-          (dest: ServiceDecommissioningCartridge) => dest.state,
-          mapFrom((src: PostCreateDecommissioningDto) => src.state),
-        ),
-        forMember(
-          (dest: ServiceDecommissioningCartridge) => dest.count,
-          mapFrom((src: PostCreateDecommissioningDto) => src.count),
-        ),
+        // forMember(
+        //   (dest: ServiceDecommissioningCartridge) => dest.state,
+        //   mapFrom((src: PostCreateDecommissioningDto) => src.state),
+        // ),
+        autoMap('state'),
+        autoMap('count'),
       );
       createMap(
         mapper,
@@ -156,14 +160,16 @@ export class MapperProfile extends AutomapperProfile {
           (dest: ServiceDeliveryCartridge) => dest.warehouse,
           mapFrom((src: PostCreateDeliveryDto) => ({ id: src.warehouse.id })),
         ),
-        forMember(
-          (dest: ServiceDeliveryCartridge) => dest.state,
-          mapFrom((src: PostCreateDeliveryDto) => src.state),
-        ),
-        forMember(
-          (dest: ServiceDeliveryCartridge) => dest.count,
-          mapFrom((src: PostCreateDeliveryDto) => src.count),
-        ),
+        autoMap('state'),
+        autoMap('count'),
+        // forMember(
+        //   (dest: ServiceDeliveryCartridge) => dest.state,
+        //   mapFrom((src: PostCreateDeliveryDto) => src.state),
+        // ),
+        // forMember(
+        //   (dest: ServiceDeliveryCartridge) => dest.count,
+        //   mapFrom((src: PostCreateDeliveryDto) => src.count),
+        // ),
       );
       createMap(
         mapper,
@@ -189,6 +195,28 @@ export class MapperProfile extends AutomapperProfile {
           (dest: ServiceCreateDelivery) => dest.accepting,
           mapFrom((src: PostCreateDeliveryDto) => ({ id: src.accepting.id })),
         ),
+      );
+      createMap(
+        mapper,
+        GetDeliveryByWarehouseIdService,
+        GetDeliveryByWarehouseIdDto,
+        autoMap('id'),
+        autoMap('accepting'),
+        autoMap('creator'),
+        autoMap('warehouse'),
+        autoMap('division'),
+        autoMap('kabinet'),
+        forMember(
+          (dest: GetDeliveryByWarehouseIdDto) => dest.model,
+          mapFrom((src: GetDeliveryByWarehouseIdService) =>
+            src.action.length > 0 ? src.action[0].cartridge.model.name : '',
+          ),
+        ),
+        forMember(
+          (dest: GetDeliveryByWarehouseIdDto) => dest.count,
+          mapFrom((src: GetDeliveryByWarehouseIdService) => src.action.length),
+        ),
+        autoMap('createdAt'),
       );
     };
   }

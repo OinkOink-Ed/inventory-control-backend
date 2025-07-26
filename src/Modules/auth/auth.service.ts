@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { ServiceRefresh } from './service/ServiceRefresh';
+import { ServiceRefresh } from './interfaces/ServiceRefresh';
 import { PostlogoutDto } from './dto/PostLogoutDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostRefreshDto } from './dto/PostRefreshDto';

@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const validationSchema = Joi.object({
-  JWT_SECRET: Joi.string().required(),
+  JWT_ACCESS_SECRET: Joi.string().required(),
   APP_PORT: Joi.number().port().required(),
   DB_USER: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),

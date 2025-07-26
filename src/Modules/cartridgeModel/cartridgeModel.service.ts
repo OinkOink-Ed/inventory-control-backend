@@ -1,11 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
 import { PostCreateCartridgeModelDto } from '@Modules/cartridgeModel/dto/PostCreateCartridgeModelDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
 import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllDetailedCartridgeModelDto';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 
 @Injectable()
 export class CartridgeModelService {
@@ -23,7 +24,7 @@ export class CartridgeModelService {
   }
 
   async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
-    const select: FindOptionsSelect<GetResponseAllCartridgeModelDto> = {
+    const select: RequiredFindOptionsSelect<GetResponseAllCartridgeModelDto> = {
       id: true,
       name: true,
     };
@@ -32,12 +33,13 @@ export class CartridgeModelService {
   }
 
   async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
-    const select: FindOptionsSelect<GetResponseAllDetailedCartridgeModelDto> = {
-      id: true,
-      name: true,
-      creator: { id: true, lastname: true, name: true, patronimyc: true },
-      createdAt: true,
-    };
+    const select: RequiredFindOptionsSelect<GetResponseAllDetailedCartridgeModelDto> =
+      {
+        id: true,
+        name: true,
+        creator: { id: true, lastname: true, name: true, patronimyc: true },
+        createdAt: true,
+      };
 
     return await this.repoCartridgeModel.find({
       relations: { creator: true },

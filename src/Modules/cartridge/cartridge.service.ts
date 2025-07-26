@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, In, QueryRunner, Repository } from 'typeorm';
+import { In, QueryRunner, Repository } from 'typeorm';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import { ServiceCreateCartridge } from '@Modules/cartridge/service/ServiceCreateCartridge';
-import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
-import { ServiceDecommissioningCartridge } from '@Modules/cartridge/service/ServiceDecommissioningCartridge';
+import { ServiceCreateCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceCreateCartridge';
+import { ServiceMoveCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
+import { ServiceDecommissioningCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import { NoCartridgesException } from '@common/filters/types/NoCartridgesException';
 import { InsufficientCartridgesException } from '@common/filters/types/InsufficientCartridgesException';
+import type { Base } from '@common/entities/Base';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 
 @Injectable()
 export class CartridgeService {
@@ -18,9 +20,11 @@ export class CartridgeService {
     private readonly repoCartridges: Repository<Cartridge>,
   ) {}
 
-  selectFieldsToUpdate: FindOptionsSelect<{ id: true; cretedAt: true }> = {
+  selectFieldsToUpdate: RequiredFindOptionsSelect<
+    Pick<Base, 'id' | 'createdAt'>
+  > = {
     id: true,
-    cretedAt: true,
+    createdAt: true,
   };
 
   async createMany(
@@ -187,13 +191,14 @@ export class CartridgeService {
   async getCartridgesById(
     warehouseId: number,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
-    const select: FindOptionsSelect<GetResponseAllCartridgeInWarehouseDto> = {
-      id: true,
-      model: { id: true, name: true },
-      state: true,
-      warehouse: { id: true, name: true },
-      createdAt: true,
-    };
+    const select: RequiredFindOptionsSelect<GetResponseAllCartridgeInWarehouseDto> =
+      {
+        id: true,
+        model: { id: true, name: true },
+        state: true,
+        warehouse: { id: true, name: true },
+        createdAt: true,
+      };
 
     return await this.repoCartridges.find({
       where: {

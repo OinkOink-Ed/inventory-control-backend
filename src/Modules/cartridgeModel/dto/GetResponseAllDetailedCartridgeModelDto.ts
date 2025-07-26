@@ -1,17 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type { CartridgeModel } from '../entities/CartridgeModel';
-import type { User } from '@Modules/user/entities/User';
-import { AssertTManyProperty } from '@common/utils/typesUtils';
-
-export type Assert = AssertTManyProperty<
-  CartridgeModel,
-  {
-    creator: Pick<User, 'id' | 'lastname' | 'name' | 'patronimyc'>;
-  }
->;
-
-type StrictCreatorType = Pick<User, 'id' | 'lastname' | 'name' | 'patronimyc'>;
-type CreatorType = { creator: StrictCreatorType };
+import {
+  Assert,
+  CreatorType,
+  StrictCreatorType,
+} from '../types/GetResponseAllDetailedCartridgeModelTypes';
 
 export class GetResponseAllDetailedCartridgeModelDto
   implements

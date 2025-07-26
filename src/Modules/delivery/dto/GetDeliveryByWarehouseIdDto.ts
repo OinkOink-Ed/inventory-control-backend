@@ -1,37 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
-import type { Delivery } from '../entities/Delivery';
-import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { GetDeliveryByWarehouseIdService } from '../ClassesForMapped/GetDeliveryByWarehouseIdService';
 
-export class GetDeliveryByWarehouseIdDto
-  implements Pick<Delivery, 'id'>, Pick<Warehouse, 'name'>
-{
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  warehouse: string;
-
-  @ApiProperty()
-  division: string;
-
-  @ApiProperty()
-  kabinet: string;
-
-  @ApiProperty()
-  lastname: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  patronimyc: string;
-
-  @ApiProperty()
-  modelname: string;
-
-  @ApiProperty()
-  count: number;
-
+export class GetDeliveryByWarehouseIdDto extends PickType(
+  GetDeliveryByWarehouseIdService,
+  [
+    'id',
+    'warehouse',
+    'division',
+    'kabinet',
+    'creator',
+    'accepting',
+    'createdAt',
+  ] as const,
+) {
   @ApiProperty({ type: 'string' })
-  createdAt: Date;
+  model: string;
+
+  @ApiProperty({ type: 'number' })
+  count: number;
 }

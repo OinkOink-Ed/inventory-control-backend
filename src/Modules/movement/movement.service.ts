@@ -2,7 +2,7 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceMoveCartridge } from '@Modules/cartridge/service/ServiceMoveCartridge';
+import { ServiceMoveCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge';
 import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
 import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
 import { Movement } from '@Modules/movement/entities/Movement';

@@ -1,15 +1,17 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/service/ServiceDeliveryCartridge';
+import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
 import { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
 import { Delivery } from '@Modules/delivery/entities/Delivery';
-import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/interfaces/ServiceCreateCartridgeDelivery';
-import { ServiceCreateDelivery } from '@Modules/delivery/service/ServiceCreateDelivery';
+import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateCartridgeDelivery';
+import { ServiceCreateDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateDelivery';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
+import { GetDeliveryByWarehouseIdService } from './ClassesForMapped/GetDeliveryByWarehouseIdService';
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
 
 @Injectable()
@@ -19,6 +21,7 @@ export class DeliveryService {
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
     @InjectRepository(Delivery)
+    private readonly repoDelivery: Repository<Delivery>,
     private readonly dataSourse: DataSource,
   ) {}
 
@@ -78,51 +81,37 @@ export class DeliveryService {
     }
   }
 
+  //Допилить обработку данных перед отдачей клиенту
   async getDetailedByWarehouseId(
     warehouseId: number,
-  ): Promise<GetDeliveryByWarehouseIdDto[] | void> {
-    const queryRunner = this.dataSourse.createQueryRunner();
+  ): Promise<GetDeliveryByWarehouseIdDto[]> {
+    const select: RequiredFindOptionsSelect<GetDeliveryByWarehouseIdService> = {
+      id: true,
+      division: { name: true },
+      kabinet: { number: true },
+      accepting: { lastname: true, name: true, patronimyc: true },
+      creator: { lastname: true, name: true, patronimyc: true },
+      warehouse: { name: true },
+      action: { id: true, cartridge: { id: true, model: { name: true } } },
+      createdAt: true,
+    };
 
-    try {
-      // Подключаемся к базе данных
-      await queryRunner.connect();
+    const result = await this.repoDelivery.find({
+      select,
+      where: { warehouse: { id: warehouseId } },
+      relations: {
+        accepting: true,
+        creator: true,
+        kabinet: true,
+        division: true,
+        action: { cartridge: { model: true } },
+      },
+    });
 
-      // Выполняем нативный SQL-запрос
-      const deliverys = await queryRunner.query(
-        `
-        SELECT delivery.id 'id', 
-warehouse.name 'warehouse',
-division.name 'division',
-kabinet.number 'kabinet',
-user.lastname 'lastname', user.name 'name', user.patronimyc 'patronimyc',
-staff.lastname 'lastnameAccepted', staff.name 'nameAccepted', staff.patronimyc 'patronimycAccepted',
-cartridge_model.name 'model.name',
-COUNT(delivery.id) as count_cartridge, delivery.createdAt 'delivery.createdAt' FROM delivery
-JOIN cartridge_delivery ON cartridge_delivery.deliveryId  = delivery.id
-JOIN warehouse ON warehouse.id = delivery.warehouseId
-JOIN division ON division.id = delivery.divisionId
-JOIN kabinet ON kabinet.id = delivery.kabinetId
-JOIN user ON user.id = delivery.creatorId
-LEFT JOIN staff ON staff.id = delivery.acceptingId
-JOIN cartridge ON cartridge.id = cartridge_delivery.cartridgeId
-JOIN cartridge_model ON cartridge_model.id = cartridge.modelId
-GROUP BY delivery.id, cartridge_model.name
-        `,
-        [warehouseId],
-      );
-
-      // const plainDeliverys = deliverys.map((delivery) =>
-      //   instanceToPlain(delivery, { exposeUnsetFields: false }),
-      // );
-
-      // return plainToInstance(GetDeliveryByWarehouseIdDto, plainDeliverys, {
-      //   excludeExtraneousValues: true,
-      // });
-      return deliverys;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      await queryRunner.release();
-    }
+    return this.mapper.mapArray(
+      result,
+      GetDeliveryByWarehouseIdService,
+      GetDeliveryByWarehouseIdDto,
+    );
   }
 }
