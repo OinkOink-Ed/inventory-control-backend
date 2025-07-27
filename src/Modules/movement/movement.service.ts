@@ -7,7 +7,7 @@ import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementD
 import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
 import { Movement } from '@Modules/movement/entities/Movement';
 import { ServiceCreateCartridgeMovement } from '@Modules/movement/interfaces/ServiceCreateCartridgeMovement';
-import { ServiceCreateMovement } from '@Modules/movement/service/ServiceCreateMovement';
+import { ServiceCreateMovement } from '@Modules/movement/ClassesForMapped/ServiceCreateMovement';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 

@@ -5,7 +5,7 @@ import { Mapper } from '@automapper/core';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
-import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
+import { ServiceCreateReceiving } from '@Modules/receiving/ClassesForMapped/ServiceCreateReceiving';
 import { Receiving } from '@Modules/receiving/entities/Receiving';
 import { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
 import { ServiceCreateCartridgeReceiving } from '@Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';

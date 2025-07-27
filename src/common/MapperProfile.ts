@@ -15,9 +15,9 @@ import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesFo
 import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
 import { ServiceCreateDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateDelivery';
 import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
-import { ServiceCreateMovement } from '@Modules/movement/service/ServiceCreateMovement';
+import { ServiceCreateMovement } from '@Modules/movement/ClassesForMapped/ServiceCreateMovement';
 import { PostCreateReceivingDto } from '@Modules/receiving/dto/PostCreateReceivingDto';
-import { ServiceCreateReceiving } from '@Modules/receiving/service/ServiceCreateReceiving';
+import { ServiceCreateReceiving } from '@Modules/receiving/ClassesForMapped/ServiceCreateReceiving';
 import { Injectable } from '@nestjs/common';
 import { GetDeliveryByWarehouseIdService } from '@Modules/delivery/ClassesForMapped/GetDeliveryByWarehouseIdService';
 import { GetDeliveryByWarehouseIdDto } from '@Modules/delivery/dto/GetDeliveryByWarehouseIdDto';

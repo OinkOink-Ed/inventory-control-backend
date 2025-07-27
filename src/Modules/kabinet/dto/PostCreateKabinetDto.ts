@@ -1,9 +1,17 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import {
+  Assert,
+  DivisionType,
+  StrictDivisionType,
+  StrictUserType,
+  UserType,
+} from '@Modules/kabinet/types/PostCreateKabinetTypes';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class PostCreateKabinetDto {
+export class PostCreateKabinetDto
+  implements Pick<Assert & Kabinet, 'number'>, UserType, DivisionType
+{
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -16,9 +24,7 @@ export class PostCreateKabinetDto {
     },
     required: ['id'],
   })
-  @Type(() => ObjectIdDto)
-  @ValidateNested()
-  division: ObjectIdDto;
+  division: StrictDivisionType;
 
-  creator: { id: number };
+  creator: StrictUserType;
 }

@@ -1,16 +1,15 @@
+import type { Division } from '@Modules/division/entities/Division';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
 
-export class GetReponseAllDivisionDto {
-  @Expose()
+export class GetReponseAllDivisionDto
+  implements Pick<Division, 'id' | 'name' | 'location'>
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   name: string;
 
-  @Expose()
   @ApiProperty()
   location: string;
 }

@@ -5,6 +5,7 @@ import { Division } from '@Modules/division/entities/Division';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 
 @Injectable()
 export class DivisionService {
@@ -22,6 +23,14 @@ export class DivisionService {
   }
 
   async getAll(): Promise<GetReponseAllDivisionDto[]> {
-    return await this.repo.find();
+    const select: RequiredFindOptionsSelect<GetReponseAllDivisionDto> = {
+      id: true,
+      name: true,
+      location: true,
+    };
+
+    return await this.repo.find({
+      select,
+    });
   }
 }

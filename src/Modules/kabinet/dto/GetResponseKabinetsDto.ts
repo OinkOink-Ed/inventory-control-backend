@@ -1,21 +1,22 @@
+import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import {
+  Assert,
+  DivisionType,
+  StrictDivisionType,
+} from '@Modules/kabinet/types/GetResponseKabinetsTypes';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
 
-class Division {
-  @Expose()
-  name: string;
-}
-
-export class GetResponseKabinetsDto {
-  @Expose()
+export class GetResponseKabinetsDto
+  implements
+    Pick<Assert & Kabinet, 'id' | 'number' | 'createdAt'>,
+    DivisionType
+{
   @ApiProperty()
   id: number;
 
-  @Expose()
   @ApiProperty()
   number: string;
 
-  @Expose()
   @ApiProperty({
     type: 'object',
     properties: {
@@ -23,10 +24,8 @@ export class GetResponseKabinetsDto {
     },
     required: ['name'],
   })
-  @Type(() => Division)
-  division: Division;
+  division: StrictDivisionType;
 
-  @Expose()
   @ApiProperty({ type: 'string' })
   createdAt: Date;
 }

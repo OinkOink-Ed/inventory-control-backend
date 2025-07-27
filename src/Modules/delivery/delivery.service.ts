@@ -81,7 +81,6 @@ export class DeliveryService {
     }
   }
 
-  //Допилить обработку данных перед отдачей клиенту
   async getDetailedByWarehouseId(
     warehouseId: number,
   ): Promise<GetDeliveryByWarehouseIdDto[]> {
