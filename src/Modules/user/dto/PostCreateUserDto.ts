@@ -1,7 +1,5 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsIn,
   IsString,
@@ -9,27 +7,23 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import {
+  Assert,
+  CreatorType,
+  Divisiontype,
+  RoleType,
+  StrictCreator,
+  StrictDivision,
+  StrictRole,
+} from '../types/PostCreateUserTypes';
 import type { User } from '../entities/User';
-import type { Role } from '@Modules/role/entities/Role';
-import { CreatorType } from '@common/dto/types';
-import type { Division } from '@Modules/division/entities/Division';
+import { Type } from 'class-transformer';
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 
-type AssertUserHasRoleAndCreatorAndDivision = User extends {
-  role: any;
-  creator: any;
-  division: any;
-}
-  ? User
-  : never;
-
-type RoleType = { role: Pick<Role, 'id'> };
-type DivisionType = { role: Pick<Division, 'id'> };
-
-//Валится валидация
 export class PostCreateUserDto
   implements
     Pick<
-      AssertUserHasRoleAndCreatorAndDivision,
+      Assert & User,
       | 'username'
       | 'password'
       | 'name'
@@ -40,7 +34,7 @@ export class PostCreateUserDto
     >,
     CreatorType,
     RoleType,
-    DivisionType
+    Divisiontype
 {
   @ApiProperty()
   @IsString()
@@ -85,7 +79,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  role: ObjectIdDto;
+  role: StrictRole;
 
   @ApiProperty({
     type: 'object',
@@ -96,7 +90,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  division: ObjectIdDto;
+  division: StrictDivision;
 
   @ApiProperty({
     enum: UserStatus,
@@ -104,5 +98,5 @@ export class PostCreateUserDto
   @IsIn([UserStatus.ACTIVE])
   state: UserStatus.ACTIVE;
 
-  creator: { id: number };
+  creator: StrictCreator;
 }

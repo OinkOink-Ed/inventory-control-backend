@@ -21,6 +21,8 @@ import { ServiceCreateReceiving } from '@Modules/receiving/ClassesForMapped/Serv
 import { Injectable } from '@nestjs/common';
 import { GetDeliveryByWarehouseIdService } from '@Modules/delivery/ClassesForMapped/GetDeliveryByWarehouseIdService';
 import { GetDeliveryByWarehouseIdDto } from '@Modules/delivery/dto/GetDeliveryByWarehouseIdDto';
+import { GetResponseDetailedStaffByIdService } from '@Modules/delivery/ClassesForMapped/GetResponseDetailedStaffByIdService';
+import { GetResponseDetailedStaffByIdDto } from '@Modules/delivery/dto/GetResponseDetailedStaffByIdDto';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -217,6 +219,26 @@ export class MapperProfile extends AutomapperProfile {
           mapFrom((src: GetDeliveryByWarehouseIdService) => src.action.length),
         ),
         autoMap('createdAt'),
+      );
+      createMap(
+        mapper,
+        GetResponseDetailedStaffByIdService,
+        GetResponseDetailedStaffByIdDto,
+        autoMap('id'),
+        autoMap('division'),
+        autoMap('kabinet'),
+        forMember(
+          (dest: GetResponseDetailedStaffByIdDto) => dest.model,
+          mapFrom((src: GetResponseDetailedStaffByIdService) =>
+            src.action.length > 0 ? src.action[0].cartridge.model.name : '',
+          ),
+        ),
+        forMember(
+          (dest: GetResponseDetailedStaffByIdDto) => dest.count,
+          mapFrom(
+            (src: GetResponseDetailedStaffByIdService) => src.action.length,
+          ),
+        ),
       );
     };
   }

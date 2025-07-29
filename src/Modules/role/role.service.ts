@@ -1,10 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Role } from '@Modules/role/entities/Role';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
 import { GetResponseAllRole } from '@Modules/role/dto/GetResponseAllRole';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 
 @Injectable()
 export class RoleService {
@@ -22,7 +23,7 @@ export class RoleService {
   }
 
   async getAll(): Promise<GetResponseAllRole[]> {
-    const select: FindOptionsSelect<GetResponseAllRole> = {
+    const select: RequiredFindOptionsSelect<GetResponseAllRole> = {
       id: true,
       roleName: true,
     };

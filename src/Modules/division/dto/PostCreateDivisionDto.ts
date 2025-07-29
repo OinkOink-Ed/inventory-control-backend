@@ -1,3 +1,4 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { Division } from '@Modules/division/entities/Division';
 import {
   Assert,
@@ -7,7 +8,8 @@ import {
   WarehouseType,
 } from '@Modules/division/types/PostCreateDivisionTypes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 export class PostCreateDivisionDto
   implements
@@ -32,6 +34,8 @@ export class PostCreateDivisionDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   warehouse: StrictWarehouseType;
 
   creator: StrictUserType;

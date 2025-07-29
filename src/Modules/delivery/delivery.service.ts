@@ -13,6 +13,8 @@ import { DataSource, Repository } from 'typeorm';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { GetDeliveryByWarehouseIdService } from './ClassesForMapped/GetDeliveryByWarehouseIdService';
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
+import { GetResponseDetailedStaffByIdService } from '@Modules/delivery/ClassesForMapped/GetResponseDetailedStaffByIdService';
+import { GetResponseDetailedStaffByIdDto } from './dto/GetResponseDetailedStaffByIdDto';
 
 @Injectable()
 export class DeliveryService {
@@ -111,6 +113,37 @@ export class DeliveryService {
       result,
       GetDeliveryByWarehouseIdService,
       GetDeliveryByWarehouseIdDto,
+    );
+  }
+
+  async getDeliveryByStaffId(
+    staffId: number,
+  ): Promise<GetResponseDetailedStaffByIdDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseDetailedStaffByIdService> =
+      {
+        action: { id: true, cartridge: { id: true, model: { name: true } } },
+        division: { name: true },
+        kabinet: { number: true },
+        id: true,
+      };
+
+    const result = await this.repoDelivery.find({
+      select,
+      where: {
+        accepting: { id: staffId },
+      },
+      relations: {
+        accepting: true,
+        action: { cartridge: { model: true } },
+        division: true,
+        kabinet: true,
+      },
+    });
+
+    return this.mapper.mapArray(
+      result,
+      GetResponseDetailedStaffByIdService,
+      GetResponseDetailedStaffByIdDto,
     );
   }
 }

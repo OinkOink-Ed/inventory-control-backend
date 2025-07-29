@@ -1,10 +1,26 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
+import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
+import {
+  Assert,
+  ModelType,
+  StrictModelType,
+  StrictUserType,
+  StrictWarehouseType,
+  UserType,
+  WarehouseType,
+} from '../types/PostCreateReceivingTypes';
+import { Type } from 'class-transformer';
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 
-export class PostCreateReceivingDto {
+export class PostCreateReceivingDto
+  implements
+    Pick<Assert & Cartridge, 'state'>,
+    ModelType,
+    UserType,
+    WarehouseType
+{
   @ApiProperty({
     type: 'object',
     properties: {
@@ -14,7 +30,7 @@ export class PostCreateReceivingDto {
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: ObjectIdDto;
+  model: StrictModelType;
 
   @ApiProperty({
     type: 'object',
@@ -25,9 +41,9 @@ export class PostCreateReceivingDto {
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: ObjectIdDto;
+  warehouse: StrictWarehouseType;
 
-  creator: { id: number };
+  creator: StrictUserType;
 
   state: CartridgeStatus.RECEIVED;
 

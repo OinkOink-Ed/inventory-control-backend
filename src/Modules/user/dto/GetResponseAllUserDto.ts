@@ -1,23 +1,13 @@
 import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
 import type { User } from '../entities/User';
-import type { Role } from '@Modules/role/entities/Role';
-import type { Division } from '@Modules/division/entities/Division';
-import { AssertTManyProperty } from '@common/utils/typesUtils';
-
-type StrictRole = Pick<Role, 'id' | 'roleName'>;
-type StrictDivision = Pick<Division, 'id' | 'name'>;
-
-type RoleType = { role: StrictRole };
-type Divisiontype = { division: StrictDivision };
-
-type Assert = AssertTManyProperty<
-  User,
-  {
-    role: Pick<Role, 'id' | 'roleName'>;
-    division: Pick<Division, 'id' | 'name'>;
-  }
->;
+import {
+  Assert,
+  Divisiontype,
+  RoleType,
+  StrictDivision,
+  StrictRole,
+} from '../types/GetResponseAllUserTypes';
 
 export class GetResponseAllUserDto
   implements

@@ -1,16 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Matches, MinLength } from 'class-validator';
+import {
+  Assert,
+  StrictUserType,
+  UserType,
+} from '../types/PostCreateStaffTypes';
 import type { Staff } from '../entities/Staff';
-import type { User } from '@Modules/user/entities/User';
-
-type AssertStaffHasCreator = Staff extends { creator: any } ? Staff : never;
-
-type CreatorType = { creator: Pick<User, 'id'> };
 
 export class PostCreateStaffDto
-  implements
-    Pick<AssertStaffHasCreator, 'name' | 'lastname' | 'patronimyc'>,
-    CreatorType
+  implements Pick<Assert & Staff, 'name' | 'lastname' | 'patronimyc'>, UserType
 {
   @ApiProperty()
   @IsString()
@@ -29,5 +27,5 @@ export class PostCreateStaffDto
   @Matches(/^\S+$/)
   patronimyc: string;
 
-  creator: { id: number };
+  creator: StrictUserType;
 }

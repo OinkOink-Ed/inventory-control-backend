@@ -1,11 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
 import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 
 @Injectable()
 export class WarehouseService {
@@ -23,7 +24,7 @@ export class WarehouseService {
   }
 
   async getAll(): Promise<GetResponseAllWarehouseDto[]> {
-    const select: FindOptionsSelect<GetResponseAllWarehouseDto> = {
+    const select: RequiredFindOptionsSelect<GetResponseAllWarehouseDto> = {
       id: true,
       name: true,
     };
@@ -34,34 +35,11 @@ export class WarehouseService {
   async getDetailedByWarehouseId(
     warehouseId: number,
   ): Promise<GetResponseAllDetailedWarehouseDto[]> {
-    // Определяем поля для select
-    const selectFields: (keyof GetResponseAllDetailedWarehouseDto)[] = [
-      'divisionId',
-      'kabinetId',
-      'number',
-    ];
+    const select: RequiredFindOptionsSelect<GetResponseAllDetailedWarehouseDto> =
+      {
+        division: { id: true, kabinets: { id: true, number: true } },
+      };
 
-    // Объект маппинга полей DTO на SQL-выражения
-    //Record - ключи использует из DTO, и указывает тип значения ключа
-    const fieldToSqlMap: Record<
-      keyof GetResponseAllDetailedWarehouseDto,
-      string
-    > = {
-      divisionId: 'division.id AS divisionId',
-      kabinetId: 'kabinet.id AS kabinetId',
-      number: 'kabinet.number AS number',
-    };
-
-    // Формируем SQL-выражения
-    const selectExpressions = selectFields.map((field) => fieldToSqlMap[field]);
-
-    const result = this.repo
-      .createQueryBuilder('warehouse')
-      .leftJoinAndSelect('warehouse.division', 'division')
-      .leftJoin('division.kabinets', 'kabinet')
-      .select(selectExpressions)
-      .where('warehouse.id = :id', { id: warehouseId });
-
-    return result.getRawMany<GetResponseAllDetailedWarehouseDto>();
+    return this.repo.find({ select, where: { id: warehouseId } });
   }
 }

@@ -1,3 +1,4 @@
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
 import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import {
@@ -16,7 +17,8 @@ import {
   WhoAcceptedType,
 } from '@Modules/movement/types/PostCreateMovementTypes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
 
 export class PostCreateMovementDto
   implements
@@ -35,6 +37,8 @@ export class PostCreateMovementDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   model: StrictModelType;
 
   @ApiProperty({
@@ -44,6 +48,8 @@ export class PostCreateMovementDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   warehouse: StrictWarehouseType;
 
   @ApiProperty({
@@ -53,6 +59,8 @@ export class PostCreateMovementDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   warehouseFrom: StrictWarehouseFromType;
 
   @ApiProperty({
@@ -62,6 +70,8 @@ export class PostCreateMovementDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   warehouseWhere: StrictWarehouseWhereType;
 
   @ApiProperty({
@@ -71,9 +81,12 @@ export class PostCreateMovementDto
     },
     required: ['id'],
   })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
   whoAccepted: StrictWhoAcceptedType;
 
   creator: StrictUserType;
+
   state: CartridgeStatus.MOVED;
 
   @ApiProperty()

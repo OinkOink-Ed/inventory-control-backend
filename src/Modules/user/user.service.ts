@@ -1,14 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '@Modules/user/entities/User';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
-import { ServiceForAuthFindUserDto } from '@Modules/user/service/ServiceForAuthFindUserDto';
+import { ServiceForAuthFindUser } from '@Modules/user/service/ServiceForAuthFindUser';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
-import { ServiceFindUserDto } from '@Modules/user/service/ServiceFindUserDto';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
+import { ServiceForFindUser } from './service/ServiceFindUser';
 
 @Injectable()
 export class UserService {
@@ -43,8 +44,8 @@ export class UserService {
 
   async findOneForAuth(
     username: string,
-  ): Promise<ServiceForAuthFindUserDto | null> {
-    const select: FindOptionsSelect<ServiceForAuthFindUserDto> = {
+  ): Promise<ServiceForAuthFindUser | null> {
+    const select: RequiredFindOptionsSelect<ServiceForAuthFindUser> = {
       id: true,
       password: true,
       role: { roleName: true },
@@ -59,8 +60,8 @@ export class UserService {
     });
   }
 
-  async findOne(userId: number): Promise<ServiceFindUserDto | null> {
-    const select: FindOptionsSelect<ServiceFindUserDto> = {
+  async findOne(userId: number): Promise<ServiceForFindUser | null> {
+    const select: RequiredFindOptionsSelect<ServiceForFindUser> = {
       id: true,
       role: { roleName: true },
     };
@@ -75,7 +76,7 @@ export class UserService {
   }
 
   async getAll(): Promise<GetResponseAllUserDto[]> {
-    const select: FindOptionsSelect<GetResponseAllUserDto> = {
+    const select: RequiredFindOptionsSelect<GetResponseAllUserDto> = {
       id: true,
       name: true,
       lastname: true,

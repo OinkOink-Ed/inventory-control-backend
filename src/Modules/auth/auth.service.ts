@@ -1,6 +1,5 @@
 import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
 import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
-import { ServiceForAuthFindUserDto } from '@Modules/user/service/ServiceForAuthFindUserDto';
 import { UserService } from '@Modules/user/user.service';
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,7 +11,8 @@ import { ServiceRefresh } from './interfaces/ServiceRefresh';
 import { PostlogoutDto } from './dto/PostLogoutDto';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { PostRefreshDto } from './dto/PostRefreshDto';
-import { ServiceFindUserDto } from '@Modules/user/service/ServiceFindUserDto';
+import { ServiceForAuthFindUser } from '@Modules/user/service/ServiceForAuthFindUser';
+import { ServiceForFindUser } from '@Modules/user/service/ServiceFindUser';
 
 @Injectable()
 export class AuthService {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async signIn(username: string, pass: string): Promise<PostResponseAuthDto> {
-    const user: ServiceForAuthFindUserDto | null =
+    const user: ServiceForAuthFindUser | null =
       await this.usersService.findOneForAuth(username);
 
     if (!user) {
@@ -79,7 +79,7 @@ export class AuthService {
     }
 
     //Но пассворд то нет
-    let payload: { sub: ServiceFindUserDto };
+    let payload: { sub: ServiceForFindUser };
     try {
       payload = await this.jwtService.verifyAsync(refreshToken.token, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

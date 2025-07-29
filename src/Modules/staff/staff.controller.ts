@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
@@ -13,7 +6,6 @@ import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { User } from '@common/decorators/User';
 import { PostCreateStaffDto } from './dto/PostCreateStaffDto';
 import { GetResponseAllStaffDto } from './dto/GetResponseAllStaffDto';
-import { GetResponseDetailedStaffById } from './dto/GetResponseDetailedStaffById';
 
 @Controller('staff')
 export class StaffController {
@@ -42,18 +34,5 @@ export class StaffController {
   @ApiErrorResponses()
   async getAll(): Promise<GetResponseAllStaffDto[]> {
     return await this.staffService.getAll();
-  }
-
-  @Get('detailed/:staffId')
-  @ApiBearerAuth()
-  @ApiCreatedResponse({
-    type: () => GetResponseDetailedStaffById,
-    isArray: true,
-  })
-  @ApiErrorResponses()
-  async getDeteiledById(
-    @Param('staffId', ParseIntPipe) staffId: number,
-  ): Promise<GetResponseDetailedStaffById[]> {
-    return await this.staffService.getDeteiledById(staffId);
   }
 }

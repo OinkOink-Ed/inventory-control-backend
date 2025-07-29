@@ -1,7 +1,5 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 import { UserStatus } from '@common/enums/UserStatus';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsIn,
   IsNotEmpty,
@@ -11,20 +9,15 @@ import {
   ValidateNested,
 } from 'class-validator';
 import type { User } from '../entities/User';
-import type { Role } from '@Modules/role/entities/Role';
-import { AssertTManyProperty } from '@common/utils/typesUtils';
-
-type Assert = AssertTManyProperty<
-  User,
-  {
-    role: Pick<Role, 'id'>;
-  }
->;
-type StrictRole = Pick<Role, 'id'>;
-type RoleType = { role: StrictRole };
-
-type StrictCreator = Pick<User, 'id'>;
-type CreatorType = { creator: StrictCreator };
+import {
+  Assert,
+  CreatorType,
+  RoleType,
+  StrictCreator,
+  StrictRole,
+} from '../types/PostCreateAdminTypes';
+import { Type } from 'class-transformer';
+import { ObjectIdDto } from '@common/dto/ObjectIdDto';
 
 export class PostCreateAdminDto
   implements
