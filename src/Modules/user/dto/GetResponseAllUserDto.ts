@@ -50,12 +50,11 @@ export class GetResponseAllUserDto
   state: UserStatus;
 
   @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
-      name: { type: 'string' },
+    type: 'array',
+    items: {
+      properties: { id: { type: 'number' }, name: { type: 'string' } },
+      required: ['id', 'name'],
     },
-    required: ['id', 'name'],
   })
-  division: StrictDivision;
+  division: StrictDivision[];
 }

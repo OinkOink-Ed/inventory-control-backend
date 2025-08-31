@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Matches, MinLength } from 'class-validator';
+import { User } from '../entities/User';
 import {
   Assert,
   StrictUserType,
   UserType,
 } from '../types/PostCreateStaffTypes';
-import type { Staff } from '../entities/Staff';
 
 export class PostCreateStaffDto
-  implements Pick<Assert & Staff, 'name' | 'lastname' | 'patronimyc'>, UserType
+  implements Pick<Assert & User, 'name' | 'lastname' | 'patronimyc'>, UserType
 {
   @ApiProperty()
   @IsString()

@@ -12,8 +12,10 @@ import type { User } from '../entities/User';
 import {
   Assert,
   CreatorType,
+  Divisiontype,
   RoleType,
   StrictCreator,
+  StrictDivision,
   StrictRole,
 } from '../types/PostCreateAdminTypes';
 import { Type } from 'class-transformer';
@@ -32,7 +34,8 @@ export class PostCreateAdminDto
       | 'state'
     >,
     CreatorType,
-    RoleType
+    RoleType,
+    Divisiontype
 {
   @ApiProperty()
   @IsString()
@@ -83,6 +86,17 @@ export class PostCreateAdminDto
   @Type(() => ObjectIdDto)
   @ValidateNested()
   role: StrictRole;
+
+  @ApiProperty({
+    type: 'object',
+    properties: {
+      id: { type: 'number' },
+    },
+    required: ['id'],
+  })
+  @Type(() => ObjectIdDto)
+  @ValidateNested()
+  division: StrictDivision[];
 
   @ApiProperty({
     enum: UserStatus,

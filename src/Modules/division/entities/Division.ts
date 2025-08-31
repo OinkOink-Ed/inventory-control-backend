@@ -7,6 +7,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -24,7 +25,7 @@ export class Division extends Base {
   @JoinColumn()
   warehouse: Warehouse;
 
-  @OneToMany('User', (user: User) => user.division)
+  @ManyToMany('User', (user: User) => user.division)
   users: User[];
 
   @OneToMany('Kabinet', (kabinets: Kabinet) => kabinets.division)

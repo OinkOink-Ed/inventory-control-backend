@@ -1,12 +1,12 @@
 import { Division } from '@Modules/division/entities/Division';
-import { Role } from '@Modules/role/entities/Role';
+// import { Role } from '@Modules/role/entities/Role';
 import { User } from '@Modules/user/entities/User';
 import { DataSource } from 'typeorm';
 
 export async function seedDivision(dataSourse: DataSource) {
   const divisionRepo = dataSourse.getRepository(Division);
   const userRepo = dataSourse.getRepository(User);
-  const roleRepo = dataSourse.getRepository(Role);
+  // const roleRepo = dataSourse.getRepository(Role);
 
   const systemUser = await userRepo.findOneBy({ username: 'system' });
 
@@ -39,28 +39,28 @@ export async function seedDivision(dataSourse: DataSource) {
 
   console.log('Подразделения успешно созданы');
 
-  const divisionsForUser = await divisionRepo.find();
+  // const divisionsForUser = await divisionRepo.find();
 
-  const userDivisionPairs = [
-    { username: 'pdr1', divisionName: 'Подразделение № 1' },
-    { username: 'pdr2', divisionName: 'Подразделение № 2' },
-    { username: 'pdr3', divisionName: 'Подразделение № 3' },
-    { username: 'pdr4', divisionName: 'Подразделение № 4' },
-  ];
+  // const userDivisionPairs = [
+  //   { username: 'pdr1', divisionName: 'Подразделение № 1' },
+  //   { username: 'pdr2', divisionName: 'Подразделение № 2' },
+  //   { username: 'pdr3', divisionName: 'Подразделение № 3' },
+  //   { username: 'pdr4', divisionName: 'Подразделение № 4' },
+  // ];
 
-  for (const pair of userDivisionPairs) {
-    const division = divisionsForUser.find(
-      (division) => division.name === pair.divisionName,
-    );
+  // for (const pair of userDivisionPairs) {
+  //   const division = divisionsForUser.find(
+  //     (division) => division.name === pair.divisionName,
+  //   );
 
-    await userRepo.update(
-      { username: pair.username },
-      { division: { id: division?.id } },
-    );
-  }
-  const role = await roleRepo.findOne({ where: { roleName: 'admin' } });
+  //   await userRepo.update(
+  //     { username: pair.username },
+  //     { division: [{ id: division?.id }] },
+  //   );
+  // }
+  // const role = await roleRepo.findOne({ where: { roleName: 'admin' } });
 
-  await userRepo.update({ role: { id: role?.id } }, { division: { id: 1 } });
+  // await userRepo.update({ role: { id: role?.id } }, { division: [{ id: 1 }] });
 
-  console.log('Пользователи успешно связаны с подразделениями');
+  // console.log('Пользователи успешно связаны с подразделениями');
 }

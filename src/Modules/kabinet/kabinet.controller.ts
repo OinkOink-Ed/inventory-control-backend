@@ -1,4 +1,5 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { UserData } from '@common/decorators/types/UserType';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
@@ -40,7 +41,11 @@ export class KabinetController {
   @ApiErrorResponses()
   async getKAbinetsByDivisionId(
     @Param('divisionId') divisionId: number,
+    @User('sub') userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
-    return await this.kabinetService.getKAbinetsByDivisionId(divisionId);
+    return await this.kabinetService.getKAbinetsByDivisionId(
+      divisionId,
+      userData,
+    );
   }
 }

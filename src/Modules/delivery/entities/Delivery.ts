@@ -2,7 +2,6 @@ import { Base } from '@common/entities/Base';
 import type { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
 import type { Division } from '@Modules/division/entities/Division';
 import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import type { Staff } from '@Modules/staff/entities/Staff';
 import type { User } from '@Modules/user/entities/User';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 import { Entity, ManyToOne, OneToMany } from 'typeorm';
@@ -18,8 +17,8 @@ export class Delivery extends Base {
   @ManyToOne('User', (user: User) => user.createdDelivery)
   creator: User;
 
-  @ManyToOne('Staff', (staff: Staff) => staff.acceptedCartridge)
-  accepting: Staff;
+  @ManyToOne('User', (user: User) => user.acceptedCartridge)
+  accepting: User;
 
   @ManyToOne('Kabinet', (kabinet: Kabinet) => kabinet.delivery)
   kabinet: Kabinet;

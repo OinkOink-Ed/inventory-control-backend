@@ -3,7 +3,6 @@ import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeM
 import type { CartridgeDelivery } from '../entities/CartridgeDelivery';
 import type { Delivery } from '../entities/Delivery';
 import type { User } from '@Modules/user/entities/User';
-import type { Staff } from '@Modules/staff/entities/Staff';
 import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import type { Division } from '@Modules/division/entities/Division';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
@@ -33,7 +32,7 @@ export type CartridgeDeliveryType = Omit<Pick<Delivery, 'action'>, 'action'> & {
   action: StrictCartridgeDeliveryType[];
 };
 
-export type StrictStaffType = Pick<Staff, 'name' | 'lastname' | 'patronimyc'>;
+export type StrictStaffType = Pick<User, 'name' | 'lastname' | 'patronimyc'>;
 export type StaffType = Omit<Pick<Delivery, 'accepting'>, 'accepting'> & {
   accepting: StrictStaffType;
 };

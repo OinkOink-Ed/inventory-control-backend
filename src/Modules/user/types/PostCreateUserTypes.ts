@@ -14,7 +14,7 @@ export type RoleType = Omit<Pick<User, 'role'>, 'role'> & {
 
 export type StrictDivision = Pick<Division, 'id' | 'name'>;
 export type Divisiontype = Omit<Pick<User, 'division'>, 'division'> & {
-  division: StrictDivision;
+  division: StrictDivision[];
 };
 
 export type StrictCreator = Pick<User, 'id'>;

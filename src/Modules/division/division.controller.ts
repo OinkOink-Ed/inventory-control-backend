@@ -1,10 +1,13 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { Roles } from '@common/decorators/Roles';
+import { UserData } from '@common/decorators/types/UserType';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { RoleGuard } from '@common/guards/RoleGuard';
 import { DivisionService } from '@Modules/division/division.service';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -14,9 +17,11 @@ import {
 
 @ApiTags('Division')
 @Controller('division')
+@UseGuards(RoleGuard)
 export class DivisionController {
   constructor(private readonly divisionService: DivisionService) {}
 
+  @Roles('admin')
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -31,9 +36,7 @@ export class DivisionController {
     return await this.divisionService.create(createDto);
   }
 
-  //нужно ещё guard для проверки роли запилить
-  //И после обработать лоигку вызова того или иного метода
-  //Пока что тяжело для понимания, нужно оставить на потом
+  @Roles('admin', 'user')
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -41,7 +44,9 @@ export class DivisionController {
     isArray: true,
   })
   @ApiErrorResponses()
-  async getAll(): Promise<GetReponseAllDivisionDto[]> {
-    return await this.divisionService.getAll();
+  async getDivisions(
+    @User('sub') userData: UserData,
+  ): Promise<GetReponseAllDivisionDto[]> {
+    return await this.divisionService.getDivisions(userData);
   }
 }

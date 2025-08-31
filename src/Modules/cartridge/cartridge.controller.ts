@@ -1,27 +1,21 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { Roles } from '@common/decorators/Roles';
+import { UserData } from '@common/decorators/types/UserType';
+import { User } from '@common/decorators/User';
+import { RoleGuard } from '@common/guards/RoleGuard';
 import { CartridgeService } from '@Modules/cartridge/cartridge.service';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
-import {
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Param,
-  SerializeOptions,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')
+@UseGuards(RoleGuard)
 export class CartridgeController {
   constructor(private readonly cartridgeService: CartridgeService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    type: GetResponseAllCartridgeInWarehouseDto,
-    excludeExtraneousValues: true,
-  })
   @Get(':warehouseId')
+  @Roles('admin', 'user')
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Список картриджей отправлен',
@@ -29,9 +23,13 @@ export class CartridgeController {
     isArray: true,
   })
   @ApiErrorResponses()
-  async getCartridgesById(
+  async getCartridgesByWarehouse(
     @Param('warehouseId') warehouseId: number,
+    @User('sub') userData: UserData,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
-    return await this.cartridgeService.getCartridgesById(warehouseId);
+    return await this.cartridgeService.getCartridgesByWarehouse(
+      warehouseId,
+      userData,
+    );
   }
 }

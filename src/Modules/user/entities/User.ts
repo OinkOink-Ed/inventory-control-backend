@@ -9,9 +9,15 @@ import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import type { Movement } from '@Modules/movement/entities/Movement';
 import type { Receiving } from '@Modules/receiving/entities/Receiving';
 import type { Role } from '@Modules/role/entities/Role';
-import type { Staff } from '@Modules/staff/entities/Staff';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class User extends Base {
@@ -27,7 +33,7 @@ export class User extends Base {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ nullable: true })
   patronimyc: string;
 
   @Column()
@@ -40,17 +46,14 @@ export class User extends Base {
   })
   state: UserStatus;
 
-  @ManyToOne('Division', (division: Division) => division.users, {
-    nullable: true,
-  })
-  division: Division;
+  @ManyToMany('Division', (division: Division) => division.users)
+  @JoinTable()
+  division: Division[];
 
   @ManyToOne('Role', (role: Role) => role.users)
   role: Role;
 
-  @ManyToOne('User', (user: User) => user.createdUsers, {
-    nullable: true,
-  })
+  @ManyToOne('User', (user: User) => user.createdUsers)
   creator: User;
 
   @OneToMany('User', (user: User) => user.creator)
@@ -58,9 +61,6 @@ export class User extends Base {
 
   @OneToMany('Role', (role: Role) => role.creator)
   createdRoles: Role[];
-
-  @OneToMany('Staff', (staff: Staff) => staff.creator)
-  createdStaffs: Staff[];
 
   @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator)
   createdWarehouses: Warehouse[];
@@ -94,4 +94,7 @@ export class User extends Base {
 
   @OneToMany('Delivery', (delivery: Delivery) => delivery.creator)
   createdDelivery: Delivery[];
+
+  @OneToMany('Delivery', (delivery: Delivery) => delivery.accepting)
+  acceptedCartridge: Delivery[];
 }

@@ -10,6 +10,7 @@ export async function seedRoles(dataSourse: DataSource) {
     { roleName: 'admin' },
     { roleName: 'user' },
     { roleName: 'system' },
+    { roleName: 'staff' },
   ];
 
   await roleRepo.save(roles);

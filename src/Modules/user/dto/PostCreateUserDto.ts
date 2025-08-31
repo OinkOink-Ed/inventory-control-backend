@@ -90,7 +90,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  division: StrictDivision;
+  division: StrictDivision[];
 
   @ApiProperty({
     enum: UserStatus,

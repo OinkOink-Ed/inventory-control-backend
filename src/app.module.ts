@@ -1,6 +1,7 @@
 import configuration from '@common/config/configuration';
 import { validationSchema } from '@common/config/validationShema';
 import { AuthGuard } from '@common/guards/AuthGuard';
+import { AccessControlService } from '@Modules/access-control/access-control.service';
 import { AuthModule } from '@Modules/auth/auth.module';
 import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
 import { CartridgeModelModule } from '@Modules/cartridgeModel/cartridgeModel.module';
@@ -11,7 +12,6 @@ import { KabinetModule } from '@Modules/kabinet/kabinet.module';
 import { MovementModule } from '@Modules/movement/movement.module';
 import { ReceivingModule } from '@Modules/receiving/receiving.module';
 import { RoleModule } from '@Modules/role/role.module';
-import { StaffModule } from '@Modules/staff/staff.module';
 import { UserModule } from '@Modules/user/user.module';
 import { WarehouseModule } from '@Modules/warehouse/warehouse.module';
 import { Module } from '@nestjs/common';
@@ -53,15 +53,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     MovementModule,
     ReceivingModule,
     RoleModule,
-    StaffModule,
     UserModule,
     WarehouseModule,
   ],
   providers: [
-    // {
-    //   provide: 'APP_GUARD',
-    //   useClass: AuthGuard,
-    // },
+    AccessControlService,
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

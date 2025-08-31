@@ -2,7 +2,6 @@ import { AssertTManyProperty } from '@common/utils/typesUtils';
 import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
 import type { Movement } from '@Modules/movement/entities/Movement';
-import type { Staff } from '@Modules/staff/entities/Staff';
 import type { User } from '@Modules/user/entities/User';
 import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
 
@@ -39,7 +38,7 @@ export type WarehouseWhereType = Omit<
   warehouseWhere: StrictWarehouseWhereType;
 };
 
-export type StrictWhoAcceptedType = Pick<Staff, 'id'>;
+export type StrictWhoAcceptedType = Pick<User, 'id'>;
 export type WhoAcceptedType = Omit<
   Pick<Movement, 'whoAccepted'>,
   'whoAccepted'

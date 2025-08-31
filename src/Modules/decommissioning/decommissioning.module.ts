@@ -8,6 +8,7 @@ import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
 import { DecommissioningController } from '@Modules/decommissioning/decommissioning.controller';
 import { DecommissioningService } from '@Modules/decommissioning/decommissioning.service';
 import { MapperProfile } from '@common/MapperProfile';
+import { AccessControlModule } from '@Modules/access-control/access-control.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MapperProfile } from '@common/MapperProfile';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    AccessControlModule,
   ],
   controllers: [DecommissioningController],
   providers: [DecommissioningService, MapperProfile],

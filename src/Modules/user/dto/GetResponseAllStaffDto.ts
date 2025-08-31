@@ -1,12 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { Staff } from '../entities/Staff';
+import type { User } from '@Modules/user/entities/User';
 
 export class GetResponseAllStaffDto
-  implements
-    Pick<
-      Staff,
-      'id' | 'name' | 'lastname' | 'financiallyResponsiblePerson' | 'patronimyc'
-    >
+  implements Pick<User, 'id' | 'name' | 'lastname' | 'patronimyc'>
 {
   @ApiProperty()
   id: number;
@@ -19,7 +15,4 @@ export class GetResponseAllStaffDto
 
   @ApiProperty()
   lastname: string;
-
-  @ApiProperty()
-  financiallyResponsiblePerson: boolean;
 }

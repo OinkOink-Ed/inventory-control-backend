@@ -1,7 +1,12 @@
 import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
 import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
 import { UserService } from '@Modules/user/user.service';
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -73,9 +78,7 @@ export class AuthService {
     });
 
     if (!tokenEntity || tokenEntity.expiresAt < new Date()) {
-      throw new UnauthorizedException(
-        'Недействительный или истёкший refresh_token',
-      );
+      throw new UnauthorizedException('Пользователь не авторизован');
     }
 
     //Но пассворд то нет
@@ -85,12 +88,12 @@ export class AuthService {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
     } catch (error) {
-      throw new UnauthorizedException(error, 'Недействительный refresh_token');
+      throw new UnauthorizedException(error, 'Пользователь не авторизован');
     }
 
     const user = await this.usersService.findOne(payload.sub.id);
     if (!user || 'error' in user) {
-      throw new UnauthorizedException('Пользователь не найден');
+      throw new BadRequestException('Пользователь не найден');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

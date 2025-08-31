@@ -1,6 +1,8 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
+import { Roles } from '@common/decorators/Roles';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { RoleGuard } from '@common/guards/RoleGuard';
 import { CartridgeModelService } from '@Modules/cartridgeModel/cartridgeModel.service';
 import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
 import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllDetailedCartridgeModelDto';
@@ -12,18 +14,21 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('CartridgeModel')
 @Controller('cartridgeModel')
+@UseGuards(RoleGuard)
 export class CartridgeModelController {
   constructor(private readonly createModelCartridge: CartridgeModelService) {}
 
+  @Roles('admin')
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    description: 'Картриджи успешно добавлены',
+    description: 'Модели Картриджей успешно добавлены',
     type: () => SuccessResponseDto,
   })
   @ApiErrorResponses()
@@ -35,6 +40,7 @@ export class CartridgeModelController {
     return await this.createModelCartridge.create(createDto);
   }
 
+  @Roles('admin')
   @Get('detailed')
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -43,10 +49,13 @@ export class CartridgeModelController {
   })
   @ApiErrorResponses()
   @HttpCode(HttpStatus.OK)
-  async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
-    return await this.createModelCartridge.getAllDetailed();
+  async getModelsAndTheirCreator(): Promise<
+    GetResponseAllDetailedCartridgeModelDto[]
+  > {
+    return await this.createModelCartridge.getModelsAndTheirCreator();
   }
 
+  @Roles('admin', 'user')
   @Get()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -55,7 +64,7 @@ export class CartridgeModelController {
   })
   @ApiErrorResponses()
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
-    return await this.createModelCartridge.getAll();
+  async getModels(): Promise<GetResponseAllCartridgeModelDto[]> {
+    return await this.createModelCartridge.getModels();
   }
 }

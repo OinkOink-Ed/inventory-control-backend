@@ -23,7 +23,7 @@ export class CartridgeModelService {
     };
   }
 
-  async getAll(): Promise<GetResponseAllCartridgeModelDto[]> {
+  async getModels(): Promise<GetResponseAllCartridgeModelDto[]> {
     const select: RequiredFindOptionsSelect<GetResponseAllCartridgeModelDto> = {
       id: true,
       name: true,
@@ -32,7 +32,9 @@ export class CartridgeModelService {
     return await this.repoCartridgeModel.find({ select });
   }
 
-  async getAllDetailed(): Promise<GetResponseAllDetailedCartridgeModelDto[]> {
+  async getModelsAndTheirCreator(): Promise<
+    GetResponseAllDetailedCartridgeModelDto[]
+  > {
     const select: RequiredFindOptionsSelect<GetResponseAllDetailedCartridgeModelDto> =
       {
         id: true,

@@ -8,9 +8,12 @@ import type { Warehouse } from '../entities/Warehouse';
 
 export class GetResponseAllDetailedWarehouseDto
   implements
-    Omit<Pick<Assert & Warehouse, 'division'>, 'division'>,
+    Omit<Pick<Assert & Warehouse, 'id' | 'division'>, 'division'>,
     DivisionType
 {
+  @ApiProperty({ type: 'number' })
+  id: number;
+
   @ApiProperty({
     type: 'object',
     properties: {

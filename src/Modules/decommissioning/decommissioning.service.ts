@@ -10,6 +10,7 @@ import { ServiceCreateCartridgeDecommissioning } from '@Modules/decommissioning/
 import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesForMapped/ServiceCreateDecommissioning';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { AccessControlService } from '@Modules/access-control/access-control.service';
 
 @Injectable()
 export class DecommissioningService {
@@ -18,11 +19,17 @@ export class DecommissioningService {
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   async create(
     createDto: PostCreateDecommissioningDto,
   ): Promise<SuccessResponseDto> {
+    await this.accessControlService.getAccessWarehouse(
+      createDto.creator.id,
+      createDto.warehouse.id,
+    );
+
     //Маппинг dto для правильной передачи параметров для создания сущности
     const decommissioningDto = this.mapper.map(
       createDto,

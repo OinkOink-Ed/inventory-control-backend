@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, QueryRunner, Repository } from 'typeorm';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
@@ -12,12 +12,15 @@ import { NoCartridgesException } from '@common/filters/types/NoCartridgesExcepti
 import { InsufficientCartridgesException } from '@common/filters/types/InsufficientCartridgesException';
 import type { Base } from '@common/entities/Base';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
+import { UserData } from '@common/decorators/types/UserType';
+import { UserService } from '@Modules/user/user.service';
 
 @Injectable()
 export class CartridgeService {
   constructor(
     @InjectRepository(Cartridge)
     private readonly repoCartridges: Repository<Cartridge>,
+    private readonly usersService: UserService,
   ) {}
 
   selectFieldsToUpdate: RequiredFindOptionsSelect<
@@ -77,7 +80,9 @@ export class CartridgeService {
       });
 
       if (cartridgeToUpdate.length === 0) {
-        throw new Error('Такого количества картриджей нет на складе');
+        throw new BadRequestException(
+          'Такого количества картриджей нет на складе',
+        );
       }
 
       const updatesIds: Array<number> = cartridgeToUpdate.map((row) => row.id);
@@ -88,7 +93,9 @@ export class CartridgeService {
       );
 
       if (result.affected === 0) {
-        throw new Error('Ошибка при попытке перемещения картриджа');
+        throw new BadRequestException(
+          'Ошибка при попытке перемещения картриджа',
+        );
       }
 
       return updatesIds;
@@ -132,7 +139,9 @@ export class CartridgeService {
       );
 
       if (result.affected === 0) {
-        throw new Error('Ошибка при попытке выдачи картриджа');
+        throw new BadRequestException(
+          'Такого количества картриджей нет на складе',
+        );
       }
 
       return deliveryIds;
@@ -164,9 +173,11 @@ export class CartridgeService {
       });
 
       if (cartridgeToDecommissioning.length === 0) {
-        throw new Error('Нет картриджей для списания');
+        throw new BadRequestException('Нет картриджей для списания');
       } else if (cartridgeToDecommissioning.length < count) {
-        throw new Error('Нет такого количества картриджей для списания');
+        throw new BadRequestException(
+          'Нет такого количества картриджей для списания',
+        );
       }
 
       const decommissioningIds: Array<number> = cartridgeToDecommissioning.map(
@@ -188,8 +199,9 @@ export class CartridgeService {
     }
   }
 
-  async getCartridgesById(
+  async getCartridgesByWarehouse(
     warehouseId: number,
+    userData: UserData,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
     const select: RequiredFindOptionsSelect<GetResponseAllCartridgeInWarehouseDto> =
       {
@@ -200,9 +212,22 @@ export class CartridgeService {
         createdAt: true,
       };
 
+    if (userData.role.roleName !== 'user') {
+      return await this.repoCartridges.find({
+        where: {
+          warehouse: { id: warehouseId },
+          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
+        },
+        select,
+        relations: { warehouse: true, model: true },
+      });
+    }
+
+    const divisionsId = await this.usersService.getDivisionOfUser(userData.id);
+
     return await this.repoCartridges.find({
       where: {
-        warehouse: { id: warehouseId },
+        warehouse: { division: { id: In(divisionsId) } },
         state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
       },
       select,
