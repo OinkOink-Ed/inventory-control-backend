@@ -11,7 +11,7 @@ import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { ServiceForFindUser } from './service/ServiceFindUser';
 import { ServiceFindUserForChoiseWarehouse } from './service/ServiceFindUserForChoiseWarehouse';
-import { GetResponseAllStaffDto } from '@Modules/user/dto/GetResponseAllStaffDto';
+import { GetResponseAllUsersByDivisionsDto } from '@Modules/user/dto/GetResponseAllUsersByDivisionsDto';
 import { GetResponseStaffDetailedDto } from '@Modules/user/dto/GetResponseStaffDetailedDto';
 import { GetResponseStaffDetailedService } from '@Modules/user/ClassesForMapped/GetResponseStaffDetailedService';
 import { InjectMapper } from '@automapper/nestjs';
@@ -146,20 +146,31 @@ export class UserService {
 
   async getAllByDivisions(
     userData: UserData,
-  ): Promise<GetResponseAllStaffDto[]> {
-    const select: RequiredFindOptionsSelect<GetResponseAllStaffDto> = {
-      id: true,
-      lastname: true,
-      name: true,
-      patronimyc: true,
-    };
+    warehouseId: number,
+  ): Promise<GetResponseAllUsersByDivisionsDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseAllUsersByDivisionsDto> =
+      {
+        id: true,
+        lastname: true,
+        name: true,
+        patronimyc: true,
+        role: { id: true, roleName: true },
+      };
 
     const divisionIds = await this.getDivisionOfUser(userData.id);
 
     return await this.repo.find({
       select,
-      where: { division: [{ id: In(divisionIds) }] },
+      where: {
+        division: {
+          id: In(divisionIds),
+          warehouse: {
+            id: warehouseId,
+          },
+        },
+      },
       order: { lastname: { direction: 'ASC' } },
+      relations: { role: true },
     });
   }
 

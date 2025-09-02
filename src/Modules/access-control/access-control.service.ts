@@ -10,7 +10,7 @@ export class AccessControlService {
 
     if (!divisionIds.some((item) => userDtoId === item))
       throw new ForbiddenException(
-        'У вас нет доступа для выдачи картриджей с этого склада',
+        'У вас нет доступа к складу этого подразделения',
       );
   }
 }

@@ -1,4 +1,5 @@
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
+import { UserStatus } from '@common/enums/UserStatus';
 import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
 import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
 import { Role } from '@Modules/role/entities/Role';
@@ -47,7 +48,10 @@ export async function seedCartridge(dataSourse: DataSource) {
   await cartridgeRepo.save(cartridges);
   console.log('Картриджи успешно добавлены на склады');
 
-  await userRepo.update({ username: 'system' }, { deletedAt: new Date() });
+  await userRepo.update(
+    { username: 'system' },
+    { deletedAt: new Date(), state: UserStatus.INACTIVE },
+  );
   await roleRepo.update({ roleName: 'system' }, { deletedAt: new Date() });
   console.log('Системная сущность и роль soft-deleted');
 }

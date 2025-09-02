@@ -1,5 +1,6 @@
 import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
 import { Roles } from '@common/decorators/Roles';
+import { UserData } from '@common/decorators/types/UserType';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { CartridgeStatus } from '@common/enums/CartridgeStatus';
@@ -26,9 +27,9 @@ export class DecommissioningController {
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDecommissioningDto,
-    @User() userData: { sub: { id: number } },
+    @User('sub') userData: UserData,
   ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
+    createDto.creator = { id: userData.id };
     createDto.state = CartridgeStatus.DECOMMISSIONED;
     return await this.decommissioningService.create(createDto);
   }

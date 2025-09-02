@@ -3,7 +3,7 @@ import { Roles } from '@common/decorators/Roles';
 import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { RoleGuard } from '@common/guards/RoleGuard';
-import { GetResponseAllStaffDto } from '@Modules/user/dto/GetResponseAllStaffDto';
+import { GetResponseAllUsersByDivisionsDto } from '@Modules/user/dto/GetResponseAllUsersByDivisionsDto';
 import { GetResponseStaffDetailedDto } from '@Modules/user/dto/GetResponseStaffDetailedDto';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
 import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
@@ -84,18 +84,19 @@ export class UserController {
     return await this.userService.getAll();
   }
 
-  @Get('staff')
-  @Roles('admin', 'staff', 'user')
+  @Get(':warehouseId')
+  @Roles('admin', 'user')
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => GetResponseAllStaffDto,
+    type: () => GetResponseAllUsersByDivisionsDto,
     isArray: true,
   })
   @ApiErrorResponses()
   async getAllByDivisions(
     @User('sub') userData: UserData,
-  ): Promise<GetResponseAllStaffDto[]> {
-    return await this.userService.getAllByDivisions(userData);
+    @Param('warehouseId', ParseIntPipe) warehouseId: number,
+  ): Promise<GetResponseAllUsersByDivisionsDto[]> {
+    return await this.userService.getAllByDivisions(userData, warehouseId);
   }
 
   @Get(':id')

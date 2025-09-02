@@ -27,7 +27,7 @@ export class DecommissioningService {
   ): Promise<SuccessResponseDto> {
     await this.accessControlService.getAccessWarehouse(
       createDto.creator.id,
-      createDto.warehouse.id,
+      createDto.creator.id,
     );
 
     //Маппинг dto для правильной передачи параметров для создания сущности

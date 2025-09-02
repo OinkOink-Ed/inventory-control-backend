@@ -16,26 +16,27 @@ async function runSeeds() {
   const dataSourse = new DataSource(seedConfig);
   await dataSourse.initialize();
 
-  const salt = await bcrypt.genSalt(10);
-
-  const roleRepo = dataSourse.getRepository(Role);
-  const userRepo = dataSourse.getRepository(User);
-
-  const systemRole = await roleRepo.findOneBy({ roleName: 'system' });
-
-  await userRepo.save({
-    username: 'system',
-    password: await bcrypt.hash('system', salt),
-    name: 'system',
-    lastname: 'system',
-    patronimyc: 'system',
-    telephone: '+77777777777',
-    state: UserStatus.INACTIVE,
-    role: { id: systemRole?.id },
-  });
-
   try {
     await seedRoles(dataSourse);
+
+    const salt = await bcrypt.genSalt(10);
+
+    const roleRepo = dataSourse.getRepository(Role);
+    const userRepo = dataSourse.getRepository(User);
+
+    const systemRole = await roleRepo.findOneBy({ roleName: 'system' });
+
+    await userRepo.save({
+      username: 'system',
+      password: await bcrypt.hash('system', salt),
+      name: 'system',
+      lastname: 'system',
+      patronimyc: 'system',
+      telephone: '+77777777777',
+      state: UserStatus.ACTIVE,
+      role: { id: systemRole?.id },
+    });
+
     await seedDivision(dataSourse);
     await seedUsers(dataSourse);
     await seedWarehouse(dataSourse);
