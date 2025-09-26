@@ -8,6 +8,7 @@ import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDiv
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { UserService } from '@Modules/user/user.service';
 import { UserData } from '@common/decorators/types/UserType';
+import { GetResponseDivisionByWarehouseIdDto } from './dto/GetResponseDivisionByWarehouseIdDto';
 
 @Injectable()
 export class DivisionService {
@@ -40,12 +41,28 @@ export class DivisionService {
 
     const divisionIds = await this.usersService.getDivisionOfUser(userData.id);
 
-    const res = await this.repo.find({
+    return await this.repo.find({
       select,
       where: {
         id: In(divisionIds),
       },
     });
-    return res;
+  }
+
+  async getDivision(
+    warehouseId: number,
+  ): Promise<GetResponseDivisionByWarehouseIdDto | null> {
+    const select: RequiredFindOptionsSelect<GetResponseDivisionByWarehouseIdDto> =
+      {
+        id: true,
+        name: true,
+      };
+
+    return await this.repo.findOne({
+      select,
+      where: {
+        warehouse: { id: warehouseId },
+      },
+    });
   }
 }

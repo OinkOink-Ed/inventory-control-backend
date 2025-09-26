@@ -2,7 +2,7 @@ import { Base } from '@common/entities/Base';
 import type { Delivery } from '@Modules/delivery/entities/Delivery';
 import type { Division } from '@Modules/division/entities/Division';
 import type { User } from '@Modules/user/entities/User';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Kabinet extends Base {
@@ -17,4 +17,7 @@ export class Kabinet extends Base {
 
   @ManyToOne('User', (user: User) => user.createdKabinets)
   creator: User;
+
+  @ManyToMany('User', (user: User) => user.kabinets)
+  users: User[];
 }

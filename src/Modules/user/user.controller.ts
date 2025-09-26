@@ -4,46 +4,40 @@ import { User } from '@common/decorators/User';
 import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { RoleGuard } from '@common/guards/RoleGuard';
 import { GetResponseAllUsersByDivisionsDto } from '@Modules/user/dto/GetResponseAllUsersByDivisionsDto';
-import { GetResponseStaffDetailedDto } from '@Modules/user/dto/GetResponseStaffDetailedDto';
 import { GetResponseAllUserDto } from '@Modules/user/dto/GetResponseAllUserDto';
-import { PostCreateAdminDto } from '@Modules/user/dto/PostCreateAdminDto';
 import { PostCreateUserDto } from '@Modules/user/dto/PostCreateUserDto';
 import { UserService } from '@Modules/user/user.service';
 import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserData } from '@common/decorators/types/UserType';
+import { PutEditUserDto } from './dto/PutEditUserDto';
+import { CardEditGuard } from '@common/guards/CardEditGuard';
+import { GetResponseUserCardDto } from './dto/GetResponseUserCardDto';
+import { GetResponseAcceptedCartridgeByUserDto } from './dto/GetResponseAcceptedCartridgeByUserDto';
 
-@ApiTags('Users')
 @Controller('users')
 @UseGuards(RoleGuard)
+@ApiTags('Users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('admin')
-  @Roles('admin')
-  @ApiBearerAuth()
-  @ApiCreatedResponse({
-    type: () => SuccessResponseDto,
-  })
-  @ApiErrorResponses()
-  async createAdmin(
-    @Body() createDto: PostCreateAdminDto,
-    @User() userData: { sub: { id: number } },
-  ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
-    return await this.userService.createAdmin(createDto);
-  }
-
-  @Post('user')
-  @Roles('admin')
+  @Post('create')
+  @Roles('admin', 'user')
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
@@ -51,25 +45,42 @@ export class UserController {
   @ApiErrorResponses()
   async createUser(
     @Body() createDto: PostCreateUserDto,
-    @User() userData: { sub: { id: number } },
+    @User('sub') userData: UserData,
   ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
-    return await this.userService.createUser(createDto);
+    createDto.creator = { id: userData.id };
+    return await this.userService.createUser(createDto, userData);
   }
 
-  @Post('staff')
-  @Roles('admin')
+  @Get('/:id/can-edit')
+  @Roles('admin', 'user')
+  @UseGuards(CardEditGuard)
   @ApiBearerAuth()
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     type: () => SuccessResponseDto,
   })
   @ApiErrorResponses()
-  async createStaff(
-    @Body() createDto: PostCreateUserDto,
-    @User() userData: { sub: { id: number } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  canEditUser(@Param('id', ParseIntPipe) userId: number) {
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Вам доступно редактирование',
+    };
+  }
+
+  @Patch('edit/:id')
+  @Roles('admin', 'user')
+  @UseGuards(CardEditGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: () => SuccessResponseDto,
+  })
+  @ApiErrorResponses()
+  async editUser(
+    @Body() editDto: PutEditUserDto,
+    @Param('id', ParseIntPipe) userId: number,
+    @User('sub') userData: UserData,
   ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
-    return await this.userService.createStaff(createDto);
+    return await this.userService.editUser(userId, editDto, userData);
   }
 
   @Get()
@@ -80,8 +91,10 @@ export class UserController {
     isArray: true,
   })
   @ApiErrorResponses()
-  async getAll(): Promise<GetResponseAllUserDto[]> {
-    return await this.userService.getAll();
+  async getAll(
+    @User('sub') userData: UserData,
+  ): Promise<GetResponseAllUserDto[]> {
+    return await this.userService.getAll(userData);
   }
 
   @Get(':warehouseId')
@@ -99,17 +112,30 @@ export class UserController {
     return await this.userService.getAllByDivisions(userData, warehouseId);
   }
 
-  @Get(':id')
+  @Get('card/:id')
   @Roles('admin', 'user')
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    type: () => GetResponseStaffDetailedDto,
-    isArray: true,
+    type: () => GetResponseUserCardDto,
   })
   @ApiErrorResponses()
   async getCardUser(
     @Param('id', ParseIntPipe) staffId: number,
-  ): Promise<GetResponseStaffDetailedDto[]> {
+  ): Promise<GetResponseUserCardDto | null> {
     return await this.userService.getCardUser(staffId);
+  }
+
+  @Get('card/:id/accepted')
+  @Roles('admin', 'user')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetResponseAcceptedCartridgeByUserDto,
+    isArray: true,
+  })
+  @ApiErrorResponses()
+  async getCardUserAcceptedCartridge(
+    @Param('id', ParseIntPipe) staffId: number,
+  ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
+    return await this.userService.getCardUserAcceptedCartridge(staffId);
   }
 }

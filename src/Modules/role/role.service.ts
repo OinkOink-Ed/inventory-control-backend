@@ -7,6 +7,7 @@ import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
 import { GetResponseAllRole } from '@Modules/role/dto/GetResponseAllRole';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { UserData } from '@common/decorators/types/UserType';
+import { ServiceFindRoleName } from './service/ServiceFindRoleName';
 
 @Injectable()
 export class RoleService {
@@ -34,5 +35,18 @@ export class RoleService {
     }
 
     return await this.repo.find({ select, where: { roleName: 'staff' } });
+  }
+
+  async getRole(
+    roleId: number | undefined,
+  ): Promise<ServiceFindRoleName | null> {
+    const select: RequiredFindOptionsSelect<ServiceFindRoleName> = {
+      roleName: true,
+    };
+
+    return await this.repo.findOne({
+      select,
+      where: { id: roleId },
+    });
   }
 }

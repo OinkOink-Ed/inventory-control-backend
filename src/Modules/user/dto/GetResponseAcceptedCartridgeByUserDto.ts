@@ -1,10 +1,6 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { GetResponseStaffDetailedService } from '../ClassesForMapped/GetResponseStaffDetailedService';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class GetResponseStaffDetailedDto extends PickType(
-  GetResponseStaffDetailedService,
-  ['id', 'name', 'lastname', 'patronimyc'],
-) {
+export class GetResponseAcceptedCartridgeByUserDto {
   @ApiProperty({
     type: 'array',
     items: {

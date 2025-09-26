@@ -7,13 +7,22 @@ import { RoleGuard } from '@common/guards/RoleGuard';
 import { DivisionService } from '@Modules/division/division.service';
 import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
 import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { GetResponseDivisionByWarehouseIdDto } from './dto/GetResponseDivisionByWarehouseIdDto';
 
 @ApiTags('Division')
 @Controller('division')
@@ -48,5 +57,18 @@ export class DivisionController {
     @User('sub') userData: UserData,
   ): Promise<GetReponseAllDivisionDto[]> {
     return await this.divisionService.getDivisions(userData);
+  }
+
+  @Roles('admin', 'user')
+  @Get('warehouse/:id')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: () => GetResponseDivisionByWarehouseIdDto,
+  })
+  @ApiErrorResponses()
+  async getDivision(
+    @Param('id', ParseIntPipe) warehouseId: number,
+  ): Promise<GetResponseDivisionByWarehouseIdDto | null> {
+    return await this.divisionService.getDivision(warehouseId);
   }
 }

@@ -8,6 +8,8 @@ import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto'
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { UserData } from '@common/decorators/types/UserType';
 import { UserService } from '@Modules/user/user.service';
+import { GetResponseKabinetsByUserIdDto } from './dto/GetResponseKabinetsByUserIdDto';
+import { GetKabinetsByDivisionIdsForCreateUserDto } from './dto/GetKabinetsByDivisionIdsForCreateUserDto';
 
 @Injectable()
 export class KabinetService {
@@ -25,7 +27,7 @@ export class KabinetService {
     };
   }
 
-  async getKAbinetsByDivisionId(
+  async getKabinetsByDivisionId(
     divisionid: number,
     userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
@@ -48,6 +50,50 @@ export class KabinetService {
 
     return await this.repo.find({
       where: { division: { id: In(divisionIds) } },
+      select,
+      relations: { division: true },
+    });
+  }
+
+  async getKabinetsByUserId(
+    userid: number,
+  ): Promise<GetResponseKabinetsByUserIdDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseKabinetsByUserIdDto> = {
+      id: true,
+      number: true,
+    };
+
+    return await this.repo.find({
+      where: { users: { id: userid } },
+      select,
+    });
+  }
+
+  async getKabinetsByDivisionIdForCreateUser(
+    divisionIds: number[],
+    userData: UserData,
+  ): Promise<any> {
+    const select: RequiredFindOptionsSelect<GetKabinetsByDivisionIdsForCreateUserDto> =
+      {
+        id: true,
+        division: { name: true },
+        number: true,
+      };
+
+    if (userData.role.roleName !== 'user') {
+      return await this.repo.find({
+        where: { division: { id: In(divisionIds) } },
+        select,
+        relations: { division: true },
+      });
+    }
+
+    const divisionIdsByUser = await this.usersService.getDivisionOfUser(
+      userData.id,
+    );
+
+    return await this.repo.find({
+      where: { division: { id: In(divisionIdsByUser) } },
       select,
       relations: { division: true },
     });

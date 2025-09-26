@@ -5,7 +5,7 @@ import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeM
 import type { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
 import type { Delivery } from '@Modules/delivery/entities/Delivery';
 import type { Division } from '@Modules/division/entities/Division';
-import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import type { Movement } from '@Modules/movement/entities/Movement';
 import type { Receiving } from '@Modules/receiving/entities/Receiving';
 import type { Role } from '@Modules/role/entities/Role';
@@ -21,7 +21,7 @@ import {
 
 @Entity()
 export class User extends Base {
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -36,7 +36,7 @@ export class User extends Base {
   @Column({ nullable: true })
   patronimyc: string;
 
-  @Column()
+  @Column(/*Позже сделать уникальным{ unique: true }*/)
   telephone: string;
 
   @Column({
@@ -46,8 +46,12 @@ export class User extends Base {
   })
   state: UserStatus;
 
+  @ManyToMany('Kabinet', (kabinet: Kabinet) => kabinet.users)
+  @JoinTable({ name: 'user_workrooms' })
+  kabinets: Kabinet[];
+
   @ManyToMany('Division', (division: Division) => division.users)
-  @JoinTable()
+  @JoinTable({ name: 'working_divisions_of_users' })
   division: Division[];
 
   @ManyToOne('Role', (role: Role) => role.users)

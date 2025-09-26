@@ -21,8 +21,10 @@ import { ServiceCreateReceiving } from '@Modules/receiving/ClassesForMapped/Serv
 import { Injectable } from '@nestjs/common';
 import { GetDeliveryByWarehouseIdService } from '@Modules/delivery/ClassesForMapped/GetDeliveryByWarehouseIdService';
 import { GetDeliveryByWarehouseIdDto } from '@Modules/delivery/dto/GetDeliveryByWarehouseIdDto';
-import { GetResponseStaffDetailedService } from '@Modules/user/ClassesForMapped/GetResponseStaffDetailedService';
-import { GetResponseStaffDetailedDto } from '@Modules/user/dto/GetResponseStaffDetailedDto';
+import { GetResponseAcceptedCartridgeByUserService } from '@Modules/user/ClassesForMapped/GetResponseAcceptedCartridgeByUserService';
+import { GetResponseAcceptedCartridgeByUserDto } from '@Modules/user/dto/GetResponseAcceptedCartridgeByUserDto';
+import { GetResponseUserCardService } from '@Modules/user/ClassesForMapped/GetResponseUserCardService';
+import { GetResponseUserCardDto } from '@Modules/user/dto/GetResponseUserCardDto';
 
 @Injectable()
 export class MapperProfile extends AutomapperProfile {
@@ -222,15 +224,12 @@ export class MapperProfile extends AutomapperProfile {
       );
       createMap(
         mapper,
-        GetResponseStaffDetailedService,
-        GetResponseStaffDetailedDto,
-        autoMap('id'),
-        autoMap('name'),
-        autoMap('lastname'),
-        autoMap('patronimyc'),
+        GetResponseAcceptedCartridgeByUserService,
+        GetResponseAcceptedCartridgeByUserDto,
         forMember(
-          (dest: GetResponseStaffDetailedDto) => dest.acceptedCartridge,
-          mapFrom((src: GetResponseStaffDetailedService) =>
+          (dest: GetResponseAcceptedCartridgeByUserDto) =>
+            dest.acceptedCartridge,
+          mapFrom((src: GetResponseAcceptedCartridgeByUserService) =>
             src.acceptedCartridge.flatMap((item) => ({
               id: item.id,
               model: item.action[0].cartridge.model.name,
@@ -241,6 +240,21 @@ export class MapperProfile extends AutomapperProfile {
             })),
           ),
         ),
+      );
+      createMap(
+        mapper,
+        GetResponseUserCardService,
+        GetResponseUserCardDto,
+        autoMap('id'),
+        autoMap('division'),
+        autoMap('kabinets'),
+        autoMap('lastname'),
+        autoMap('name'),
+        autoMap('patronimyc'),
+        autoMap('role'),
+        autoMap('state'),
+        autoMap('telephone'),
+        autoMap('username'),
       );
     };
   }

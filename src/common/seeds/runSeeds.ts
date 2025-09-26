@@ -38,9 +38,9 @@ async function runSeeds() {
     });
 
     await seedDivision(dataSourse);
+    await seedKabinet(dataSourse);
     await seedUsers(dataSourse);
     await seedWarehouse(dataSourse);
-    await seedKabinet(dataSourse);
     await seedCartridgeModel(dataSourse);
     await seedCartridge(dataSourse);
   } catch (error) {

@@ -6,11 +6,15 @@ import { Delivery } from '@Modules/delivery/entities/Delivery';
 import { Division } from '@Modules/division/entities/Division';
 import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import { User } from '../entities/User';
+import { Role } from '@Modules/role/entities/Role';
 
 export type Assert = AssertTManyProperty<Delivery, DivisionType> &
   AssertTManyProperty<Delivery, KabinetType> &
   AssertTManyProperty<Delivery, CartridgeDeliveryType> &
-  AssertTManyProperty<User, StaffDeliveryType>;
+  AssertTManyProperty<User, StaffDeliveryType> &
+  AssertTManyProperty<User, DivisionsType> &
+  AssertTManyProperty<User, KabinetsType> &
+  AssertTManyProperty<User, RoleType>;
 
 type StrictModelType = Pick<CartridgeModel, 'name'>;
 type Model = Omit<Pick<Cartridge, 'model' | 'id'>, 'model'> & {
@@ -43,9 +47,24 @@ export type KabinetType = Omit<Pick<Delivery, 'kabinet'>, 'kabinet'> & {
   kabinet: StrictKabinetType;
 };
 
+export type StrictKabinetsType = Pick<Kabinet, 'id' | 'number'>;
+export type KabinetsType = Omit<Pick<User, 'kabinets'>, 'kabinets'> & {
+  kabinets: StrictKabinetsType[];
+};
+
+export type StrictRole = Pick<Role, 'id' | 'roleName'>;
+export type RoleType = Omit<Pick<User, 'role'>, 'role'> & {
+  role: StrictRole;
+};
+
 export type StrictDivisionType = Pick<Division, 'name'>;
 export type DivisionType = Omit<Pick<Delivery, 'division'>, 'division'> & {
   division: StrictDivisionType;
+};
+
+export type StrictDivisionsType = Pick<Division, 'id' | 'name'>;
+export type DivisionsType = Omit<Pick<User, 'division'>, 'division'> & {
+  division: StrictDivisionsType[];
 };
 
 export type StrictStaffDeliveryType = Omit<

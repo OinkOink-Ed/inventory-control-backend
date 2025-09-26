@@ -11,9 +11,11 @@ import {
   Assert,
   CreatorType,
   Divisiontype,
+  Kabinetstype,
   RoleType,
   StrictCreator,
   StrictDivision,
+  StrictKabinets,
   StrictRole,
 } from '../types/PostCreateUserTypes';
 import type { User } from '../entities/User';
@@ -34,7 +36,8 @@ export class PostCreateUserDto
     >,
     CreatorType,
     RoleType,
-    Divisiontype
+    Divisiontype,
+    Kabinetstype
 {
   @ApiProperty()
   @IsString()
@@ -82,15 +85,30 @@ export class PostCreateUserDto
   role: StrictRole;
 
   @ApiProperty({
-    type: 'object',
-    properties: {
-      id: { type: 'number' },
+    type: 'array',
+    items: {
+      properties: {
+        id: { type: 'number' },
+      },
+      required: ['id'],
     },
-    required: ['id'],
   })
   @Type(() => ObjectIdDto)
-  @ValidateNested()
+  @ValidateNested({ each: true })
   division: StrictDivision[];
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      properties: {
+        id: { type: 'number' },
+      },
+      required: ['id'],
+    },
+  })
+  @Type(() => ObjectIdDto)
+  @ValidateNested({ each: true })
+  kabinets: StrictKabinets[];
 
   @ApiProperty({
     enum: UserStatus,

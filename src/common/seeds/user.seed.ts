@@ -4,11 +4,14 @@ import { Role } from '@Modules/role/entities/Role';
 import { User } from '@Modules/user/entities/User';
 import { UserStatus } from '@common/enums/UserStatus';
 import { Division } from '@Modules/division/entities/Division';
+import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 
+//Обязательно номер телефонов уникальные сделать
 export async function seedUsers(dataSourse: DataSource) {
   const roleRepo = dataSourse.getRepository(Role);
   const userRepo = dataSourse.getRepository(User);
   const divisionRepo = dataSourse.getRepository(Division);
+  const kabinetsRepo = dataSourse.getRepository(Kabinet);
   const salt = await bcrypt.genSalt(10);
   // Я не буду давать проверку на существование пользователей
 
@@ -20,6 +23,27 @@ export async function seedUsers(dataSourse: DataSource) {
   const userRole = await roleRepo.findOneBy({ roleName: 'user' });
   const staffRole = await roleRepo.findOneBy({ roleName: 'staff' });
   const divisionsId = await divisionRepo.find({ select: { id: true } });
+
+  const kabinetsPdr1 = await kabinetsRepo.find({
+    select: { id: true, number: true },
+    where: { division: { name: 'Подразделение № 1' } },
+  });
+
+  //Не забыть реализовать кабинеты по подразделениям!!!
+  // Это нужно будет делать перед первой заливкой после встпуления проекта в работоспособный режим
+
+  // const kabinetsPdr2 = await kabinetsRepo.find({
+  //   select: { id: true, number: true },
+  //   where: { division: { name: 'Подразделение № 2' } },
+  // });
+  // const kabinetsPdr3 = await kabinetsRepo.find({
+  //   select: { id: true, number: true },
+  //   where: { division: { name: 'Подразделение № 3' } },
+  // });
+  // const kabinetsPdr4 = await kabinetsRepo.find({
+  //   select: { id: true, number: true },
+  //   where: { division: { name: 'Подразделение № 4' } },
+  // });
 
   divisionsId.map((item) => (item.id === 1 ? item.id : null));
 
@@ -34,6 +58,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: adminRole?.id },
       division: divisionsId,
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -46,6 +73,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: adminRole?.id },
       division: divisionsId,
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -58,6 +88,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: adminRole?.id },
       division: divisionsId,
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -70,6 +103,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: adminRole?.id },
       division: divisionsId,
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -82,6 +118,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -94,6 +133,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -106,6 +148,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -118,6 +163,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -130,6 +178,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -142,6 +193,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -154,6 +208,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -166,6 +223,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -178,6 +238,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -190,6 +253,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -202,6 +268,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: userRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -214,6 +283,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -226,6 +298,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -238,6 +313,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -250,6 +328,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -262,6 +343,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -274,6 +358,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -286,6 +373,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -298,6 +388,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -310,6 +403,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -322,6 +418,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -334,6 +433,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -346,6 +448,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -358,6 +463,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -370,6 +478,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -382,6 +493,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -394,6 +508,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -406,6 +523,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -418,6 +538,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -430,6 +553,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -442,6 +568,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -454,6 +583,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -466,6 +598,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -478,6 +613,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -490,6 +628,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -502,6 +643,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -514,6 +658,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -526,6 +673,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 1 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -538,6 +688,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -550,6 +703,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -562,6 +718,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -574,6 +733,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -586,6 +748,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -598,6 +763,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -610,6 +778,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -622,6 +793,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -634,6 +808,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -646,6 +823,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: userRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -658,6 +838,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -670,6 +853,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -682,6 +868,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -694,6 +883,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -706,6 +898,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -718,6 +913,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -730,6 +928,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -742,6 +943,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -754,6 +958,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -766,6 +973,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -778,6 +988,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -790,6 +1003,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -802,6 +1018,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -814,6 +1033,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -826,6 +1048,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -838,6 +1063,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -850,6 +1078,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -862,6 +1093,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -874,6 +1108,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -886,6 +1123,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -898,6 +1138,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -910,6 +1153,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -922,6 +1168,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -934,6 +1183,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -946,6 +1198,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -958,6 +1213,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -970,6 +1228,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -982,6 +1243,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -994,6 +1258,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1006,6 +1273,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1018,6 +1288,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1030,6 +1303,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1042,6 +1318,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1054,6 +1333,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1066,6 +1348,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1078,6 +1363,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 2 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1090,6 +1378,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1102,6 +1393,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1114,6 +1408,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1126,6 +1423,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1138,6 +1438,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1150,6 +1453,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1162,6 +1468,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1174,6 +1483,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1186,6 +1498,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1198,6 +1513,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1210,6 +1528,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1222,6 +1543,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: userRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1234,6 +1558,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1246,6 +1573,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1258,6 +1588,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1270,6 +1603,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1282,6 +1618,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1294,6 +1633,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1306,6 +1648,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1318,6 +1663,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1330,6 +1678,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1342,6 +1693,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1354,6 +1708,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1366,6 +1723,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1378,6 +1738,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1390,6 +1753,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1402,6 +1768,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1414,6 +1783,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1426,6 +1798,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1438,6 +1813,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1450,6 +1828,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1462,6 +1843,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1474,6 +1858,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1486,6 +1873,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1498,6 +1888,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1510,6 +1903,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1522,6 +1918,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1534,6 +1933,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1546,6 +1948,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1558,6 +1963,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1570,6 +1978,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1582,6 +1993,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1594,6 +2008,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1606,6 +2023,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1618,6 +2038,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1630,6 +2053,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1642,6 +2068,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1654,6 +2083,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1666,6 +2098,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1678,6 +2113,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1690,6 +2128,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1702,6 +2143,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1714,6 +2158,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 3 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1726,6 +2173,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1738,6 +2188,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1750,6 +2203,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1762,6 +2218,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1774,6 +2233,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1786,6 +2248,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: userRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1798,6 +2263,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1810,6 +2278,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1822,6 +2293,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1834,6 +2308,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1846,6 +2323,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1858,6 +2338,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1870,6 +2353,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1882,6 +2368,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1894,6 +2383,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1906,6 +2398,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1918,6 +2413,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1930,6 +2428,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1942,6 +2443,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1954,6 +2458,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1966,6 +2473,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1978,6 +2488,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -1990,6 +2503,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -2002,6 +2518,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -2014,6 +2533,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -2026,6 +2548,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -2038,6 +2563,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
     {
@@ -2050,6 +2578,9 @@ export async function seedUsers(dataSourse: DataSource) {
       state: UserStatus.ACTIVE,
       role: { id: staffRole?.id },
       division: [{ id: 4 }],
+      kabinets: kabinetsPdr1
+        .filter((item) => ['101', '102'].includes(item.number))
+        .map((item) => ({ id: item.id })),
       creator: { id: systemUser?.id },
     },
   ];
