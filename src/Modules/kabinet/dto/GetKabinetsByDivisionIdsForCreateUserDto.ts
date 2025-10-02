@@ -19,8 +19,9 @@ export class GetKabinetsByDivisionIdsForCreateUserDto
     type: 'object',
     properties: {
       name: { type: 'string' },
+      id: { type: 'number' },
     },
-    required: ['name'],
+    required: ['name', 'id'],
   })
   division: StrictDivisionType;
 }

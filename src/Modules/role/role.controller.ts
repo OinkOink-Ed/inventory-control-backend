@@ -36,8 +36,8 @@ export class RoleController {
     return await this.roleService.create(createDto);
   }
 
-  @Roles('admin', 'user')
   @Get()
+  @Roles('admin', 'user', 'staff')
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseAllRole,

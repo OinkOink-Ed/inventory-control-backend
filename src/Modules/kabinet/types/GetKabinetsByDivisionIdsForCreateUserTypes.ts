@@ -4,7 +4,7 @@ import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 
 export type Assert = AssertTManyProperty<Kabinet, DivisionType>;
 
-export type StrictDivisionType = Pick<Division, 'name'>;
+export type StrictDivisionType = Pick<Division, 'name' | 'id'>;
 export type DivisionType = Omit<Pick<Kabinet, 'division'>, 'division'> & {
   division: StrictDivisionType;
 };

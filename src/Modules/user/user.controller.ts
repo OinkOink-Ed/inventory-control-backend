@@ -83,6 +83,20 @@ export class UserController {
     return await this.userService.editUser(userId, editDto, userData);
   }
 
+  @Patch('edit-profile')
+  @Roles('admin', 'user', 'staff')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: () => SuccessResponseDto,
+  })
+  @ApiErrorResponses()
+  async editProfile(
+    @Body() editDto: PutEditUserDto,
+    @User('sub') userData: UserData,
+  ): Promise<SuccessResponseDto> {
+    return await this.userService.editProfile(editDto, userData);
+  }
+
   @Get()
   @Roles('admin', 'user')
   @ApiBearerAuth()
@@ -95,6 +109,33 @@ export class UserController {
     @User('sub') userData: UserData,
   ): Promise<GetResponseAllUserDto[]> {
     return await this.userService.getAll(userData);
+  }
+
+  @Get('profile-card')
+  @Roles('admin', 'user', 'staff')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetResponseUserCardDto,
+  })
+  @ApiErrorResponses()
+  async getProfileCard(
+    @User('sub') userData: UserData,
+  ): Promise<GetResponseUserCardDto | null> {
+    return await this.userService.getProfileCard(userData);
+  }
+
+  @Get('profile-card/accepted')
+  @Roles('admin', 'user', 'staff')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetResponseAcceptedCartridgeByUserDto,
+    isArray: true,
+  })
+  @ApiErrorResponses()
+  async getCardProfileAcceptedCartridge(
+    @User('sub') userData: UserData,
+  ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
+    return await this.userService.getCardProfileAcceptedCartridge(userData);
   }
 
   @Get(':warehouseId')

@@ -95,7 +95,7 @@ export class KabinetController {
   }
 
   @Get('for-create-user')
-  @Roles('admin', 'user')
+  @Roles('admin', 'user', 'staff')
   @ApiQuery({
     name: 'divisionIds',
     type: String,

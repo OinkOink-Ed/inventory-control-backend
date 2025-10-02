@@ -33,7 +33,10 @@ export class DivisionService {
       location: true,
     };
 
-    if (userData.role.roleName !== 'user') {
+    if (
+      userData.role.roleName !== 'user' &&
+      userData.role.roleName !== 'staff'
+    ) {
       return await this.repo.find({
         select,
       });

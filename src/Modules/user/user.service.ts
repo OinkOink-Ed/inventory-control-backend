@@ -163,6 +163,76 @@ export class UserService {
     };
   }
 
+  async editProfile(dto: PutEditUserDto, userData: UserData) {
+    const user = await this.repo.findOne({
+      where: { id: userData.id },
+      relations: ['role', 'division', 'kabinets'],
+    });
+
+    if (!user) throw new NotFoundException('Пользователь не найден');
+
+    for (const [key, value] of Object.entries(dto)) {
+      if (value !== undefined) {
+        switch (key) {
+          case 'role':
+            const role = await this.roleRepository.findOne({
+              where: { id: dto.role?.id },
+            });
+
+            if (!role) {
+              throw new NotFoundException(
+                `Роль с ID ${dto.role?.id} не найдена`,
+              );
+            }
+
+            user.role = role;
+            break;
+
+          case 'division':
+            if (dto.division !== undefined) {
+              const divisionIds = dto.division
+                .map((div) => div.id)
+                .filter((id) => id !== undefined);
+              user.division = await this.divisionRepository.find({
+                where: { id: In(divisionIds) },
+              });
+            }
+            break;
+
+          case 'kabinets':
+            if (dto.kabinets !== undefined) {
+              const kabinetIds = dto.kabinets
+                .map((kab) => kab.id)
+                .filter((id) => id !== undefined);
+              user.kabinets = await this.kabinetRepository.find({
+                where: { id: In(kabinetIds) },
+              });
+            }
+            break;
+
+          case 'name':
+          case 'lastname':
+          case 'patronimyc':
+          case 'state':
+          case 'telephone':
+          case 'username':
+            user[key] = value;
+            break;
+
+          case 'creator':
+            break;
+        }
+      }
+    }
+
+    await this.repo.save(user);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Пользователь успешно обновлен',
+    };
+  }
+
   async findOneForAuth(
     username: string,
   ): Promise<ServiceForAuthFindUser | null> {
@@ -313,6 +383,75 @@ export class UserService {
       GetResponseAcceptedCartridgeByUserService,
       GetResponseAcceptedCartridgeByUserDto,
     );
+  }
+
+  async getCardProfileAcceptedCartridge(
+    userData: UserData,
+  ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseAcceptedCartridgeByUserService> =
+      {
+        id: true,
+        acceptedCartridge: {
+          id: true,
+          division: { name: true },
+          kabinet: { number: true },
+          action: { id: true, cartridge: { id: true, model: { name: true } } },
+          createdAt: true,
+        },
+      };
+
+    const result = await this.repo.find({
+      select,
+      where: { id: userData.id },
+      relations: {
+        acceptedCartridge: {
+          action: { cartridge: { model: true } },
+          division: true,
+          kabinet: true,
+        },
+      },
+    });
+
+    if (!result) {
+      return [];
+    }
+
+    return this.mapper.mapArray(
+      result,
+      GetResponseAcceptedCartridgeByUserService,
+      GetResponseAcceptedCartridgeByUserDto,
+    );
+  }
+
+  async getProfileCard(
+    userData: UserData,
+  ): Promise<GetResponseUserCardDto | null> {
+    const select: RequiredFindOptionsSelect<GetResponseUserCardService> = {
+      id: true,
+      lastname: true,
+      name: true,
+      patronimyc: true,
+      telephone: true,
+      username: true,
+      role: { id: true, roleName: true },
+      division: { id: true, name: true },
+      kabinets: { id: true, number: true },
+      state: true,
+    };
+
+    const result = await this.repo.findOne({
+      select,
+      where: { id: userData.id },
+      relations: {
+        role: true,
+        division: true,
+        kabinets: true,
+      },
+    });
+
+    if (!result) return null;
+
+    return result;
   }
 
   async getCardUser(staffId: number): Promise<GetResponseUserCardDto | null> {

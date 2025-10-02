@@ -76,11 +76,14 @@ export class KabinetService {
     const select: RequiredFindOptionsSelect<GetKabinetsByDivisionIdsForCreateUserDto> =
       {
         id: true,
-        division: { name: true },
+        division: { id: true, name: true },
         number: true,
       };
 
-    if (userData.role.roleName !== 'user') {
+    if (
+      userData.role.roleName !== 'user' &&
+      userData.role.roleName !== 'staff'
+    ) {
       return await this.repo.find({
         where: { division: { id: In(divisionIds) } },
         select,

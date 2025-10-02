@@ -45,7 +45,7 @@ export class DivisionController {
     return await this.divisionService.create(createDto);
   }
 
-  @Roles('admin', 'user')
+  @Roles('admin', 'user', 'staff')
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
