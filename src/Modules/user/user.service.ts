@@ -29,6 +29,8 @@ import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
 import { GetResponseAcceptedCartridgeByUserService } from './ClassesForMapped/GetResponseAcceptedCartridgeByUserService';
 import { GetResponseAcceptedCartridgeByUserDto } from './dto/GetResponseAcceptedCartridgeByUserDto';
 import { GetResponseUserCardService } from './ClassesForMapped/GetResponseUserCardService';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UpdateUserEventType } from '@Modules/events/types/UpdateUserEventType';
 
 @Injectable()
 export class UserService {
@@ -44,6 +46,7 @@ export class UserService {
     private readonly divisionRepository: Repository<Division>,
     @InjectRepository(Kabinet)
     private readonly kabinetRepository: Repository<Kabinet>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async getDivisionOfUser(userId: number): Promise<number[]> {
@@ -157,6 +160,13 @@ export class UserService {
 
     await this.repo.save(user);
 
+    const eventData: UpdateUserEventType = {
+      userId: user.id,
+      division: user.division,
+    };
+
+    this.eventEmitter.emit('update.user', eventData);
+
     return {
       statusCode: HttpStatus.OK,
       message: 'Пользователь успешно обновлен',
@@ -226,6 +236,13 @@ export class UserService {
     }
 
     await this.repo.save(user);
+
+    const eventData: UpdateUserEventType = {
+      userId: user.id,
+      division: dto.division,
+    };
+
+    this.eventEmitter.emit('update.user', eventData);
 
     return {
       statusCode: HttpStatus.OK,

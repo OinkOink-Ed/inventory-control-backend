@@ -10,6 +10,8 @@ import { ServiceCreateCartridgeMovement } from '@Modules/movement/interfaces/Ser
 import { ServiceCreateMovement } from '@Modules/movement/ClassesForMapped/ServiceCreateMovement';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MovementCartridgeEventType } from '@Modules/events/types/MovementCartridgeEventType';
 
 @Injectable()
 export class MovementService {
@@ -18,6 +20,7 @@ export class MovementService {
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
+    private eventEmitter: EventEmitter2,
   ) {}
   async create(createDto: PostCreateMovementDto): Promise<SuccessResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
@@ -62,6 +65,13 @@ export class MovementService {
 
       await cartridgeMovementRepo.insert(cartridgeMovementDtos);
       await queryRunner.commitTransaction();
+
+      const data: MovementCartridgeEventType = {
+        newDivisionId: createDto.warehouseWhere.id,
+        oldDivisionId: cartridgeDto.warehouseFrom.id,
+      };
+
+      this.eventEmitter.emit('movement.cartridge', data);
 
       return {
         message: 'Картриджи успешно пермещены',

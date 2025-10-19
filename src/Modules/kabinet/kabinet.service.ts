@@ -10,6 +10,8 @@ import { UserData } from '@common/decorators/types/UserType';
 import { UserService } from '@Modules/user/user.service';
 import { GetResponseKabinetsByUserIdDto } from './dto/GetResponseKabinetsByUserIdDto';
 import { GetKabinetsByDivisionIdsForCreateUserDto } from './dto/GetKabinetsByDivisionIdsForCreateUserDto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CreateKabinetEventType } from '@Modules/events/types/CreateKabinetEventType';
 
 @Injectable()
 export class KabinetService {
@@ -17,10 +19,22 @@ export class KabinetService {
     @InjectRepository(Kabinet)
     private readonly repo: Repository<Kabinet>,
     private readonly usersService: UserService,
+    private eventEmitter: EventEmitter2,
   ) {}
+
+  emitCreateKabinetEvent(data: CreateKabinetEventType) {
+    this.eventEmitter.emit('delivery.cartridge', data);
+  }
 
   async create(dto: PostCreateKabinetDto): Promise<SuccessResponseDto> {
     await this.repo.insert(dto);
+
+    const division: CreateKabinetEventType = {
+      division: dto.division,
+    };
+
+    this.emitCreateKabinetEvent(division);
+
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Кабинет успешно добавлен',

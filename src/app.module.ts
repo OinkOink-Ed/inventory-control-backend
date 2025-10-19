@@ -8,6 +8,7 @@ import { CartridgeModelModule } from '@Modules/cartridgeModel/cartridgeModel.mod
 import { DecommissioningModule } from '@Modules/decommissioning/decommissioning.module';
 import { DeliveryModule } from '@Modules/delivery/delivery.module';
 import { DivisionModule } from '@Modules/division/division.module';
+import { EventsModule } from '@Modules/events/events.module';
 import { KabinetModule } from '@Modules/kabinet/kabinet.module';
 import { MovementModule } from '@Modules/movement/movement.module';
 import { ReceivingModule } from '@Modules/receiving/receiving.module';
@@ -16,6 +17,7 @@ import { UserModule } from '@Modules/user/user.module';
 import { WarehouseModule } from '@Modules/warehouse/warehouse.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -43,6 +45,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       },
       inject: [ConfigService],
     }),
+    EventEmitterModule.forRoot(),
     AuthModule,
     CartridgeModule,
     CartridgeModelModule,
@@ -55,6 +58,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RoleModule,
     UserModule,
     WarehouseModule,
+    EventsModule,
   ],
   providers: [
     AccessControlService,

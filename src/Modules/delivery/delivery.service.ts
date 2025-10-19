@@ -15,6 +15,8 @@ import { GetDeliveryByWarehouseIdService } from './ClassesForMapped/GetDeliveryB
 import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
 import { UserData } from '@common/decorators/types/UserType';
 import { AccessControlService } from '@Modules/access-control/access-control.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DeliveryCartridgeEventType } from '@Modules/events/types/DeliveryCartridgeEventType';
 
 @Injectable()
 export class DeliveryService {
@@ -26,7 +28,12 @@ export class DeliveryService {
     private readonly repoDelivery: Repository<Delivery>,
     private readonly dataSourse: DataSource,
     private readonly accessControlService: AccessControlService,
+    private eventEmitter: EventEmitter2,
   ) {}
+
+  emitDeliveryCartridgeEvent(data: DeliveryCartridgeEventType) {
+    this.eventEmitter.emit('delivery.cartridge', data);
+  }
 
   //Выдача картриджей на складе
   async create(createDto: PostCreateDeliveryDto, userData: UserData) {
@@ -76,6 +83,11 @@ export class DeliveryService {
 
       await cartridgeDeliveryRepo.save(cartridgeDeliveryDtos);
       await queryRunner.commitTransaction();
+
+      this.emitDeliveryCartridgeEvent({
+        divisionId: createDto.division.id,
+        userId: createDto.accepting.id,
+      });
 
       return {
         message: 'Картриджи успешно выданы',

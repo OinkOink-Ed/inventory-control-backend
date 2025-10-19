@@ -7,16 +7,21 @@ import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
 import { GetResponseAllCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllCartridgeModelDto';
 import { GetResponseAllDetailedCartridgeModelDto } from '@Modules/cartridgeModel/dto/GetResponseAllDetailedCartridgeModelDto';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CartridgeModelService {
   constructor(
     @InjectRepository(CartridgeModel)
     private readonly repoCartridgeModel: Repository<CartridgeModel>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(dto: PostCreateCartridgeModelDto): Promise<SuccessResponseDto> {
     await this.repoCartridgeModel.save(dto);
+
+    this.eventEmitter.emit('create.model.cartridge');
+
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Модель картриджа успешно добавлена',

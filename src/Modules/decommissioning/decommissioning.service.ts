@@ -11,6 +11,8 @@ import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesFo
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { AccessControlService } from '@Modules/access-control/access-control.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DecomissioningCartrdigeEventType } from '@Modules/events/types/DecomissioningCartrdigeEventType';
 
 @Injectable()
 export class DecommissioningService {
@@ -20,6 +22,7 @@ export class DecommissioningService {
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
     private readonly accessControlService: AccessControlService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(
@@ -77,6 +80,12 @@ export class DecommissioningService {
 
       await cartridgeDecommissioningRepo.insert(cartridgeDecommissioningDtos);
       await queryRunner.commitTransaction();
+
+      const data: DecomissioningCartrdigeEventType = {
+        warehouseId: createDto.warehouse.id,
+      };
+
+      this.eventEmitter.emit('decomissioning.cartridge', data);
 
       return {
         message: 'Картриджи успешно списаны',

@@ -9,6 +9,8 @@ import { ServiceCreateReceiving } from '@Modules/receiving/ClassesForMapped/Serv
 import { Receiving } from '@Modules/receiving/entities/Receiving';
 import { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
 import { ServiceCreateCartridgeReceiving } from '@Modules/receiving/interfaces/ServiceCreateCartridgeReceiving';
+import { ReceivingCartridgeEventType } from '@Modules/events/types/ReceivingCartridgeEventType';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ReceivingService {
@@ -17,6 +19,7 @@ export class ReceivingService {
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
+    private eventEmitter: EventEmitter2,
   ) {}
   async create(createDto: PostCreateReceivingDto): Promise<SuccessResponseDto> {
     //Маппинг dto для правильной передачи параметров для создания сущности
@@ -56,6 +59,13 @@ export class ReceivingService {
 
       await cartridgeReceivingRepo.insert(cartridgeReceivingDtos);
       await queryRunner.commitTransaction();
+
+      const data: ReceivingCartridgeEventType = {
+        warehouseId: createDto.warehouse.id,
+      };
+
+      this.eventEmitter.emit('receiving.cartridge', data);
+
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Картриджи успешно приняты',
