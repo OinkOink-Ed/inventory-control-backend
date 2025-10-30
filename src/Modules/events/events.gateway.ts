@@ -174,4 +174,9 @@ export class EventsGateway implements OnGatewayConnection {
       .to(`division:${data.warehouseId}`)
       .emit('invalidateCartridgeOfReceiving', data);
   }
+
+  @OnEvent('dashboard.cartridge.remnants')
+  async handleDashboardCartridgeremnats() {
+    this.server.to(``).emit(``);
+  }
 }

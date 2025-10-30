@@ -7,6 +7,7 @@ import { CartridgeService } from '@Modules/cartridge/cartridge.service';
 import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { GetResponseCartridgeCountDto } from './dto/GetResponseCartridgeCountDto';
 
 @ApiTags('Cartridges')
 @Controller('cartridges')
@@ -31,5 +32,20 @@ export class CartridgeController {
       warehouseId,
       userData,
     );
+  }
+
+  @Get()
+  @Roles('admin', 'user')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Количество картриджей',
+    type: () => GetResponseCartridgeCountDto,
+    isArray: true,
+  })
+  @ApiErrorResponses()
+  async getCartridgesCount(
+    @User('sub') userData: UserData,
+  ): Promise<GetResponseCartridgeCountDto[]> {
+    return await this.cartridgeService.getCartridgesCount(userData);
   }
 }

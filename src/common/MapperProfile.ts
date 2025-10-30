@@ -93,15 +93,7 @@ export class MapperProfile extends AutomapperProfile {
           mapFrom((src: PostCreateMovementDto) => ({ id: src.model.id })),
         ),
         autoMap('count'),
-        // forMember(
-        //   (dest: ServiceMoveCartridge) => dest.count,
-        //   mapFrom((src: PostCreateMovementDto) => src.count),
-        // ),
         autoMap('state'),
-        // forMember(
-        //   (dest: ServiceMoveCartridge) => dest.state,
-        //   mapFrom((src: PostCreateMovementDto) => src.state),
-        // ),
       );
       createMap(
         mapper,
@@ -120,10 +112,6 @@ export class MapperProfile extends AutomapperProfile {
           })),
         ),
         autoMap('comment'),
-        // forMember(
-        //   (dest: ServiceCreateDecommissioning) => dest.comment,
-        //   mapFrom((src: PostCreateDecommissioningDto) => src.comment),
-        // ),
       );
       createMap(
         mapper,
@@ -141,10 +129,6 @@ export class MapperProfile extends AutomapperProfile {
             id: src.warehouse.id,
           })),
         ),
-        // forMember(
-        //   (dest: ServiceDecommissioningCartridge) => dest.state,
-        //   mapFrom((src: PostCreateDecommissioningDto) => src.state),
-        // ),
         autoMap('state'),
         autoMap('count'),
       );
@@ -166,14 +150,6 @@ export class MapperProfile extends AutomapperProfile {
         ),
         autoMap('state'),
         autoMap('count'),
-        // forMember(
-        //   (dest: ServiceDeliveryCartridge) => dest.state,
-        //   mapFrom((src: PostCreateDeliveryDto) => src.state),
-        // ),
-        // forMember(
-        //   (dest: ServiceDeliveryCartridge) => dest.count,
-        //   mapFrom((src: PostCreateDeliveryDto) => src.count),
-        // ),
       );
       createMap(
         mapper,

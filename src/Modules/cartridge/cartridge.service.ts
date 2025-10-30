@@ -14,6 +14,8 @@ import type { Base } from '@common/entities/Base';
 import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
 import { UserData } from '@common/decorators/types/UserType';
 import { UserService } from '@Modules/user/user.service';
+import { ServiceCountCartridgeByModel } from './dto/ServiceCountCartridgeByModel';
+import { GetResponseCartridgeCountDto } from './dto/GetResponseCartridgeCountDto';
 
 @Injectable()
 export class CartridgeService {
@@ -115,7 +117,7 @@ export class CartridgeService {
         where: {
           model: { id: model.id },
           warehouse: { id: warehouse.id },
-          state: In([CartridgeStatus.RECEIVED || CartridgeStatus.MOVED]),
+          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
         },
         order: {
           createdAt: 'ASC',
@@ -233,5 +235,62 @@ export class CartridgeService {
       select,
       relations: { warehouse: true, model: true },
     });
+  }
+
+  async getCartridgesCount(
+    userData: UserData,
+  ): Promise<GetResponseCartridgeCountDto[]> {
+    if (userData.role.roleName !== 'user') {
+      const rawResults: ServiceCountCartridgeByModel[] =
+        await this.repoCartridges
+          .createQueryBuilder('cartridge')
+          .select('model.id AS modelId')
+          .addSelect('model.name AS modelName')
+          .addSelect('COUNT(cartridge.id) AS totalCount')
+          .innerJoin('cartridge.warehouse', 'warehouse')
+          .innerJoin('cartridge.model', 'model')
+          .where('cartridge.state IN (:...states)', {
+            states: [CartridgeStatus.RECEIVED, CartridgeStatus.MOVED],
+          })
+          .groupBy('model.id')
+          .addGroupBy('model.name')
+          .orderBy('model.name')
+          .getRawMany();
+
+      const totalByModel = rawResults.map((row) => ({
+        modelName: row.modelName,
+        count: parseInt(row.totalCount, 10),
+      }));
+
+      return totalByModel;
+    }
+
+    const divisionsId = await this.usersService.getDivisionOfUser(userData.id);
+
+    const rawResults: ServiceCountCartridgeByModel[] = await this.repoCartridges
+      .createQueryBuilder('cartridge')
+      .select('model.id AS modelId')
+      .addSelect('model.name AS modelName')
+      .addSelect('COUNT(cartridge.id) AS totalCount')
+      .innerJoin('cartridge.warehouse', 'warehouse')
+      .innerJoin('cartridge.model', 'model')
+      .innerJoin('warehouse.division', 'division')
+      .where('cartridge.state IN (:...states)', {
+        states: [CartridgeStatus.RECEIVED, CartridgeStatus.MOVED],
+      })
+      .andWhere('division.id IN (:...divisionIds)', {
+        divisionIds: divisionsId,
+      })
+      .groupBy('model.id')
+      .addGroupBy('model.name')
+      .orderBy('model.name')
+      .getRawMany();
+
+    const totalByModel = rawResults.map((row) => ({
+      modelName: row.modelName,
+      count: parseInt(row.totalCount, 10),
+    }));
+
+    return totalByModel;
   }
 }
