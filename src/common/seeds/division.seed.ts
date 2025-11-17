@@ -1,12 +1,10 @@
 import { Division } from '@Modules/division/entities/Division';
-// import { Role } from '@Modules/role/entities/Role';
 import { User } from '@Modules/user/entities/User';
 import { DataSource } from 'typeorm';
 
 export async function seedDivision(dataSourse: DataSource) {
   const divisionRepo = dataSourse.getRepository(Division);
   const userRepo = dataSourse.getRepository(User);
-  // const roleRepo = dataSourse.getRepository(Role);
 
   const systemUser = await userRepo.findOneBy({ username: 'system' });
 

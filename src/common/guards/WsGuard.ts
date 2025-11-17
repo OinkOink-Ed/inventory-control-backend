@@ -8,14 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
+interface CustomSocket extends Socket {
+  user: any;
+}
+
 @Injectable()
 export class WsGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('GUARD');
-
-    const request = context.switchToWs().getClient<Socket>();
+    const request = context.switchToWs().getClient<CustomSocket>();
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {

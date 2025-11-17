@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@Modules/role/entities/Role';
 import { User } from '@Modules/user/entities/User';
@@ -2588,6 +2588,9 @@ export async function seedUsers(dataSourse: DataSource) {
   await userRepo.save(users);
   console.log('Пользователи успешно созданы');
 
-  await roleRepo.update({}, { creator: { id: systemUser?.id } });
+  await roleRepo.update(
+    { creator: IsNull() },
+    { creator: { id: systemUser?.id } },
+  );
   console.log('Ролям добавлен создатель system');
 }

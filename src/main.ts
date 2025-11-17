@@ -10,6 +10,7 @@ import { DeliveryCartridgeEventType } from '@Modules/events/types/DeliveryCartri
 import { MovementCartridgeEventType } from '@Modules/events/types/MovementCartridgeEventType';
 import { ReceivingCartridgeEventType } from '@Modules/events/types/ReceivingCartridgeEventType';
 import { UpdateUserEventType } from '@Modules/events/types/UpdateUserEventType';
+import { LogoutUserEventType } from '@Modules/events/types/LogoutUserEventType';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

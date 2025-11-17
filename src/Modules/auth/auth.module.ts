@@ -17,7 +17,7 @@ import { TokenCleanupService } from '@Modules/token/token.service';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: '60m',
+          expiresIn: '1m',
         },
       }),
       inject: [ConfigService],

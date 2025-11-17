@@ -16,8 +16,7 @@ import { DecomissioningCartrdigeEventType } from './types/DecomissioningCartrdig
 import { DeliveryCartridgeEventType } from './types/DeliveryCartridgeEventType';
 import { MovementCartridgeEventType } from './types/MovementCartridgeEventType';
 import { ReceivingCartridgeEventType } from './types/ReceivingCartridgeEventType';
-
-//Нужно будет добавить используемые типы в swagger, чтобы kubb их мне достал для client и у меня была согласованность типов
+import { LogoutUserEventType } from './types/LogoutUserEventType';
 
 interface CustomSocket extends Socket {
   data: GetResponseUserCardDto;
@@ -115,7 +114,7 @@ export class EventsGateway implements OnGatewayConnection {
     });
   }
 
-  //Возможно стоит сделать выше Set и оттуда уже брать комнаты division
+  //Возможно стоит сделать выше Set и оттуда уже брать комнаты division для оптимизации выборки комнат
   @OnEvent('create.model.cartridge')
   async handleCartridgeModelCreateEvent() {
     const rooms = this.server.sockets.adapter.rooms;
@@ -175,8 +174,14 @@ export class EventsGateway implements OnGatewayConnection {
       .emit('invalidateCartridgeOfReceiving', data);
   }
 
-  @OnEvent('dashboard.cartridge.remnants')
-  async handleDashboardCartridgeremnats() {
-    this.server.to(``).emit(``);
+  //Не помню для чего слушатель
+  // @OnEvent('dashboard.cartridge.remnants')
+  // async handleDashboardCartridgeremnats() {
+  //   this.server.to(``).emit(``);
+  // }
+
+  @OnEvent('logout')
+  async handleLogout(data: LogoutUserEventType) {
+    this.server.to(`user:${data.userId}`).emit('logoutUser');
   }
 }
