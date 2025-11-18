@@ -1,6 +1,7 @@
 import configuration from '@common/config/configuration';
 import { validationSchema } from '@common/config/validationShema';
 import { AuthGuard } from '@common/guards/AuthGuard';
+import { NoCacheMiddleware } from '@common/middlewares/no-cache/no-cache.middleware';
 import { AccessControlService } from '@Modules/access-control/access-control.service';
 import { AuthModule } from '@Modules/auth/auth.module';
 import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
@@ -15,7 +16,7 @@ import { ReceivingModule } from '@Modules/receiving/receiving.module';
 import { RoleModule } from '@Modules/role/role.module';
 import { UserModule } from '@Modules/user/user.module';
 import { WarehouseModule } from '@Modules/warehouse/warehouse.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -68,4 +69,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(NoCacheMiddleware).forRoutes('*');
+  }
+}
