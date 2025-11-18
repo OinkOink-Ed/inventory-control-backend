@@ -14,10 +14,10 @@ export default function configuration(): DatabaseConfig {
     port: parseInt(process.env.APP_PORT!, 10),
     database: {
       host: process.env.DB_HOST!,
-      port: parseInt(process.env.DATABASE_PORT!, 10),
-      user: process.env.DB_USER!,
-      password: process.env.DB_PASSWORD!,
-      name: process.env.DB_DATABASE!,
+      port: parseInt(process.env.DB_PORT!, 10),
+      user: process.env.MYSQL_USER!,
+      password: process.env.MYSQL_PASSWORD!,
+      name: process.env.MYSQL_DATABASE!,
     },
   };
 }

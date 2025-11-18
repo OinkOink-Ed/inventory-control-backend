@@ -3,21 +3,19 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from 'app.module';
 import { AllExceptionFilter } from '@common/filters/AllExeptionFilter';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import { CreateKabinetEventType } from '@Modules/events/types/CreateKabinetEventType';
 import { DecomissioningCartrdigeEventType } from '@Modules/events/types/DecomissioningCartrdigeEventType';
 import { DeliveryCartridgeEventType } from '@Modules/events/types/DeliveryCartridgeEventType';
 import { MovementCartridgeEventType } from '@Modules/events/types/MovementCartridgeEventType';
 import { ReceivingCartridgeEventType } from '@Modules/events/types/ReceivingCartridgeEventType';
 import { UpdateUserEventType } from '@Modules/events/types/UpdateUserEventType';
-import { LogoutUserEventType } from '@Modules/events/types/LogoutUserEventType';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: true,
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
@@ -47,7 +45,7 @@ async function bootstrap() {
       UpdateUserEventType,
     ],
   });
-  SwaggerModule.setup('api', app, document, {});
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(process.env.APP_PORT!);
 }
