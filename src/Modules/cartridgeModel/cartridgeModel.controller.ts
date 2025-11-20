@@ -13,6 +13,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -53,6 +55,21 @@ export class CartridgeModelController {
     GetResponseAllDetailedCartridgeModelDto[]
   > {
     return await this.createModelCartridge.getModelsAndTheirCreator();
+  }
+
+  @Roles('admin', 'user')
+  @Get('/:warehouseId')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetResponseAllCartridgeModelDto,
+    isArray: true,
+  })
+  @ApiErrorResponses()
+  @HttpCode(HttpStatus.OK)
+  async getMogetModelsByWarehousedels(
+    @Param('warehouseId', ParseIntPipe) warehouseId: number,
+  ): Promise<GetResponseAllCartridgeModelDto[]> {
+    return await this.createModelCartridge.getModelsByWarehouse(warehouseId);
   }
 
   @Roles('admin', 'user')
