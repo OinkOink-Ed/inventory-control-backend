@@ -1,3 +1,4 @@
+import { RoleGuard } from '@common/guards/RoleGuard';
 import { MapperProfile } from '@common/MapperProfile';
 import { Division } from '@Modules/division/entities/Division';
 import { Kabinet } from '@Modules/kabinet/entities/Kabinet';

@@ -80,10 +80,10 @@ export class AuthService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, role, lastname, name, patronimyc, ...profile } = user;
+    const { password, lastname, name, patronimyc, ...profile } = user;
     return await this.generateToken(
       { sub: profile },
-      role.roleName,
+      user.role.roleName,
       lastname,
       name,
       patronimyc,
