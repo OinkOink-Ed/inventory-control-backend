@@ -29,11 +29,16 @@ export class AuthService {
     private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  async generateToken(payload: {
-    sub: { id: number; role: { roleName: string } };
-  }): Promise<PostResponseAuthDto> {
+  async generateToken(
+    payload: {
+      sub: { id: number };
+    },
+    roleName: string,
+    lastname: string,
+    name: string,
+    patronimyc: string,
+  ): Promise<PostResponseAuthDto> {
     const access_token = await this.jwtService.signAsync(payload);
-
     const refresh_token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: '1d',
@@ -49,7 +54,15 @@ export class AuthService {
 
     await this.refreshRepo.insert(refreshTokenEntity);
 
-    return { access_token, refresh_token };
+    return {
+      access_token,
+      refresh_token,
+      id: payload.sub.id,
+      role: { roleName },
+      lastname,
+      name,
+      patronimyc,
+    };
   }
 
   async signIn(username: string, pass: string): Promise<PostResponseAuthDto> {
@@ -67,8 +80,14 @@ export class AuthService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...profile } = user;
-    return await this.generateToken({ sub: profile });
+    const { password, role, lastname, name, patronimyc, ...profile } = user;
+    return await this.generateToken(
+      { sub: profile },
+      role.roleName,
+      lastname,
+      name,
+      patronimyc,
+    );
   }
 
   async refreshToken(refreshToken: PostRefreshDto): Promise<PostRefreshDto> {

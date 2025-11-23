@@ -257,6 +257,9 @@ export class UserService {
       id: true,
       password: true,
       role: { roleName: true },
+      lastname: true,
+      name: true,
+      patronimyc: true,
     };
 
     return await this.repo.findOne({
