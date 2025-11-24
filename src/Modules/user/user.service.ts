@@ -31,6 +31,7 @@ import { GetResponseAcceptedCartridgeByUserDto } from './dto/GetResponseAccepted
 import { GetResponseUserCardService } from './ClassesForMapped/GetResponseUserCardService';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UpdateUserEventType } from '@Modules/events/types/UpdateUserEventType';
+import { GetProfileDto } from './dto/GetProfileDto';
 
 @Injectable()
 export class UserService {
@@ -265,6 +266,24 @@ export class UserService {
     return await this.repo.findOne({
       where: {
         username: `${username}`,
+      },
+      select,
+      relations: ['role'],
+    });
+  }
+
+  async findOneGetProfile(id: number): Promise<GetProfileDto | null> {
+    const select: RequiredFindOptionsSelect<GetProfileDto> = {
+      id: true,
+      role: { roleName: true },
+      lastname: true,
+      name: true,
+      patronimyc: true,
+    };
+
+    return await this.repo.findOne({
+      where: {
+        id: id,
       },
       select,
       relations: ['role'],

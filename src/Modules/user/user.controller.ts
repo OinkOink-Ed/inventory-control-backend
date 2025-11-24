@@ -29,6 +29,7 @@ import { PutEditUserDto } from './dto/PutEditUserDto';
 import { CardEditGuard } from '@common/guards/CardEditGuard';
 import { GetResponseUserCardDto } from './dto/GetResponseUserCardDto';
 import { GetResponseAcceptedCartridgeByUserDto } from './dto/GetResponseAcceptedCartridgeByUserDto';
+import { GetProfileDto } from './dto/GetProfileDto';
 
 @Controller('users')
 @UseGuards(RoleGuard)
@@ -81,6 +82,19 @@ export class UserController {
     @User('sub') userData: UserData,
   ): Promise<SuccessResponseDto> {
     return await this.userService.editUser(userId, editDto, userData);
+  }
+
+  @Get('profile')
+  @Roles('admin', 'user', 'staff')
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: () => GetProfileDto,
+  })
+  @ApiErrorResponses()
+  async getProfile(
+    @User('sub') userData: UserData,
+  ): Promise<GetProfileDto | null> {
+    return await this.userService.findOneGetProfile(userData.id);
   }
 
   @Patch('edit-profile')

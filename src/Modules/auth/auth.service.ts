@@ -29,15 +29,9 @@ export class AuthService {
     private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  async generateToken(
-    payload: {
-      sub: { id: number };
-    },
-    roleName: string,
-    lastname: string,
-    name: string,
-    patronimyc: string,
-  ): Promise<PostResponseAuthDto> {
+  async generateToken(payload: {
+    sub: { id: number };
+  }): Promise<PostResponseAuthDto> {
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -57,11 +51,6 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
-      id: payload.sub.id,
-      role: { roleName },
-      lastname,
-      name,
-      patronimyc,
     };
   }
 
@@ -81,13 +70,7 @@ export class AuthService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, lastname, name, patronimyc, ...profile } = user;
-    return await this.generateToken(
-      { sub: profile },
-      user.role.roleName,
-      lastname,
-      name,
-      patronimyc,
-    );
+    return await this.generateToken({ sub: profile });
   }
 
   async refreshToken(refreshToken: PostRefreshDto): Promise<PostRefreshDto> {
