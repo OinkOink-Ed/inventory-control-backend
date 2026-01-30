@@ -1,0 +1,118 @@
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
+import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
+import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
+import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
+import { UserData } from '@common/decorators/types/UserType';
+import { UserService } from '@Modules/user/user.service';
+import { GetResponseKabinetsByUserIdDto } from './dto/GetResponseKabinetsByUserIdDto';
+import { GetKabinetsByDivisionIdsForCreateUserDto } from './dto/GetKabinetsByDivisionIdsForCreateUserDto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CreateKabinetEventType } from '@Modules/events/types/CreateKabinetEventType';
+
+@Injectable()
+export class KabinetService {
+  constructor(
+    @InjectRepository(Kabinet)
+    private readonly repo: Repository<Kabinet>,
+    private readonly usersService: UserService,
+    private eventEmitter: EventEmitter2,
+  ) {}
+
+  emitCreateKabinetEvent(data: CreateKabinetEventType) {
+    this.eventEmitter.emit('delivery.cartridge', data);
+  }
+
+  async create(dto: PostCreateKabinetDto): Promise<SuccessResponseDto> {
+    await this.repo.insert(dto);
+
+    const division: CreateKabinetEventType = {
+      division: dto.division,
+    };
+
+    this.emitCreateKabinetEvent(division);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Кабинет успешно добавлен',
+    };
+  }
+
+  async getKabinetsByDivisionId(
+    divisionid: number,
+    userData: UserData,
+  ): Promise<GetResponseKabinetsDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseKabinetsDto> = {
+      id: true,
+      division: { name: true },
+      number: true,
+      createdAt: true,
+    };
+
+    if (userData.role.roleName !== 'user') {
+      return await this.repo.find({
+        where: { division: { id: divisionid } },
+        select,
+        relations: { division: true },
+      });
+    }
+
+    const divisionIds = await this.usersService.getDivisionOfUser(userData.id);
+
+    return await this.repo.find({
+      where: { division: { id: In(divisionIds) } },
+      select,
+      relations: { division: true },
+    });
+  }
+
+  async getKabinetsByUserId(
+    userid: number,
+  ): Promise<GetResponseKabinetsByUserIdDto[]> {
+    const select: RequiredFindOptionsSelect<GetResponseKabinetsByUserIdDto> = {
+      id: true,
+      number: true,
+    };
+
+    return await this.repo.find({
+      where: { users: { id: userid } },
+      select,
+    });
+  }
+
+  async getKabinetsByDivisionIdForCreateUser(
+    divisionIds: number[],
+    userData: UserData,
+  ): Promise<any> {
+    const select: RequiredFindOptionsSelect<GetKabinetsByDivisionIdsForCreateUserDto> =
+      {
+        id: true,
+        division: { id: true, name: true },
+        number: true,
+      };
+
+    if (
+      userData.role.roleName !== 'user' &&
+      userData.role.roleName !== 'staff'
+    ) {
+      return await this.repo.find({
+        where: { division: { id: In(divisionIds) } },
+        select,
+        relations: { division: true },
+      });
+    }
+
+    const divisionIdsByUser = await this.usersService.getDivisionOfUser(
+      userData.id,
+    );
+
+    return await this.repo.find({
+      where: { division: { id: In(divisionIdsByUser) } },
+      select,
+      relations: { division: true },
+    });
+  }
+}

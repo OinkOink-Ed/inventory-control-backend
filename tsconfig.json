@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "src",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
+    //Указываем массив путей, где TS будет искать файлы с определениями типов
+    "typeRoots": ["node_modules/@types", "src/common/filters/types"],
+    "paths": {
+      "@Modules/*": ["Modules/*"],
+      "@common/*": ["common/*"]
+    }
+  },
+  //Массив путей или шаблонов, которые указывают TS какие файлы включать в процесс компиляции и проверки типов
+  "include": ["src/**/*", "src/common/filters/types/**/*"]
+}
