@@ -34,6 +34,7 @@ async function bootstrap() {
     .setDescription("The Inventory Control API description")
     .setVersion("1.0")
     .addTag("Inventory Control GP")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {

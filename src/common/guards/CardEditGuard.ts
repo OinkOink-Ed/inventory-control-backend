@@ -1,12 +1,12 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-} from '@nestjs/common';
-import { UserService } from '@Modules/user/user.service';
-import { UserData } from '@common/decorators/types/UserType';
-import { Request } from 'express';
+  Injectable,
+} from "@nestjs/common";
+import { UserService } from "@Modules/user/user.service";
+import { UserData } from "@common/decorators/types/UserType";
+import { Request } from "express";
 
 interface CustomRequest extends Request {
   user: {
@@ -18,30 +18,56 @@ interface CustomRequest extends Request {
 
 @Injectable()
 export class CardEditGuard implements CanActivate {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<CustomRequest>();
-    const user: UserData = request.user.sub;
-    const staffId = Number(request.params.id);
+    const currentUser = request.user.sub;
+    const targetUserId = Number(request.params.id);
 
-    const userAccess = await this.userService.findOneById(staffId);
-    const userAuth = await this.userService.findOneById(user.id);
-
-    if (!userAccess || !userAuth) {
-      throw new ForbiddenException('Карта staff не найдена');
+    if (currentUser.role.roleName === "admin") {
+      return true;
     }
 
-    // Проверяем совпадение divisions
-    const userDivisionIds = userAuth.division.map((div) => div.id);
-    const staffDivisionIds = userAccess.division.map((div) => div.id);
+    if (currentUser.role.roleName !== "user") {
+      throw new ForbiddenException("Нет прав для редактирования пользователя");
+    }
 
-    const hasCommonDivision = userDivisionIds.some((id) =>
-      staffDivisionIds.includes(id),
+    const [currentUserFromDb, targetUser] = await Promise.all([
+      this.userService.findUserForEditAccess(currentUser.id),
+      this.userService.findUserForEditAccess(targetUserId),
+    ]);
+
+    if (!currentUserFromDb) {
+      throw new ForbiddenException("Авторизованный пользователь не найден");
+    }
+
+    if (!targetUser) {
+      throw new ForbiddenException("Пользователь не найден");
+    }
+
+    if (targetUser.role.roleName !== "staff") {
+      throw new ForbiddenException(
+        "Вы можете редактировать только пользователей с ролью staff",
+      );
+    }
+
+    const currentUserDivisionIds = currentUserFromDb.division.map(
+      (division) => division.id,
+    );
+
+    const targetUserDivisionIds = targetUser.division.map(
+      (division) => division.id,
+    );
+
+    const hasCommonDivision = currentUserDivisionIds.some((divisionId) =>
+      targetUserDivisionIds.includes(divisionId),
     );
 
     if (!hasCommonDivision) {
-      throw new ForbiddenException('Нет прав для редактирования этой карты');
+      throw new ForbiddenException(
+        "Пользователь не относится к вашему подразделению",
+      );
     }
 
     return true;

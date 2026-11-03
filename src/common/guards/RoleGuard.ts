@@ -30,9 +30,7 @@ export class RoleGuard implements CanActivate {
       throw new ForbiddenException("Роль пользователя не получена");
     }
 
-    const hasAccess = requiredRoles.some((role) =>
-      user.role.roleName.includes(role),
-    );
+    const hasAccess = requiredRoles.includes(user.role.roleName);
 
     if (!hasAccess) {
       throw new ForbiddenException({

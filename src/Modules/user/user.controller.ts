@@ -7,6 +7,7 @@ import { GetResponseAllUsersByDivisionsDto } from "@Modules/user/dto/GetResponse
 import { GetResponseAllUserDto } from "@Modules/user/dto/GetResponseAllUserDto";
 import { PostCreateUserDto } from "@Modules/user/dto/PostCreateUserDto";
 import { UserService } from "@Modules/user/user.service";
+import { PatchEditProfileDto } from "./dto/PatchEditProfileDto";
 import {
   Body,
   Controller,
@@ -46,7 +47,7 @@ export class UserController {
   @ApiErrorResponses()
   async createUser(
     @Body() createDto: PostCreateUserDto,
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<SuccessResponseDto> {
     createDto.creator = { id: userData.id };
     return await this.userService.createUser(createDto, userData);
@@ -79,7 +80,7 @@ export class UserController {
   async editUser(
     @Body() editDto: PatchEditUserDto,
     @Param("id", ParseIntPipe) userId: number,
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<SuccessResponseDto> {
     return await this.userService.editUser(userId, editDto, userData);
   }
@@ -92,7 +93,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getProfile(
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<GetProfileDto | null> {
     return await this.userService.findOneGetProfile(userData.id);
   }
@@ -105,8 +106,8 @@ export class UserController {
   })
   @ApiErrorResponses()
   async editProfile(
-    @Body() editDto: PatchEditUserDto,
-    @User("sub") userData: UserData
+    @Body() editDto: PatchEditProfileDto,
+    @User("sub") userData: UserData,
   ): Promise<SuccessResponseDto> {
     return await this.userService.editProfile(editDto, userData);
   }
@@ -120,7 +121,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getAll(
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<GetResponseAllUserDto[]> {
     return await this.userService.getAll(userData);
   }
@@ -133,7 +134,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getProfileCard(
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<GetResponseUserCardDto | null> {
     return await this.userService.getProfileCard(userData);
   }
@@ -147,7 +148,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getCardProfileAcceptedCartridge(
-    @User("sub") userData: UserData
+    @User("sub") userData: UserData,
   ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
     return await this.userService.getCardProfileAcceptedCartridge(userData);
   }
@@ -162,7 +163,7 @@ export class UserController {
   @ApiErrorResponses()
   async getAllByDivisions(
     @User("sub") userData: UserData,
-    @Param("warehouseId", ParseIntPipe) warehouseId: number
+    @Param("warehouseId", ParseIntPipe) warehouseId: number,
   ): Promise<GetResponseAllUsersByDivisionsDto[]> {
     return await this.userService.getAllByDivisions(userData, warehouseId);
   }
@@ -175,7 +176,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getCardUser(
-    @Param("id", ParseIntPipe) staffId: number
+    @Param("id", ParseIntPipe) staffId: number,
   ): Promise<GetResponseUserCardDto | null> {
     return await this.userService.getCardUser(staffId);
   }
@@ -189,7 +190,7 @@ export class UserController {
   })
   @ApiErrorResponses()
   async getCardUserAcceptedCartridge(
-    @Param("id", ParseIntPipe) staffId: number
+    @Param("id", ParseIntPipe) staffId: number,
   ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
     return await this.userService.getCardUserAcceptedCartridge(staffId);
   }

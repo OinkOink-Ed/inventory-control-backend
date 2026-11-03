@@ -23,6 +23,7 @@ import { Mapper } from "@automapper/core";
 import { UserData } from "@common/decorators/types/UserType";
 import { RoleService } from "@Modules/role/role.service";
 import { PatchEditUserDto } from "./dto/PatchEditUserDto";
+import { PatchEditProfileDto } from "./dto/PatchEditProfileDto";
 import { Role } from "@Modules/role/entities/Role";
 import { Division } from "@Modules/division/entities/Division";
 import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
@@ -47,7 +48,7 @@ export class UserService {
     private readonly divisionRepository: Repository<Division>,
     @InjectRepository(Kabinet)
     private readonly kabinetRepository: Repository<Kabinet>,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async getDivisionOfUser(userId: number): Promise<number[]> {
@@ -66,13 +67,13 @@ export class UserService {
 
   async createUser(
     dto: PostCreateUserDto,
-    userData: UserData
+    userData: UserData,
   ): Promise<SuccessResponseDto> {
     if (userData.role.roleName == "user") {
       const role = await this.roleService.getRole(dto.role.id);
       if (role?.roleName === "admin") {
         throw new ForbiddenException(
-          "Вы не можете создать пользователя с этой ролью"
+          "Вы не можете создать пользователя с этой ролью",
         );
       }
     }
@@ -90,10 +91,15 @@ export class UserService {
 
   async editUser(userId: number, dto: PatchEditUserDto, userData: UserData) {
     if (userData.role.roleName === "user") {
-      const user = await this.findOne(userId);
-      if (user?.role.roleName === "admin" || user?.role.roleName === "user") {
+      const forbiddenFields: (keyof PatchEditUserDto)[] = ["role", "division"];
+
+      const hasForbiddenFields = forbiddenFields.some(
+        (field) => dto[field] !== undefined,
+      );
+
+      if (hasForbiddenFields) {
         throw new ForbiddenException(
-          "Вы не можете редактировать пользователя с этой ролью"
+          "Недостаточно прав для изменения роли или подразделения пользователя",
         );
       }
     }
@@ -115,7 +121,7 @@ export class UserService {
 
             if (!role) {
               throw new NotFoundException(
-                `Роль с ID ${dto.role?.id} не найдена`
+                `Роль с ID ${dto.role?.id} не найдена`,
               );
             }
 
@@ -174,76 +180,40 @@ export class UserService {
     };
   }
 
-  async editProfile(dto: PatchEditUserDto, userData: UserData) {
+  async editProfile(dto: PatchEditProfileDto, userData: UserData) {
     const user = await this.repo.findOne({
       where: { id: userData.id },
-      relations: ["role", "division", "kabinets"],
     });
 
-    if (!user) throw new NotFoundException("Пользователь не найден");
+    if (!user) {
+      throw new NotFoundException("Пользователь не найден");
+    }
 
-    for (const [key, value] of Object.entries(dto)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "role":
-            const role = await this.roleRepository.findOne({
-              where: { id: dto.role?.id },
-            });
+    if (dto.username !== undefined) {
+      user.username = dto.username;
+    }
 
-            if (!role) {
-              throw new NotFoundException(
-                `Роль с ID ${dto.role?.id} не найдена`
-              );
-            }
+    if (dto.name !== undefined) {
+      user.name = dto.name;
+    }
 
-            user.role = role;
-            break;
+    if (dto.lastname !== undefined) {
+      user.lastname = dto.lastname;
+    }
 
-          case "division":
-            if (dto.division !== undefined) {
-              const divisionIds = dto.division
-                .map((div) => div.id)
-                .filter((id) => id !== undefined);
-              user.division = await this.divisionRepository.find({
-                where: { id: In(divisionIds) },
-              });
-            }
-            break;
+    if (dto.patronimyc !== undefined) {
+      user.patronimyc = dto.patronimyc;
+    }
 
-          case "kabinets":
-            if (dto.kabinets !== undefined) {
-              const kabinetIds = dto.kabinets
-                .map((kab) => kab.id)
-                .filter((id) => id !== undefined);
-              user.kabinets = await this.kabinetRepository.find({
-                where: { id: In(kabinetIds) },
-              });
-            }
-            break;
-
-          case "name":
-          case "lastname":
-          case "patronimyc":
-          case "state":
-          case "telephone":
-          case "username":
-            user[key] = value;
-            break;
-
-          case "creator":
-            break;
-        }
-      }
+    if (dto.telephone !== undefined) {
+      user.telephone = dto.telephone;
     }
 
     await this.repo.save(user);
 
-    const eventData: UpdateUserEventType = {
+    this.eventEmitter.emit("update.user", {
       userId: user.id,
-      division: dto.division,
-    };
-
-    this.eventEmitter.emit("update.user", eventData);
+    });
 
     return {
       statusCode: HttpStatus.OK,
@@ -252,7 +222,7 @@ export class UserService {
   }
 
   async findOneForAuth(
-    username: string
+    username: string,
   ): Promise<ServiceForAuthFindUser | null> {
     const select: RequiredFindOptionsSelect<ServiceForAuthFindUser> = {
       id: true,
@@ -306,7 +276,7 @@ export class UserService {
   }
 
   async findOneById(
-    userId: number
+    userId: number,
   ): Promise<ServiceFindUserForChoiseWarehouse | null> {
     const select: RequiredFindOptionsSelect<ServiceFindUserForChoiseWarehouse> =
       {
@@ -318,6 +288,25 @@ export class UserService {
       where: { id: userId },
       select,
       relations: { division: true },
+    });
+  }
+
+  async findUserForEditAccess(userId: number) {
+    return await this.repo.findOne({
+      where: { id: userId },
+      select: {
+        id: true,
+        role: {
+          roleName: true,
+        },
+        division: {
+          id: true,
+        },
+      },
+      relations: {
+        role: true,
+        division: true,
+      },
     });
   }
 
@@ -358,7 +347,7 @@ export class UserService {
 
   async getAllByDivisions(
     userData: UserData,
-    warehouseId: number
+    warehouseId: number,
   ): Promise<GetResponseAllUsersByDivisionsDto[]> {
     const select: RequiredFindOptionsSelect<GetResponseAllUsersByDivisionsDto> =
       {
@@ -387,7 +376,7 @@ export class UserService {
   }
 
   async getCardUserAcceptedCartridge(
-    staffId: number
+    staffId: number,
   ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
     const select: RequiredFindOptionsSelect<GetResponseAcceptedCartridgeByUserService> =
       {
@@ -420,12 +409,12 @@ export class UserService {
     return this.mapper.mapArray(
       result,
       GetResponseAcceptedCartridgeByUserService,
-      GetResponseAcceptedCartridgeByUserDto
+      GetResponseAcceptedCartridgeByUserDto,
     );
   }
 
   async getCardProfileAcceptedCartridge(
-    userData: UserData
+    userData: UserData,
   ): Promise<GetResponseAcceptedCartridgeByUserDto[]> {
     const select: RequiredFindOptionsSelect<GetResponseAcceptedCartridgeByUserService> =
       {
@@ -458,12 +447,12 @@ export class UserService {
     return this.mapper.mapArray(
       result,
       GetResponseAcceptedCartridgeByUserService,
-      GetResponseAcceptedCartridgeByUserDto
+      GetResponseAcceptedCartridgeByUserDto,
     );
   }
 
   async getProfileCard(
-    userData: UserData
+    userData: UserData,
   ): Promise<GetResponseUserCardDto | null> {
     const select: RequiredFindOptionsSelect<GetResponseUserCardService> = {
       id: true,
