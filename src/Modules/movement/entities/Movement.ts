@@ -13,7 +13,7 @@ export class Movement extends Base {
     "CartridgeMovement",
     (cartridgeMovement: CartridgeMovement) => cartridgeMovement.movement,
   )
-  declare ction: CartridgeMovement[];
+  declare action: CartridgeMovement[];
 
   @ManyToOne("User", (user: User) => user.id)
   declare whoAccepted: User;

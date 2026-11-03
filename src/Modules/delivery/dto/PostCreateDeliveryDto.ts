@@ -11,6 +11,7 @@ export class PostCreateDeliveryDto {
       id: { type: "number" },
     },
     required: ["id"],
+    selfRequired: true,
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
@@ -22,6 +23,7 @@ export class PostCreateDeliveryDto {
       id: { type: "number" },
     },
     required: ["id"],
+    selfRequired: true,
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
@@ -33,6 +35,7 @@ export class PostCreateDeliveryDto {
       id: { type: "number" },
     },
     required: ["id"],
+    selfRequired: true,
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
@@ -44,6 +47,7 @@ export class PostCreateDeliveryDto {
       id: { type: "number" },
     },
     required: ["id"],
+    selfRequired: true,
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
@@ -55,6 +59,7 @@ export class PostCreateDeliveryDto {
       id: { type: "number" },
     },
     required: ["id"],
+    selfRequired: true,
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
