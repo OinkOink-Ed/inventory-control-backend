@@ -8,10 +8,6 @@
 
 # Как это делать я тут описывать не буду. на Linux должно быть из коробки, на WIN использую Docker Desktop и виртуальную машину для Linux
 
-# Запуск окружения Docker
-
-docker network create inventory-network
-
 # Создайте в корне проекта .env файл примерно со следующим содержимым:
 
 # ---------- MySQL (читается сервисом db) ----------
@@ -57,9 +53,11 @@ TZ=UTC
 
 CHOKIDAR_USEPOLLING=true
 
-# После запускайте команду docker:
+# Запуск окружения Docker
 
-compose -f docker-compose.dev.yml up --build
+docker network create inventory-network
+
+docker compose -f docker-compose.dev.yml up
 
 # Далее запускаем seed для заполнения БД тестовыми данными сиды запускаются лишь один раз!
 
