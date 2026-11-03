@@ -1,4 +1,4 @@
 export class ServiceCreateCartridgeDelivery {
-  cartridge: { id: number };
-  delivery: { id: number };
+  cartridge!: { id: number };
+  delivery!: { id: number };
 }

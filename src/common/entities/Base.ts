@@ -4,18 +4,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class Base {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  declare createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  declare updatedAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

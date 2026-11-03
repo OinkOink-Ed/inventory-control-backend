@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class PostResponseAuthDto {
   @ApiProperty()
-  access_token: string;
+  access_token!: string;
 
   @ApiProperty()
-  refresh_token: string;
+  refresh_token!: string;
 }

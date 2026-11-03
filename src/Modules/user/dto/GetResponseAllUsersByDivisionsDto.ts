@@ -1,35 +1,35 @@
-import { ApiProperty } from '@nestjs/swagger';
-import type { User } from '@Modules/user/entities/User';
+import { ApiProperty } from "@nestjs/swagger";
+import type { User } from "@Modules/user/entities/User";
 import {
   Assert,
   RoleType,
   StrictRole,
-} from '../types/GetResponseAllUsersByDivisionsTypes';
+} from "../types/GetResponseAllUsersByDivisionsTypes";
 
 export class GetResponseAllUsersByDivisionsDto
   implements
-    Pick<User & Assert, 'id' | 'name' | 'lastname' | 'patronimyc'>,
+    Pick<User & Assert, "id" | "name" | "lastname" | "patronimyc">,
     RoleType
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  name: string;
+  name!: string;
 
   @ApiProperty()
-  patronimyc: string;
+  patronimyc!: string;
 
   @ApiProperty()
-  lastname: string;
+  lastname!: string;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
-      roleName: { type: 'string' },
+      id: { type: "number" },
+      roleName: { type: "string" },
     },
-    required: ['id', 'roleName'],
+    required: ["id", "roleName"],
   })
-  role: StrictRole;
+  role!: StrictRole;
 }

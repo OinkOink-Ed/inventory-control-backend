@@ -1,27 +1,27 @@
-import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
+import type { Kabinet } from "@Modules/kabinet/entities/Kabinet";
 import {
   Assert,
   DivisionType,
   StrictDivisionType,
-} from '@Modules/kabinet/types/GetKabinetsByDivisionIdsForCreateUserTypes';
-import { ApiProperty } from '@nestjs/swagger';
+} from "@Modules/kabinet/types/GetKabinetsByDivisionIdsForCreateUserTypes";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetKabinetsByDivisionIdsForCreateUserDto
-  implements Pick<Assert & Kabinet, 'id' | 'number'>, DivisionType
+  implements Pick<Assert & Kabinet, "id" | "number">, DivisionType
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  number: string;
+  number!: string;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
-      id: { type: 'number' },
+      name: { type: "string" },
+      id: { type: "number" },
     },
-    required: ['name', 'id'],
+    required: ["name", "id"],
   })
-  division: StrictDivisionType;
+  division!: StrictDivisionType;
 }

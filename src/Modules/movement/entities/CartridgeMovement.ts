@@ -1,14 +1,14 @@
-import { Base } from '@common/entities/Base';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import type { Movement } from '@Modules/movement/entities/Movement';
-import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Base } from "@common/entities/Base";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import type { Movement } from "@Modules/movement/entities/Movement";
+import { Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
 export class CartridgeMovement extends Base {
-  @OneToOne('Cartridge', (cartridge: Cartridge) => cartridge.actionMovement)
+  @OneToOne("Cartridge", (cartridge: Cartridge) => cartridge.actionMovement)
   @JoinColumn()
-  cartridge: Cartridge;
+  declare cartridge: Cartridge;
 
-  @ManyToOne('Movement', (movement: Movement) => movement.action)
-  movement: Movement;
+  @ManyToOne("Movement", (movement: Movement) => movement.action)
+  declare movement: Movement;
 }

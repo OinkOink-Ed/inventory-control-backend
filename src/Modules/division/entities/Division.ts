@@ -1,8 +1,8 @@
-import { Base } from '@common/entities/Base';
-import type { Delivery } from '@Modules/delivery/entities/Delivery';
-import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import type { User } from '@Modules/user/entities/User';
-import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import { Base } from "@common/entities/Base";
+import type { Delivery } from "@Modules/delivery/entities/Delivery";
+import type { Kabinet } from "@Modules/kabinet/entities/Kabinet";
+import type { User } from "@Modules/user/entities/User";
+import type { Warehouse } from "@Modules/warehouse/entities/Warehouse";
 import {
   Column,
   Entity,
@@ -11,29 +11,29 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class Division extends Base {
   @Column()
-  name: string;
+  declare name: string;
 
   @Column()
-  location: string;
+  declare location: string;
 
-  @OneToOne('Warehouse', (warehouse: Warehouse) => warehouse.division)
+  @OneToOne("Warehouse", (warehouse: Warehouse) => warehouse.division)
   @JoinColumn()
-  warehouse: Warehouse;
+  declare warehouse: Warehouse;
 
-  @ManyToMany('User', (user: User) => user.division)
-  users: User[];
+  @ManyToMany("User", (user: User) => user.division)
+  declare users: User[];
 
-  @OneToMany('Kabinet', (kabinets: Kabinet) => kabinets.division)
-  kabinets: Kabinet[];
+  @OneToMany("Kabinet", (kabinets: Kabinet) => kabinets.division)
+  declare kabinets: Kabinet[];
 
-  @OneToMany('Delivery', (delivery: Delivery) => delivery.division)
-  delivery: Delivery[];
+  @OneToMany("Delivery", (delivery: Delivery) => delivery.division)
+  declare delivery: Delivery[];
 
-  @ManyToOne('User', (user: User) => user.createdDivisions)
-  creator: User;
+  @ManyToOne("User", (user: User) => user.createdDivisions)
+  declare creator: User;
 }

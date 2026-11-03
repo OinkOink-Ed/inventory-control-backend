@@ -1,16 +1,16 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsString,
   ValidateNested,
-} from 'class-validator';
-import type { Decommissioning } from '../entities/Decommissioning';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+} from "class-validator";
+import type { Decommissioning } from "../entities/Decommissioning";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
 import {
   Assert,
   CartridgeModelType,
@@ -19,11 +19,11 @@ import {
   StrictCreatorType,
   StrictWarehouseType,
   WarehouseType,
-} from '../types/PostCreateDecommissioningTypes';
+} from "../types/PostCreateDecommissioningTypes";
 
 export class PostCreateDecommissioningDto
   implements
-    Pick<Decommissioning & Cartridge & Assert, 'comment' | 'state'>,
+    Pick<Decommissioning & Cartridge & Assert, "comment" | "state">,
     WarehouseType,
     CreatorType,
     CartridgeModelType
@@ -31,35 +31,35 @@ export class PostCreateDecommissioningDto
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  comment: string;
+  comment!: string;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
-  count: number;
+  count!: number;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
-  creator: StrictCreatorType;
-  state: CartridgeStatus.DECOMMISSIONED;
+  creator!: StrictCreatorType;
+  state!: CartridgeStatus.DECOMMISSIONED;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: StrictCartridgeModelType;
+  model!: StrictCartridgeModelType;
 }

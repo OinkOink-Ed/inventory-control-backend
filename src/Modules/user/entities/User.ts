@@ -1,15 +1,15 @@
-import { Base } from '@common/entities/Base';
-import { UserStatus } from '@common/enums/UserStatus';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
-import type { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
-import type { Delivery } from '@Modules/delivery/entities/Delivery';
-import type { Division } from '@Modules/division/entities/Division';
-import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import type { Movement } from '@Modules/movement/entities/Movement';
-import type { Receiving } from '@Modules/receiving/entities/Receiving';
-import type { Role } from '@Modules/role/entities/Role';
-import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import { Base } from "@common/entities/Base";
+import { UserStatus } from "@common/enums/UserStatus";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import type { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
+import type { Decommissioning } from "@Modules/decommissioning/entities/Decommissioning";
+import type { Delivery } from "@Modules/delivery/entities/Delivery";
+import type { Division } from "@Modules/division/entities/Division";
+import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
+import type { Movement } from "@Modules/movement/entities/Movement";
+import type { Receiving } from "@Modules/receiving/entities/Receiving";
+import type { Role } from "@Modules/role/entities/Role";
+import type { Warehouse } from "@Modules/warehouse/entities/Warehouse";
 import {
   Column,
   Entity,
@@ -17,88 +17,88 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class User extends Base {
   @Column({ unique: true })
-  username: string;
+  declare username: string;
 
   @Column()
-  password: string;
+  declare password: string;
 
   @Column()
-  name: string;
+  declare name: string;
 
   @Column()
-  lastname: string;
+  declare lastname: string;
 
   @Column({ nullable: true })
-  patronimyc: string;
+  declare patronimyc: string;
 
   @Column(/*Позже сделать уникальным{ unique: true }*/)
-  telephone: string;
+  declare telephone: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: UserStatus,
     default: UserStatus.ACTIVE,
   })
-  state: UserStatus;
+  declare state: UserStatus;
 
-  @ManyToMany('Kabinet', (kabinet: Kabinet) => kabinet.users)
-  @JoinTable({ name: 'user_workrooms' })
-  kabinets: Kabinet[];
+  @ManyToMany("Kabinet", (kabinet: Kabinet) => kabinet.users)
+  @JoinTable({ name: "user_workrooms" })
+  declare kabinets: Kabinet[];
 
-  @ManyToMany('Division', (division: Division) => division.users)
-  @JoinTable({ name: 'working_divisions_of_users' })
-  division: Division[];
+  @ManyToMany("Division", (division: Division) => division.users)
+  @JoinTable({ name: "working_divisions_of_users" })
+  declare division: Division[];
 
-  @ManyToOne('Role', (role: Role) => role.users)
-  role: Role;
+  @ManyToOne("Role", (role: Role) => role.users)
+  declare role: Role;
 
-  @ManyToOne('User', (user: User) => user.createdUsers)
-  creator: User;
+  @ManyToOne("User", (user: User) => user.createdUsers)
+  declare creator: User;
 
-  @OneToMany('User', (user: User) => user.creator)
-  createdUsers: User[];
+  @OneToMany("User", (user: User) => user.creator)
+  declare createdUsers: User[];
 
-  @OneToMany('Role', (role: Role) => role.creator)
-  createdRoles: Role[];
+  @OneToMany("Role", (role: Role) => role.creator)
+  declare createdRoles: Role[];
 
-  @OneToMany('Warehouse', (warehouse: Warehouse) => warehouse.creator)
-  createdWarehouses: Warehouse[];
+  @OneToMany("Warehouse", (warehouse: Warehouse) => warehouse.creator)
+  declare createdWarehouses: Warehouse[];
 
-  @OneToMany('Division', (division: Division) => division.creator)
-  createdDivisions: Division[];
+  @OneToMany("Division", (division: Division) => division.creator)
+  declare createdDivisions: Division[];
 
-  @OneToMany('Kabinet', (kabinet: Kabinet) => kabinet.creator)
-  createdKabinets: Kabinet[];
+  @OneToMany("Kabinet", (kabinet: Kabinet) => kabinet.creator)
+  declare createdKabinets: Kabinet[];
 
   @OneToMany(
-    'CartridgeModel',
+    "CartridgeModel",
     (cartridgeModel: CartridgeModel) => cartridgeModel.creator,
   )
-  createdCartridgeModels: CartridgeModel[];
+  declare createdCartridgeModels: CartridgeModel[];
 
-  @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.creator)
-  createdCartridges: Cartridge[];
+  @OneToMany("Cartridge", (cartridge: Cartridge) => cartridge.creator)
+  declare createdCartridges: Cartridge[];
 
-  @OneToMany('Movement', (movement: Movement) => movement.creator)
-  createdMovement: Movement[];
+  @OneToMany("Movement", (movement: Movement) => movement.creator)
+  declare createdMovement: Movement[];
 
-  @OneToMany('Receiving', (receiving: Receiving) => receiving.creator)
-  createdReceiving: Receiving[];
+  @OneToMany("Receiving", (receiving: Receiving) => receiving.creator)
+  declare createdReceiving: Receiving[];
 
   @OneToMany(
-    'Decommissioning',
+    "Decommissioning",
     (decommissioning: Decommissioning) => decommissioning.creator,
   )
-  createdDecommissioning: Decommissioning[];
+  declare createdDecommissioning: Decommissioning[];
 
-  @OneToMany('Delivery', (delivery: Delivery) => delivery.creator)
-  createdDelivery: Delivery[];
+  @OneToMany("Delivery", (delivery: Delivery) => delivery.creator)
+  declare createdDelivery: Delivery[];
 
-  @OneToMany('Delivery', (delivery: Delivery) => delivery.accepting)
-  acceptedCartridge: Delivery[];
+  @OneToMany("Delivery", (delivery: Delivery) => delivery.accepting)
+  declare acceptedCartridge: Delivery[];
 }

@@ -1,50 +1,50 @@
-import { Base } from '@common/entities/Base';
-import { WarehouseStatus } from '@common/enums/WarehouseStatus';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import type { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
-import type { Delivery } from '@Modules/delivery/entities/Delivery';
-import type { Division } from '@Modules/division/entities/Division';
-import type { Movement } from '@Modules/movement/entities/Movement';
-import type { Receiving } from '@Modules/receiving/entities/Receiving';
-import type { User } from '@Modules/user/entities/User';
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Base } from "@common/entities/Base";
+import { WarehouseStatus } from "@common/enums/WarehouseStatus";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import type { Decommissioning } from "@Modules/decommissioning/entities/Decommissioning";
+import type { Delivery } from "@Modules/delivery/entities/Delivery";
+import type { Division } from "@Modules/division/entities/Division";
+import type { Movement } from "@Modules/movement/entities/Movement";
+import type { Receiving } from "@Modules/receiving/entities/Receiving";
+import type { User } from "@Modules/user/entities/User";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 
 @Entity()
 export class Warehouse extends Base {
   @Column()
-  name: string;
+  declare name: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: WarehouseStatus,
     default: WarehouseStatus.ISOPEN,
   })
-  state: WarehouseStatus;
+  declare state: WarehouseStatus;
 
-  @OneToOne('Division', (division: Division) => division.warehouse)
-  division: Division;
+  @OneToOne("Division", (division: Division) => division.warehouse)
+  declare division: Division;
 
-  @ManyToOne('User', (user: User) => user.createdWarehouses)
-  creator: User;
+  @ManyToOne("User", (user: User) => user.createdWarehouses)
+  declare creator: User;
 
-  @OneToMany('Cartridge', (cartridge: Cartridge) => cartridge.warehouse)
-  cartridges: Cartridge[];
+  @OneToMany("Cartridge", (cartridge: Cartridge) => cartridge.warehouse)
+  declare cartridges: Cartridge[];
 
-  @OneToMany('Movement', (movement: Movement) => movement.warehouseFrom)
-  movementOut: Movement[];
+  @OneToMany("Movement", (movement: Movement) => movement.warehouseFrom)
+  declare movementOut: Movement[];
 
-  @OneToMany('Movement', (movement: Movement) => movement.warehouseWhere)
-  movementIn: Movement[];
+  @OneToMany("Movement", (movement: Movement) => movement.warehouseWhere)
+  declare movementIn: Movement[];
 
-  @OneToMany('Receiving', (receiving: Receiving) => receiving.warehouse)
-  receiving: Receiving[];
+  @OneToMany("Receiving", (receiving: Receiving) => receiving.warehouse)
+  declare receiving: Receiving[];
 
   @OneToMany(
-    'Decommissioning',
+    "Decommissioning",
     (decommissioning: Decommissioning) => decommissioning.warehouse,
   )
-  decommissioning: Decommissioning[];
+  declare decommissioning: Decommissioning[];
 
-  @OneToMany('Delivery', (delivery: Delivery) => delivery.warehouse)
-  delivery: Delivery[];
+  @OneToMany("Delivery", (delivery: Delivery) => delivery.warehouse)
+  declare delivery: Delivery[];
 }

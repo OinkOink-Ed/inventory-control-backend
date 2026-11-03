@@ -1,70 +1,70 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNumber, IsPositive, ValidateNested } from "class-validator";
 
 export class PostCreateDeliveryDto {
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: ObjectIdDto;
+  model!: ObjectIdDto;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  kabinet: ObjectIdDto;
+  kabinet!: ObjectIdDto;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  division: ObjectIdDto;
+  division!: ObjectIdDto;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: ObjectIdDto;
+  warehouse!: ObjectIdDto;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  accepting: ObjectIdDto;
+  accepting!: ObjectIdDto;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
-  count: number;
+  count!: number;
 
-  creator: { id: number };
-  state: CartridgeStatus.ISSUED;
+  creator!: { id: number };
+  state!: CartridgeStatus.ISSUED;
 }

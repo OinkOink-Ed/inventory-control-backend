@@ -1,12 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { WsException } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { WsException } from "@nestjs/websockets";
+import { Socket } from "socket.io";
 
 interface CustomSocket extends Socket {
   user: any;
@@ -21,15 +16,15 @@ export class WsGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new WsException('Пользователь не авторизован');
+      throw new WsException("Пользователь не авторизован");
     }
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
 
-      request['user'] = payload;
+      request["user"] = payload;
     } catch {
-      throw new WsException('Пользователь не авторизован');
+      throw new WsException("Пользователь не авторизован");
     }
 
     return true;

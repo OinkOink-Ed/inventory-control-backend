@@ -1,10 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import type { Role } from '../entities/Role';
+import { ApiProperty } from "@nestjs/swagger";
+import type { Role } from "../entities/Role";
 
-export class GetResponseAllRole implements Pick<Role, 'id' | 'roleName'> {
+export class GetResponseAllRole implements Pick<Role, "id" | "roleName"> {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  roleName: string;
+  roleName!: string;
 }

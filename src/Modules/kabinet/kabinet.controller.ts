@@ -1,12 +1,12 @@
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
-import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
-import { KabinetService } from '@Modules/kabinet/kabinet.service';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { GetResponseKabinetsDto } from "@Modules/kabinet/dto/GetResponseKabinetsDto";
+import { PostCreateKabinetDto } from "@Modules/kabinet/dto/PostCreateKabinetDto";
+import { KabinetService } from "@Modules/kabinet/kabinet.service";
 import {
   BadRequestException,
   Body,
@@ -18,16 +18,16 @@ import {
   Post,
   Query,
   UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
-} from '@nestjs/swagger';
-import { GetResponseKabinetsByUserIdDto } from './dto/GetResponseKabinetsByUserIdDto';
-import { GetKabinetsByDivisionIdsForCreateUserDto } from './dto/GetKabinetsByDivisionIdsForCreateUserDto';
+} from "@nestjs/swagger";
+import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserIdDto";
+import { GetKabinetsByDivisionIdsForCreateUserDto } from "./dto/GetKabinetsByDivisionIdsForCreateUserDto";
 
 @Injectable()
 export class DivisionIdsToNumberArrayPipe implements PipeTransform {
@@ -39,7 +39,7 @@ export class DivisionIdsToNumberArrayPipe implements PipeTransform {
       const parsed: any[] = JSON.parse(decodedValue);
 
       if (!Array.isArray(parsed)) {
-        throw new BadRequestException('divisionIds must be an array');
+        throw new BadRequestException("divisionIds must be an array");
       }
 
       return parsed
@@ -50,19 +50,21 @@ export class DivisionIdsToNumberArrayPipe implements PipeTransform {
         )
         .map(Number);
     } catch (error) {
-      throw new BadRequestException('Invalid divisionIds format', error);
+      throw new BadRequestException("Invalid divisionIds format", {
+        cause: error,
+      });
     }
   }
 }
 
-@ApiTags('Kabinets')
-@Controller('kabinets')
+@ApiTags("Kabinets")
+@Controller("kabinets")
 @UseGuards(RoleGuard)
 export class KabinetController {
   constructor(private readonly kabinetService: KabinetService) {}
 
   @Post()
-  @Roles('admin', 'user')
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
@@ -76,8 +78,8 @@ export class KabinetController {
     return await this.kabinetService.create(createDto);
   }
 
-  @Get('division/:id')
-  @Roles('admin', 'user')
+  @Get("division/:id")
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseKabinetsDto,
@@ -85,8 +87,8 @@ export class KabinetController {
   })
   @ApiErrorResponses()
   async getKabinetsByDivisionId(
-    @Param('id') divisionId: number,
-    @User('sub') userData: UserData,
+    @Param("id") divisionId: number,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
     return await this.kabinetService.getKabinetsByDivisionId(
       divisionId,
@@ -94,10 +96,10 @@ export class KabinetController {
     );
   }
 
-  @Get('for-create-user')
-  @Roles('admin', 'user', 'staff')
+  @Get("for-create-user")
+  @Roles("admin", "user", "staff")
   @ApiQuery({
-    name: 'divisionIds',
+    name: "divisionIds",
     type: String,
     required: true,
   })
@@ -108,9 +110,9 @@ export class KabinetController {
   })
   @ApiErrorResponses()
   async getKabinetsByDivisionIdForCreateUser(
-    @Query('divisionIds', DivisionIdsToNumberArrayPipe)
+    @Query("divisionIds", DivisionIdsToNumberArrayPipe)
     divisionIds: number[],
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<GetKabinetsByDivisionIdsForCreateUserDto[]> {
     return await this.kabinetService.getKabinetsByDivisionIdForCreateUser(
       divisionIds,
@@ -118,8 +120,8 @@ export class KabinetController {
     );
   }
 
-  @Get('user/:id')
-  @Roles('admin', 'user')
+  @Get("user/:id")
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseKabinetsByUserIdDto,
@@ -127,7 +129,7 @@ export class KabinetController {
   })
   @ApiErrorResponses()
   async getKabinetsByUserId(
-    @Param('id') userId: number,
+    @Param("id") userId: number,
   ): Promise<GetResponseKabinetsByUserIdDto[]> {
     return await this.kabinetService.getKabinetsByUserId(userId);
   }

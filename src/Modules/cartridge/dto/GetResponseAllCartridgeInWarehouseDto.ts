@@ -1,49 +1,49 @@
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { ApiProperty } from '@nestjs/swagger';
-import type { Cartridge } from '../entities/Cartridge';
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { ApiProperty } from "@nestjs/swagger";
+import type { Cartridge } from "../entities/Cartridge";
 import {
   Assert,
   CartridgeModelType,
   StrictCartridgeModelType,
   StrictWarehouseType,
   WarehouseType,
-} from '../types/GetResponseAllCartridgeInWarehouseTypes';
+} from "../types/GetResponseAllCartridgeInWarehouseTypes";
 
 export class GetResponseAllCartridgeInWarehouseDto
   implements
-    Pick<Assert & Cartridge, 'id' | 'state' | 'createdAt'>,
+    Pick<Assert & Cartridge, "id" | "state" | "createdAt">,
     CartridgeModelType,
     WarehouseType
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty({
     enum: CartridgeStatus,
-    enumName: 'CartridgeStatus',
+    enumName: "CartridgeStatus",
   })
-  state: CartridgeStatus;
+  state!: CartridgeStatus;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
-      name: { type: 'string' },
+      id: { type: "number" },
+      name: { type: "string" },
     },
-    required: ['id', 'name'],
+    required: ["id", "name"],
   })
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
-      name: { type: 'string' },
+      id: { type: "number" },
+      name: { type: "string" },
     },
-    required: ['id', 'name'],
+    required: ["id", "name"],
   })
-  model: StrictCartridgeModelType;
+  model!: StrictCartridgeModelType;
 
-  @ApiProperty({ type: 'string' })
-  createdAt: Date;
+  @ApiProperty({ type: "string" })
+  createdAt!: Date;
 }

@@ -1,56 +1,56 @@
-import { Base } from '@common/entities/Base';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
-import type { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
-import type { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
-import type { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
-import type { CartridgeReceiving } from '@Modules/receiving/entities/CartridgeReceiving';
-import type { User } from '@Modules/user/entities/User';
-import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
+import { Base } from "@common/entities/Base";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import type { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
+import type { CartridgeDecommissioning } from "@Modules/decommissioning/entities/CartridgeDecommissioning";
+import type { CartridgeDelivery } from "@Modules/delivery/entities/CartridgeDelivery";
+import type { CartridgeMovement } from "@Modules/movement/entities/CartridgeMovement";
+import type { CartridgeReceiving } from "@Modules/receiving/entities/CartridgeReceiving";
+import type { User } from "@Modules/user/entities/User";
+import type { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { Column, Entity, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
 export class Cartridge extends Base {
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: CartridgeStatus,
   })
-  state: CartridgeStatus;
+  declare state: CartridgeStatus;
 
   @ManyToOne(
-    'CartridgeModel',
+    "CartridgeModel",
     (cartrdgeModel: CartridgeModel) => cartrdgeModel.cartridges,
   )
-  model: CartridgeModel;
+  declare model: CartridgeModel;
 
   @OneToOne(
-    'CartridgeMovement',
+    "CartridgeMovement",
     (cartridgeMovement: CartridgeMovement) => cartridgeMovement.cartridge,
   )
-  actionMovement: CartridgeMovement;
+  declare actionMovement: CartridgeMovement;
 
   @OneToOne(
-    'CartridgeReceiving',
+    "CartridgeReceiving",
     (cartridgeReceiving: CartridgeReceiving) => cartridgeReceiving.cartridge,
   )
-  actionReceiving: CartridgeReceiving;
+  declare actionReceiving: CartridgeReceiving;
 
   @OneToOne(
-    'CartridgeDecommissioning',
+    "CartridgeDecommissioning",
     (cartridgeDecommissioning: CartridgeDecommissioning) =>
       cartridgeDecommissioning.cartridge,
   )
-  actionDecommissioning: CartridgeDecommissioning;
+  declare actionDecommissioning: CartridgeDecommissioning;
 
   @OneToOne(
-    'CartridgeDelivery',
+    "CartridgeDelivery",
     (cartridgeDelivery: CartridgeDelivery) => cartridgeDelivery.cartridge,
   )
-  actionDelivery: CartridgeDelivery;
+  declare actionDelivery: CartridgeDelivery;
 
-  @ManyToOne('Warehouse', (warehouse: Warehouse) => warehouse.cartridges)
-  warehouse: Warehouse;
+  @ManyToOne("Warehouse", (warehouse: Warehouse) => warehouse.cartridges)
+  declare warehouse: Warehouse;
 
-  @ManyToOne('User', (user: User) => user.createdCartridges)
-  creator: User;
+  @ManyToOne("User", (user: User) => user.createdCartridges)
+  declare creator: User;
 }

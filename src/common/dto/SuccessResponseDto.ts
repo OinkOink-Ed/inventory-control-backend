@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class SuccessResponseDto {
   @ApiProperty()
-  statusCode: number;
+  statusCode!: number;
 
   @ApiProperty()
-  message: string;
+  message!: string;
 }

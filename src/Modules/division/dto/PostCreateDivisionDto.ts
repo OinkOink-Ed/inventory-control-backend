@@ -1,42 +1,42 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
-import { Division } from '@Modules/division/entities/Division';
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
+import { Division } from "@Modules/division/entities/Division";
 import {
   Assert,
   StrictUserType,
   StrictWarehouseType,
   UserType,
   WarehouseType,
-} from '@Modules/division/types/PostCreateDivisionTypes';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+} from "@Modules/division/types/PostCreateDivisionTypes";
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
 export class PostCreateDivisionDto
   implements
-    Pick<Assert & Division, 'name' | 'location'>,
+    Pick<Assert & Division, "name" | "location">,
     UserType,
     WarehouseType
 {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  location: string;
+  location!: string;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
-  creator: StrictUserType;
+  creator!: StrictUserType;
 }

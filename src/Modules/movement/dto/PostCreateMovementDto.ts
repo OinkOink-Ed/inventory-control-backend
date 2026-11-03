@@ -1,6 +1,6 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
 import {
   Assert,
   ModelType,
@@ -15,14 +15,14 @@ import {
   WarehouseType,
   WarehouseWhereType,
   WhoAcceptedType,
-} from '@Modules/movement/types/PostCreateMovementTypes';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
+} from "@Modules/movement/types/PostCreateMovementTypes";
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNumber, IsPositive, ValidateNested } from "class-validator";
 
 export class PostCreateMovementDto
   implements
-    Pick<Assert & Cartridge, 'state'>,
+    Pick<Assert & Cartridge, "state">,
     ModelType,
     WarehouseType,
     WarehouseFromType,
@@ -31,66 +31,66 @@ export class PostCreateMovementDto
     UserType
 {
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: StrictModelType;
+  model!: StrictModelType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouseFrom: StrictWarehouseFromType;
+  warehouseFrom!: StrictWarehouseFromType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouseWhere: StrictWarehouseWhereType;
+  warehouseWhere!: StrictWarehouseWhereType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  whoAccepted: StrictWhoAcceptedType;
+  whoAccepted!: StrictWhoAcceptedType;
 
-  creator: StrictUserType;
+  creator!: StrictUserType;
 
-  state: CartridgeStatus.MOVED;
+  state!: CartridgeStatus.MOVED;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
-  count: number;
+  count!: number;
 }

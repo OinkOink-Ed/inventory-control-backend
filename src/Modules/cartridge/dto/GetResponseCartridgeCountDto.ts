@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetResponseCartridgeCountDto {
   @ApiProperty()
-  modelName: string;
+  modelName!: string;
   @ApiProperty()
-  count: number;
+  count!: number;
 }

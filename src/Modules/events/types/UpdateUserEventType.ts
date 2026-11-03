@@ -1,15 +1,15 @@
-import { StrictDivision } from '@Modules/user/types/PutEditUserTypes';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { StrictDivision } from "@Modules/user/types/PutEditUserTypes";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class UpdateUserEventType {
   @ApiProperty()
-  userId: number;
+  userId!: number;
 
   @ApiPropertyOptional({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
+        id: { type: "number" },
       },
     },
   })

@@ -1,14 +1,14 @@
-import type { User } from '../entities/User';
+import type { User } from "../entities/User";
 import {
   Assert,
   DivisionType,
   StrictDivision,
-} from '../types/ServiceFindUserForChoiseWarehouseTypes';
+} from "../types/ServiceFindUserForChoiseWarehouseTypes";
 
 export class ServiceFindUserForChoiseWarehouse
-  implements Pick<Assert & User, 'id'>, DivisionType
+  implements Pick<Assert & User, "id">, DivisionType
 {
-  id: number;
+  id!: number;
 
-  division: StrictDivision[];
+  division!: StrictDivision[];
 }

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import type { Delivery } from '../entities/Delivery';
+import { ApiProperty } from "@nestjs/swagger";
+import type { Delivery } from "../entities/Delivery";
 import {
   Assert,
   CartridgeDeliveryType,
@@ -14,11 +14,11 @@ import {
   StrictWarehouseType,
   UserType,
   WarehouseType,
-} from '../types/GetDeliveryByWarehouseIdTypes';
+} from "../types/GetDeliveryByWarehouseIdTypes";
 
 export class GetDeliveryByWarehouseIdService
   implements
-    Pick<Delivery & Assert, 'id' | 'createdAt'>,
+    Pick<Delivery & Assert, "id" | "createdAt">,
     WarehouseType,
     DivisionType,
     KabinetType,
@@ -27,81 +27,81 @@ export class GetDeliveryByWarehouseIdService
     CartridgeDeliveryType
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
+      name: { type: "string" },
     },
-    required: ['name'],
+    required: ["name"],
   })
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
+      name: { type: "string" },
     },
-    required: ['name'],
+    required: ["name"],
   })
-  division: StrictDivisionType;
+  division!: StrictDivisionType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      number: { type: 'string' },
+      number: { type: "string" },
     },
-    required: ['number'],
+    required: ["number"],
   })
-  kabinet: StrictKabinetType;
+  kabinet!: StrictKabinetType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
-      lastname: { type: 'string' },
-      patronimyc: { type: 'string' },
+      name: { type: "string" },
+      lastname: { type: "string" },
+      patronimyc: { type: "string" },
     },
-    required: ['name', 'lastname', 'patronimyc'],
+    required: ["name", "lastname", "patronimyc"],
   })
-  creator: StrictUserType;
+  creator!: StrictUserType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
-      lastname: { type: 'string' },
-      patronimyc: { type: 'string' },
+      name: { type: "string" },
+      lastname: { type: "string" },
+      patronimyc: { type: "string" },
     },
-    required: ['name', 'lastname', 'patronimyc'],
+    required: ["name", "lastname", "patronimyc"],
   })
-  accepting: StrictStaffType;
+  accepting!: StrictStaffType;
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
-      type: 'object',
+      type: "object",
       properties: {
-        id: { type: 'number' },
+        id: { type: "number" },
         cartridge: {
-          type: 'object',
+          type: "object",
           properties: {
-            id: { type: 'number' },
+            id: { type: "number" },
             model: {
-              type: 'object',
-              properties: { name: { type: 'string' } },
-              required: ['name'],
+              type: "object",
+              properties: { name: { type: "string" } },
+              required: ["name"],
             },
           },
-          required: ['id', 'model'],
+          required: ["id", "model"],
         },
       },
-      required: ['id', 'cartridge'],
+      required: ["id", "cartridge"],
     },
   })
-  action: StrictCartridgeDeliveryType[];
+  action!: StrictCartridgeDeliveryType[];
 
-  @ApiProperty({ type: 'string' })
-  createdAt: Date;
+  @ApiProperty({ type: "string" })
+  createdAt!: Date;
 }

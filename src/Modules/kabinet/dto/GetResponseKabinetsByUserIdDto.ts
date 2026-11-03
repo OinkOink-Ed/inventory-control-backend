@@ -1,12 +1,13 @@
-import type { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import { ApiProperty } from '@nestjs/swagger';
+import type { Kabinet } from "@Modules/kabinet/entities/Kabinet";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class GetResponseKabinetsByUserIdDto
-  implements Pick<Kabinet, 'id' | 'number'>
-{
+export class GetResponseKabinetsByUserIdDto implements Pick<
+  Kabinet,
+  "id" | "number"
+> {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  number: string;
+  number!: string;
 }

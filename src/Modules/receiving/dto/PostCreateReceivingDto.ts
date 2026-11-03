@@ -1,7 +1,7 @@
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, ValidateNested } from 'class-validator';
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber, IsPositive, ValidateNested } from "class-validator";
 import {
   Assert,
   ModelType,
@@ -10,45 +10,45 @@ import {
   StrictWarehouseType,
   UserType,
   WarehouseType,
-} from '../types/PostCreateReceivingTypes';
-import { Type } from 'class-transformer';
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+} from "../types/PostCreateReceivingTypes";
+import { Type } from "class-transformer";
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
 
 export class PostCreateReceivingDto
   implements
-    Pick<Assert & Cartridge, 'state'>,
+    Pick<Assert & Cartridge, "state">,
     ModelType,
     UserType,
     WarehouseType
 {
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  model: StrictModelType;
+  model!: StrictModelType;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  warehouse: StrictWarehouseType;
+  warehouse!: StrictWarehouseType;
 
-  creator: StrictUserType;
+  creator!: StrictUserType;
 
-  state: CartridgeStatus.RECEIVED;
+  state!: CartridgeStatus.RECEIVED;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
-  count: number;
+  count!: number;
 }

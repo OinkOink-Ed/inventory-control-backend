@@ -71,9 +71,6 @@ importers:
       mysql2:
         specifier: ^3.15.3
         version: 3.15.3
-      platform-express@10.4.20:
-        specifier: link:@nestjs\platform-express@10.4.20
-        version: link:@nestjs/platform-express@10.4.20
       reflect-metadata:
         specifier: ^0.1.14
         version: 0.1.14

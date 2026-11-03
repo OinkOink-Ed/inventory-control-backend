@@ -1,24 +1,24 @@
-import type { User } from '../entities/User';
+import type { User } from "../entities/User";
 import {
   Assert,
   RoleType,
   StrictRole,
-} from '../types/ServiceForAuthFindUserTypes';
+} from "../types/ServiceForAuthFindUserTypes";
 
 export class ServiceForAuthFindUser
   implements
-    Pick<Assert & User, 'id' | 'password' | 'lastname' | 'name' | 'patronimyc'>,
+    Pick<Assert & User, "id" | "password" | "lastname" | "name" | "patronimyc">,
     RoleType
 {
-  id: number;
+  id!: number;
 
-  password: string;
+  password!: string;
 
-  role: StrictRole;
+  role!: StrictRole;
 
-  lastname: string;
+  lastname!: string;
 
-  name: string;
+  name!: string;
 
-  patronimyc: string;
+  patronimyc!: string;
 }

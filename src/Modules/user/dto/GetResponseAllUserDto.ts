@@ -1,60 +1,60 @@
-import { UserStatus } from '@common/enums/UserStatus';
-import { ApiProperty } from '@nestjs/swagger';
-import type { User } from '../entities/User';
+import { UserStatus } from "@common/enums/UserStatus";
+import { ApiProperty } from "@nestjs/swagger";
+import type { User } from "../entities/User";
 import {
   Assert,
   Divisiontype,
   RoleType,
   StrictDivision,
   StrictRole,
-} from '../types/GetResponseAllUserTypes';
+} from "../types/GetResponseAllUserTypes";
 
 export class GetResponseAllUserDto
   implements
     Pick<
       User & Assert,
-      'id' | 'name' | 'username' | 'patronimyc' | 'lastname' | 'state'
+      "id" | "name" | "username" | "patronimyc" | "lastname" | "state"
     >,
     RoleType,
     Divisiontype
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  name: string;
+  name!: string;
 
   @ApiProperty()
-  username: string;
+  username!: string;
 
   @ApiProperty()
-  patronimyc: string;
+  patronimyc!: string;
 
   @ApiProperty()
-  lastname: string;
+  lastname!: string;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
-      roleName: { type: 'string' },
+      id: { type: "number" },
+      roleName: { type: "string" },
     },
-    required: ['id', 'roleName'],
+    required: ["id", "roleName"],
   })
-  role: StrictRole;
+  role!: StrictRole;
 
   @ApiProperty({
     enum: UserStatus,
-    enumName: 'UserStatus',
+    enumName: "UserStatus",
   })
-  state: UserStatus;
+  state!: UserStatus;
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
-      properties: { id: { type: 'number' }, name: { type: 'string' } },
-      required: ['id', 'name'],
+      properties: { id: { type: "number" }, name: { type: "string" } },
+      required: ["id", "name"],
     },
   })
-  division: StrictDivision[];
+  division!: StrictDivision[];
 }

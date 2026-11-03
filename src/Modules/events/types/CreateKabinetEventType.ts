@@ -1,13 +1,13 @@
-import { StrictDivisionType } from '@Modules/kabinet/types/PostCreateKabinetTypes';
-import { ApiProperty } from '@nestjs/swagger';
+import { StrictDivisionType } from "@Modules/kabinet/types/PostCreateKabinetTypes";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateKabinetEventType {
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
-  division: StrictDivisionType;
+  division!: StrictDivisionType;
 }

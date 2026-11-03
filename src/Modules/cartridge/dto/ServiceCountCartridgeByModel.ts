@@ -1,18 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ServiceCountCartridgeByModel {
   @ApiProperty()
-  warehouseId: number;
+  warehouseId!: number;
 
   @ApiProperty()
-  warehouseName: string;
+  warehouseName!: string;
 
   @ApiProperty()
-  modelId: number;
+  modelId!: number;
 
   @ApiProperty()
-  modelName: string;
+  modelName!: string;
 
   @ApiProperty()
-  totalCount: string;
+  totalCount!: string;
 }

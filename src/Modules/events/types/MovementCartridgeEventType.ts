@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class MovementCartridgeEventType {
   @ApiProperty()
-  oldDivisionId: number;
+  oldDivisionId!: number;
   @ApiProperty()
-  newDivisionId: number;
+  newDivisionId!: number;
 }

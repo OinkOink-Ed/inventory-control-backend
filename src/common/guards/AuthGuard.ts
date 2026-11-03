@@ -3,11 +3,11 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'common/decorators/SkipAuth';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Request } from "express";
+import { Reflector } from "@nestjs/core";
+import { IS_PUBLIC_KEY } from "@common/decorators/SkipAuth";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,22 +30,22 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('Пользователь не авторизован');
+      throw new UnauthorizedException("Пользователь не авторизован");
     }
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
 
-      request['user'] = payload;
+      request["user"] = payload;
     } catch {
-      throw new UnauthorizedException('Пользователь не авторизован');
+      throw new UnauthorizedException("Пользователь не авторизован");
     }
 
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
 }

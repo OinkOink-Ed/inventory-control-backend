@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": "src",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -9,7 +10,6 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -17,12 +17,12 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     //Указываем массив путей, где TS будет искать файлы с определениями типов
     "typeRoots": ["node_modules/@types", "src/common/filters/types"],
     "paths": {
-      "@Modules/*": ["Modules/*"],
-      "@common/*": ["common/*"]
+      "@Modules/*": ["./src/Modules/*"],
+      "@common/*": ["./src/common/*"]
     }
   },
   //Массив путей или шаблонов, которые указывают TS какие файлы включать в процесс компиляции и проверки типов

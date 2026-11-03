@@ -1,15 +1,16 @@
-import type { Division } from '@Modules/division/entities/Division';
-import { ApiProperty } from '@nestjs/swagger';
+import type { Division } from "@Modules/division/entities/Division";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class GetReponseAllDivisionDto
-  implements Pick<Division, 'id' | 'name' | 'location'>
-{
+export class GetReponseAllDivisionDto implements Pick<
+  Division,
+  "id" | "name" | "location"
+> {
   @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  name: string;
+  id!: number;
 
   @ApiProperty()
-  location: string;
+  name!: string;
+
+  @ApiProperty()
+  location!: string;
 }

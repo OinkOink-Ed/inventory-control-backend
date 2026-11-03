@@ -1,21 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class GetResponseAcceptedCartridgeByUserDto {
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
-        model: { type: 'string' },
-        kabinet: { type: 'string' },
-        division: { type: 'string' },
-        count: { type: 'number' },
-        createdAt: { type: 'string' },
+        id: { type: "number" },
+        model: { type: "string" },
+        kabinet: { type: "string" },
+        division: { type: "string" },
+        count: { type: "number" },
+        createdAt: { type: "string" },
       },
-      required: ['id', 'model', 'kabinet', 'division', 'count', 'createdAt'],
+      required: ["id", "model", "kabinet", "division", "count", "createdAt"],
     },
   })
-  acceptedCartridge: {
+  acceptedCartridge!: {
     id: number;
     model: string;
     count: number;

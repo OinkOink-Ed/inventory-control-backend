@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   Assert,
   DivisionsType,
@@ -7,80 +7,80 @@ import {
   StrictDivisionsType,
   StrictKabinetsType,
   StrictRole,
-} from '../types/GetResponseUserCardTypes';
-import type { User } from '../entities/User';
-import { UserStatus } from '@common/enums/UserStatus';
+} from "../types/GetResponseUserCardTypes";
+import type { User } from "../entities/User";
+import { UserStatus } from "@common/enums/UserStatus";
 
 export class GetResponseUserCardService
   implements
     Pick<
       Assert & User,
-      | 'id'
-      | 'name'
-      | 'lastname'
-      | 'patronimyc'
-      | 'username'
-      | 'telephone'
-      | 'state'
+      | "id"
+      | "name"
+      | "lastname"
+      | "patronimyc"
+      | "username"
+      | "telephone"
+      | "state"
     >,
     DivisionsType,
     KabinetsType,
     RoleType
 {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  name: string;
+  name!: string;
 
   @ApiProperty()
-  lastname: string;
+  lastname!: string;
 
   @ApiProperty()
-  patronimyc: string;
+  patronimyc!: string;
 
   @ApiProperty()
-  telephone: string;
+  telephone!: string;
 
   @ApiProperty()
-  username: string;
+  username!: string;
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
-        name: { type: 'string' },
+        id: { type: "number" },
+        name: { type: "string" },
       },
-      required: ['name', 'id'],
+      required: ["name", "id"],
     },
   })
-  division: StrictDivisionsType[];
+  division!: StrictDivisionsType[];
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
-        number: { type: 'string' },
+        id: { type: "number" },
+        number: { type: "string" },
       },
-      required: ['number', 'id'],
+      required: ["number", "id"],
     },
   })
-  kabinets: StrictKabinetsType[];
+  kabinets!: StrictKabinetsType[];
 
   @ApiProperty({
     enum: UserStatus,
   })
-  state: UserStatus;
+  state!: UserStatus;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
-      roleName: { type: 'string' },
+      id: { type: "number" },
+      roleName: { type: "string" },
     },
-    required: ['id', 'roleName'],
+    required: ["id", "roleName"],
   })
-  role: StrictRole;
+  role!: StrictRole;
 }

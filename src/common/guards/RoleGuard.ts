@@ -1,13 +1,12 @@
-import { ROLES_KEY } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
+import { ROLES_KEY } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-  Inject,
   Injectable,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -20,15 +19,15 @@ export class RoleGuard implements CanActivate {
     );
 
     if (!requiredRoles) {
-      throw new ForbiddenException('Роль не определена');
+      throw new ForbiddenException("Роль не определена");
     }
 
     const request = context.switchToHttp().getRequest();
     const user: UserData = request.user.sub;
 
     if (!user || !user.role.roleName) {
-      console.log('Роль пользователя не получена');
-      throw new ForbiddenException('Роль пользователя не получена');
+      console.log("Роль пользователя не получена");
+      throw new ForbiddenException("Роль пользователя не получена");
     }
 
     const hasAccess = requiredRoles.some((role) =>
@@ -37,7 +36,7 @@ export class RoleGuard implements CanActivate {
 
     if (!hasAccess) {
       throw new ForbiddenException({
-        message: 'Доступ запрещен',
+        message: "Доступ запрещен",
       });
     }
 

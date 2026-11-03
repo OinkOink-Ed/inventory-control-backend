@@ -1,12 +1,12 @@
-import { UserStatus } from '@common/enums/UserStatus';
-import { ApiProperty } from '@nestjs/swagger';
+import { UserStatus } from "@common/enums/UserStatus";
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsIn,
   IsString,
   Matches,
   MinLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 import {
   Assert,
   CreatorType,
@@ -17,22 +17,22 @@ import {
   StrictDivision,
   StrictKabinets,
   StrictRole,
-} from '../types/PostCreateUserTypes';
-import type { User } from '../entities/User';
-import { Type } from 'class-transformer';
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+} from "../types/PostCreateUserTypes";
+import type { User } from "../entities/User";
+import { Type } from "class-transformer";
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
 
 export class PostCreateUserDto
   implements
     Pick<
       Assert & User,
-      | 'username'
-      | 'password'
-      | 'name'
-      | 'lastname'
-      | 'patronimyc'
-      | 'telephone'
-      | 'state'
+      | "username"
+      | "password"
+      | "name"
+      | "lastname"
+      | "patronimyc"
+      | "telephone"
+      | "state"
     >,
     CreatorType,
     RoleType,
@@ -43,78 +43,78 @@ export class PostCreateUserDto
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  username: string;
+  username!: string;
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(8)
-  password: string;
+  password!: string;
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  lastname: string;
+  lastname!: string;
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
-  patronimyc: string;
+  patronimyc!: string;
 
   @ApiProperty()
   @IsString()
   @Matches(/^\+7[0-9]{10}$/)
-  telephone: string;
+  telephone!: string;
 
   @ApiProperty({
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'number' },
+      id: { type: "number" },
     },
-    required: ['id'],
+    required: ["id"],
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  role: StrictRole;
+  role!: StrictRole;
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
+        id: { type: "number" },
       },
-      required: ['id'],
+      required: ["id"],
     },
   })
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  division: StrictDivision[];
+  division!: StrictDivision[];
 
   @ApiProperty({
-    type: 'array',
+    type: "array",
     items: {
       properties: {
-        id: { type: 'number' },
+        id: { type: "number" },
       },
-      required: ['id'],
+      required: ["id"],
     },
   })
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  kabinets: StrictKabinets[];
+  kabinets!: StrictKabinets[];
 
   @ApiProperty({
     enum: UserStatus,
   })
   @IsIn([UserStatus.ACTIVE])
-  state: UserStatus.ACTIVE;
+  state!: UserStatus.ACTIVE;
 
-  creator: StrictCreator;
+  creator!: StrictCreator;
 }

@@ -1,7 +1,7 @@
-import { ObjectIdDto } from '@common/dto/ObjectIdDto';
+import { ObjectIdDto } from "@common/dto/ObjectIdDto";
 
 export class ServiceCreateDecommissioning {
-  comment: string;
-  warehouse: ObjectIdDto;
-  creator: ObjectIdDto;
+  comment!: string;
+  warehouse!: ObjectIdDto;
+  creator!: ObjectIdDto;
 }

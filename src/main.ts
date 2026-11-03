@@ -1,7 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { AppModule } from "app.module";
 import { AllExceptionFilter } from "@common/filters/AllExeptionFilter";
 import { CreateKabinetEventType } from "@Modules/events/types/CreateKabinetEventType";
 import { DecomissioningCartrdigeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
@@ -9,6 +8,7 @@ import { DeliveryCartridgeEventType } from "@Modules/events/types/DeliveryCartri
 import { MovementCartridgeEventType } from "@Modules/events/types/MovementCartridgeEventType";
 import { ReceivingCartridgeEventType } from "@Modules/events/types/ReceivingCartridgeEventType";
 import { UpdateUserEventType } from "@Modules/events/types/UpdateUserEventType";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,7 +26,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-    })
+    }),
   );
 
   const config = new DocumentBuilder()
