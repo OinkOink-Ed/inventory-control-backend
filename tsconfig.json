@@ -17,7 +17,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     //Указываем массив путей, где TS будет искать файлы с определениями типов
     "typeRoots": ["node_modules/@types", "src/common/filters/types"],
     "paths": {

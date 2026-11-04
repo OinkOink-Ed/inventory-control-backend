@@ -7,12 +7,10 @@ import {
   StrictModelType,
   StrictUserType,
   StrictWarehouseFromType,
-  StrictWarehouseType,
   StrictWarehouseWhereType,
   StrictWhoAcceptedType,
   UserType,
   WarehouseFromType,
-  WarehouseType,
   WarehouseWhereType,
   WhoAcceptedType,
 } from "@Modules/movement/types/PostCreateMovementTypes";
@@ -24,7 +22,6 @@ export class PostCreateMovementDto
   implements
     Pick<Assert & Cartridge, "state">,
     ModelType,
-    WarehouseType,
     WarehouseFromType,
     WarehouseWhereType,
     WhoAcceptedType,
@@ -40,17 +37,6 @@ export class PostCreateMovementDto
   @Type(() => ObjectIdDto)
   @ValidateNested()
   model!: StrictModelType;
-
-  @ApiProperty({
-    type: "object",
-    properties: {
-      id: { type: "number" },
-    },
-    required: ["id"],
-  })
-  @Type(() => ObjectIdDto)
-  @ValidateNested()
-  warehouse!: StrictWarehouseType;
 
   @ApiProperty({
     type: "object",

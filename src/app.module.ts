@@ -2,6 +2,7 @@ import configuration from "@common/config/configuration";
 import { validationSchema } from "@common/config/validationShema";
 import { AuthGuard } from "@common/guards/AuthGuard";
 import { NoCacheMiddleware } from "@common/middlewares/no-cache/no-cache.middleware";
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
 import { AccessControlService } from "@Modules/access-control/access-control.service";
 import { AuthModule } from "@Modules/auth/auth.module";
 import { CartridgeModule } from "@Modules/cartridge/cartridge.module";
@@ -60,9 +61,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
     UserModule,
     WarehouseModule,
     EventsModule,
+    AccessControlModule,
   ],
   providers: [
-    AccessControlService,
     {
       provide: "APP_GUARD",
       useClass: AuthGuard,

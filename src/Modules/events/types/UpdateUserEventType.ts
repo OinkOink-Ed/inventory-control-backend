@@ -1,4 +1,4 @@
-import { StrictDivision } from "@Modules/user/types/PutEditUserTypes";
+import type { Division } from "@Modules/division/entities/Division";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class UpdateUserEventType {
@@ -13,5 +13,5 @@ export class UpdateUserEventType {
       },
     },
   })
-  division: StrictDivision[] | undefined;
+  division: Pick<Division, "id">[] | undefined;
 }

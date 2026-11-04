@@ -1,12 +1,12 @@
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { DivisionService } from '@Modules/division/division.service';
-import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
-import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { DivisionService } from "@Modules/division/division.service";
+import { GetReponseAllDivisionDto } from "@Modules/division/dto/GetReponseAllDivisionDto";
+import { PostCreateDivisionDto } from "@Modules/division/dto/PostCreateDivisionDto";
 import {
   Body,
   Controller,
@@ -15,22 +15,22 @@ import {
   ParseIntPipe,
   Post,
   UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { GetResponseDivisionByWarehouseIdDto } from './dto/GetResponseDivisionByWarehouseIdDto';
+} from "@nestjs/swagger";
+import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionByWarehouseIdDto";
 
-@ApiTags('Division')
-@Controller('division')
+@ApiTags("Division")
+@Controller("division")
 @UseGuards(RoleGuard)
 export class DivisionController {
   constructor(private readonly divisionService: DivisionService) {}
 
-  @Roles('admin')
+  @Roles("admin")
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -45,7 +45,7 @@ export class DivisionController {
     return await this.divisionService.create(createDto);
   }
 
-  @Roles('admin', 'user', 'staff')
+  @Roles("admin", "user", "staff")
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -54,21 +54,22 @@ export class DivisionController {
   })
   @ApiErrorResponses()
   async getDivisions(
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<GetReponseAllDivisionDto[]> {
     return await this.divisionService.getDivisions(userData);
   }
 
-  @Roles('admin', 'user')
-  @Get('warehouse/:id')
+  @Roles("admin", "user")
+  @Get("warehouse/:id")
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseDivisionByWarehouseIdDto,
   })
   @ApiErrorResponses()
   async getDivision(
-    @Param('id', ParseIntPipe) warehouseId: number,
+    @Param("id", ParseIntPipe) warehouseId: number,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseDivisionByWarehouseIdDto | null> {
-    return await this.divisionService.getDivision(warehouseId);
+    return await this.divisionService.getDivision(warehouseId, userData);
   }
 }

@@ -14,6 +14,7 @@ import {
   Get,
   Injectable,
   Param,
+  ParseIntPipe,
   PipeTransform,
   Post,
   Query,
@@ -30,30 +31,27 @@ import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserI
 import { GetKabinetsByDivisionIdsForCreateUserDto } from "./dto/GetKabinetsByDivisionIdsForCreateUserDto";
 
 @Injectable()
-export class DivisionIdsToNumberArrayPipe implements PipeTransform {
+export class DivisionIdsToNumberArrayPipe implements PipeTransform<
+  string,
+  number[]
+> {
   transform(value: string): number[] {
-    try {
-      if (!value) return [];
-
-      const decodedValue = decodeURIComponent(value);
-      const parsed: any[] = JSON.parse(decodedValue);
-
-      if (!Array.isArray(parsed)) {
-        throw new BadRequestException("divisionIds must be an array");
-      }
-
-      return parsed
-        .map((item) => item?.id)
-        .filter(
-          (id): id is number =>
-            id !== undefined && id !== null && !isNaN(Number(id)),
-        )
-        .map(Number);
-    } catch (error) {
-      throw new BadRequestException("Invalid divisionIds format", {
-        cause: error,
-      });
+    if (!value?.trim()) {
+      throw new BadRequestException("divisionIds is required");
     }
+
+    const ids = value
+      .split(",")
+      .map((item) => item.trim())
+      .map(Number);
+
+    if (ids.some((id) => !Number.isInteger(id) || id <= 0)) {
+      throw new BadRequestException(
+        "divisionIds must contain positive integer IDs",
+      );
+    }
+
+    return [...new Set(ids)];
   }
 }
 
@@ -87,7 +85,7 @@ export class KabinetController {
   })
   @ApiErrorResponses()
   async getKabinetsByDivisionId(
-    @Param("id") divisionId: number,
+    @Param("id", ParseIntPipe) divisionId: number,
     @User("sub") userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
     return await this.kabinetService.getKabinetsByDivisionId(
@@ -97,11 +95,13 @@ export class KabinetController {
   }
 
   @Get("for-create-user")
-  @Roles("admin", "user", "staff")
+  @Roles("admin", "user")
   @ApiQuery({
     name: "divisionIds",
     type: String,
     required: true,
+    example: "1,2,3",
+    description: "ID подразделений через запятую",
   })
   @ApiBearerAuth()
   @ApiOkResponse({

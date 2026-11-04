@@ -1,10 +1,11 @@
+import type { JwtAccessPayload } from "@common/decorators/types/UserType";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { WsException } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 
-interface CustomSocket extends Socket {
-  user: any;
+interface AuthenticatedSocket extends Socket {
+  user: JwtAccessPayload;
 }
 
 @Injectable()
@@ -12,17 +13,18 @@ export class WsGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToWs().getClient<CustomSocket>();
-    const token = this.extractTokenFromHeader(request);
+    const socket = context.switchToWs().getClient<AuthenticatedSocket>();
+    const token = this.extractToken(socket);
 
     if (!token) {
       throw new WsException("Пользователь не авторизован");
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload =
+        await this.jwtService.verifyAsync<JwtAccessPayload>(token);
 
-      request["user"] = payload;
+      socket.user = payload;
     } catch {
       throw new WsException("Пользователь не авторизован");
     }
@@ -30,14 +32,9 @@ export class WsGuard implements CanActivate {
     return true;
   }
 
-  //Наверное стоит расширить Request тип, или подумать как можно иначе
-  private extractTokenFromHeader(request: any): string | undefined {
-    // const [type, token] =
-    //   request.handshake.header.authorization?.split(' ') ?? [];
-    // return type === 'Bearer' ? token : undefined;
-    const tokenFromAuth = request.handshake.auth?.token;
-    if (tokenFromAuth) {
-      return tokenFromAuth;
-    }
+  private extractToken(socket: Socket): string | undefined {
+    const token = socket.handshake.auth?.token;
+
+    return typeof token === "string" ? token : undefined;
   }
 }

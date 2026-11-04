@@ -5,23 +5,15 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { UserService } from "@Modules/user/user.service";
-import { UserData } from "@common/decorators/types/UserType";
-import { Request } from "express";
-
-interface CustomRequest extends Request {
-  user: {
-    sub: UserData;
-    iat: number;
-    exp: number;
-  };
-}
+import { AuthenticatedRequest } from "@common/decorators/types/UserType";
 
 @Injectable()
 export class CardEditGuard implements CanActivate {
   constructor(private readonly userService: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<CustomRequest>();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+
     const currentUser = request.user.sub;
     const targetUserId = Number(request.params.id);
 

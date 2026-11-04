@@ -90,79 +90,55 @@ export class UserService {
   }
 
   async editUser(userId: number, dto: PatchEditUserDto, userData: UserData) {
-    if (userData.role.roleName === "user") {
-      const forbiddenFields: (keyof PatchEditUserDto)[] = ["role", "division"];
-
-      const hasForbiddenFields = forbiddenFields.some(
-        (field) => dto[field] !== undefined,
-      );
-
-      if (hasForbiddenFields) {
-        throw new ForbiddenException(
-          "Недостаточно прав для изменения роли или подразделения пользователя",
-        );
-      }
-    }
+    this.validateUserEditPermissions(dto, userData);
 
     const user = await this.repo.findOne({
       where: { id: userId },
-      relations: ["role", "division", "kabinets"],
+      relations: {
+        role: true,
+        division: true,
+        kabinets: true,
+      },
     });
 
-    if (!user) throw new NotFoundException("Пользователь не найден");
+    if (!user) {
+      throw new NotFoundException("Пользователь не найден");
+    }
 
-    for (const [key, value] of Object.entries(dto)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "role":
-            const role = await this.roleRepository.findOne({
-              where: { id: dto.role?.id },
-            });
+    if (dto.username !== undefined) {
+      user.username = dto.username;
+    }
 
-            if (!role) {
-              throw new NotFoundException(
-                `Роль с ID ${dto.role?.id} не найдена`,
-              );
-            }
+    if (dto.name !== undefined) {
+      user.name = dto.name;
+    }
 
-            user.role = role;
-            break;
+    if (dto.lastname !== undefined) {
+      user.lastname = dto.lastname;
+    }
 
-          case "division":
-            if (dto.division !== undefined) {
-              const divisionIds = dto.division
-                .map((div) => div.id)
-                .filter((id) => id !== undefined);
-              user.division = await this.divisionRepository.find({
-                where: { id: In(divisionIds) },
-              });
-            }
-            break;
+    if (dto.patronimyc !== undefined) {
+      user.patronimyc = dto.patronimyc;
+    }
 
-          case "kabinets":
-            if (dto.kabinets !== undefined) {
-              const kabinetIds = dto.kabinets
-                .map((kab) => kab.id)
-                .filter((id) => id !== undefined);
-              user.kabinets = await this.kabinetRepository.find({
-                where: { id: In(kabinetIds) },
-              });
-            }
-            break;
+    if (dto.telephone !== undefined) {
+      user.telephone = dto.telephone;
+    }
 
-          case "name":
-          case "lastname":
-          case "patronimyc":
-          case "state":
-          case "telephone":
-          case "username":
-            user[key] = value;
-            break;
+    if (dto.role !== undefined) {
+      user.role = await this.findRoleOrFail(dto.role.id);
+    }
 
-          case "creator":
-            break;
-        }
-      }
+    if (dto.division !== undefined) {
+      user.division = await this.findDivisionsOrFail(
+        dto.division.map((division) => division.id),
+      );
+    }
+
+    if (dto.kabinets !== undefined) {
+      user.kabinets = await this.findKabinetsOrFail(
+        dto.kabinets.map((kabinet) => kabinet.id),
+      );
     }
 
     await this.repo.save(user);
@@ -509,5 +485,81 @@ export class UserService {
     if (!result) return null;
 
     return result;
+  }
+
+  private validateUserEditPermissions(
+    dto: PatchEditUserDto,
+    userData: UserData,
+  ): void {
+    if (userData.role.roleName !== "user") {
+      return;
+    }
+
+    const allowedFields = new Set<keyof PatchEditUserDto>([
+      "username",
+      "name",
+      "lastname",
+      "patronimyc",
+      "telephone",
+      "kabinets",
+    ]);
+
+    const hasForbiddenFields = (
+      Object.keys(dto) as (keyof PatchEditUserDto)[]
+    ).some((field) => !allowedFields.has(field));
+
+    if (hasForbiddenFields) {
+      throw new ForbiddenException(
+        "Недостаточно прав для изменения этих данных пользователя",
+      );
+    }
+  }
+
+  private async findRoleOrFail(roleId: number): Promise<Role> {
+    const role = await this.roleRepository.findOne({
+      where: { id: roleId },
+    });
+
+    if (!role) {
+      throw new NotFoundException(`Роль с ID ${roleId} не найдена`);
+    }
+
+    return role;
+  }
+
+  private async findDivisionsOrFail(
+    divisionIds: number[],
+  ): Promise<Division[]> {
+    const uniqueIds = [...new Set(divisionIds)];
+
+    const divisions = await this.divisionRepository.find({
+      where: {
+        id: In(uniqueIds),
+      },
+    });
+
+    if (divisions.length !== uniqueIds.length) {
+      throw new NotFoundException(
+        "Одно или несколько подразделений не найдены",
+      );
+    }
+
+    return divisions;
+  }
+
+  private async findKabinetsOrFail(kabinetIds: number[]): Promise<Kabinet[]> {
+    const uniqueIds = [...new Set(kabinetIds)];
+
+    const kabinets = await this.kabinetRepository.find({
+      where: {
+        id: In(uniqueIds),
+      },
+    });
+
+    if (kabinets.length !== uniqueIds.length) {
+      throw new NotFoundException("Один или несколько кабинетов не найдены");
+    }
+
+    return kabinets;
   }
 }

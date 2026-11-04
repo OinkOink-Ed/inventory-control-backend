@@ -8,6 +8,10 @@ import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "@common/decorators/SkipAuth";
+import {
+  AuthenticatedRequest,
+  JwtAccessPayload,
+} from "@common/decorators/types/UserType";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,7 +30,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
@@ -34,9 +38,10 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload =
+        await this.jwtService.verifyAsync<JwtAccessPayload>(token);
 
-      request["user"] = payload;
+      request.user = payload;
     } catch {
       throw new UnauthorizedException("Пользователь не авторизован");
     }

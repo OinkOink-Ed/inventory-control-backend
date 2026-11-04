@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsOptional,
   IsString,
@@ -6,73 +7,43 @@ import {
   MinLength,
   ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
+
 import { ObjectIdDto } from "@common/dto/ObjectIdDto";
-import {
-  Assert,
-  Divisiontype,
-  Kabinetstype,
-  LastnameType,
-  NameType,
-  PatronimycType,
-  RoleType,
-  StrictDivision,
-  StrictKabinets,
-  StrictLastname,
-  StrictName,
-  StrictPatronimyc,
-  StrictRole,
-  StrictTelephone,
-  StrictUsername,
-  TelephoneType,
-  UsernameType,
-} from "../types/PutEditUserTypes";
 import { User } from "../entities/User";
 
-export class PatchEditUserDto
-  implements
-    Pick<Assert & User, never>,
-    RoleType,
-    Divisiontype,
-    Kabinetstype,
-    TelephoneType,
-    PatronimycType,
-    LastnameType,
-    NameType,
-    UsernameType
-{
+export class PatchEditUserDto {
   @ApiPropertyOptional({ type: "string" })
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  username: StrictUsername | undefined;
+  username?: User["username"];
 
   @ApiPropertyOptional({ type: "string" })
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  name: StrictName | undefined;
+  name?: User["name"];
 
   @ApiPropertyOptional({ type: "string" })
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  lastname: StrictLastname | undefined;
+  lastname?: User["lastname"];
 
   @ApiPropertyOptional({ type: "string" })
   @IsOptional()
   @IsString()
   @Matches(/^\+7[0-9]{10}$/)
-  telephone: StrictTelephone | undefined;
+  telephone?: User["telephone"];
 
   @ApiPropertyOptional({ type: "string" })
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
-  patronimyc: StrictPatronimyc | undefined;
+  patronimyc?: User["patronimyc"];
 
   @ApiPropertyOptional({
     type: "object",
@@ -83,7 +54,7 @@ export class PatchEditUserDto
   @IsOptional()
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  role: StrictRole | undefined;
+  role?: ObjectIdDto;
 
   @ApiPropertyOptional({
     type: "array",
@@ -96,7 +67,7 @@ export class PatchEditUserDto
   @IsOptional()
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  division: StrictDivision[] | undefined;
+  division?: ObjectIdDto[];
 
   @ApiPropertyOptional({
     type: "array",
@@ -109,5 +80,5 @@ export class PatchEditUserDto
   @IsOptional()
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  kabinets: StrictKabinets[] | undefined;
+  kabinets?: ObjectIdDto[];
 }

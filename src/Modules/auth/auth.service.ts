@@ -1,23 +1,26 @@
-import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
-import { RefreshToken } from '@Modules/auth/entities/RefreshToken';
-import { UserService } from '@Modules/user/user.service';
+import { PostResponseAuthDto } from "@Modules/auth/dto/PostResponseAuthDto";
+import { RefreshToken } from "@Modules/auth/entities/RefreshToken";
+import { UserService } from "@Modules/user/user.service";
 import {
   BadRequestException,
   HttpStatus,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
-import { ServiceRefresh } from './interfaces/ServiceRefresh';
-import { PostlogoutDto } from './dto/PostLogoutDto';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { PostRefreshDto } from './dto/PostRefreshDto';
-import { ServiceForAuthFindUser } from '@Modules/user/service/ServiceForAuthFindUser';
-import { ServiceForFindUser } from '@Modules/user/service/ServiceFindUser';
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import * as bcrypt from "bcrypt";
+import { Repository } from "typeorm";
+import { ServiceRefresh } from "./interfaces/ServiceRefresh";
+import { PostlogoutDto } from "./dto/PostLogoutDto";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { PostRefreshDto } from "./dto/PostRefreshDto";
+import { ServiceForAuthFindUser } from "@Modules/user/service/ServiceForAuthFindUser";
+import {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from "@common/decorators/types/UserType";
 
 @Injectable()
 export class AuthService {
@@ -29,21 +32,28 @@ export class AuthService {
     private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  async generateToken(payload: {
-    sub: { id: number };
-  }): Promise<PostResponseAuthDto> {
+  async generateToken(
+    payload: AccessTokenPayload,
+  ): Promise<PostResponseAuthDto> {
     const access_token = await this.jwtService.signAsync(payload);
-    const refresh_token = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: '1d',
-    });
 
-    const user = await this.usersService.findOne(payload.sub.id);
+    const refreshPayload: RefreshTokenPayload = {
+      sub: {
+        id: payload.sub.id,
+      },
+    };
+
+    const refresh_token = await this.jwtService.signAsync(refreshPayload, {
+      secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      expiresIn: "1d",
+    });
 
     const refreshTokenEntity: ServiceRefresh = {
       token: refresh_token,
-      user: { id: user?.id ? user.id : 0 },
-      expiresAt: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      user: {
+        id: payload.sub.id,
+      },
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
 
     await this.refreshRepo.insert(refreshTokenEntity);
@@ -59,13 +69,13 @@ export class AuthService {
       await this.usersService.findOneForAuth(username);
 
     if (!user) {
-      throw new UnauthorizedException('Неверный логин или пароль');
+      throw new UnauthorizedException("Неверный логин или пароль");
     }
 
     const isPasswordValid = await bcrypt.compare(pass, user.password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Неверный логин или пароль');
+      throw new UnauthorizedException("Неверный логин или пароль");
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,43 +86,57 @@ export class AuthService {
   async refreshToken(refreshToken: PostRefreshDto): Promise<PostRefreshDto> {
     const tokenEntity = await this.refreshRepo.findOne({
       where: { token: refreshToken.token },
-      relations: ['user'],
+      relations: ["user"],
     });
 
     if (!tokenEntity || tokenEntity.expiresAt < new Date()) {
-      throw new UnauthorizedException('Пользователь не авторизован');
+      throw new UnauthorizedException("Пользователь не авторизован");
     }
 
-    //Но пассворд то нет
-    let payload: { sub: ServiceForFindUser };
+    let payload: RefreshTokenPayload;
+
     try {
-      payload = await this.jwtService.verifyAsync(refreshToken.token, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      });
-    } catch (error) {
-      throw new UnauthorizedException(error, 'Пользователь не авторизован');
+      payload = await this.jwtService.verifyAsync<RefreshTokenPayload>(
+        refreshToken.token,
+        {
+          secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+        },
+      );
+    } catch {
+      throw new UnauthorizedException("Пользователь не авторизован");
     }
 
     const user = await this.usersService.findOne(payload.sub.id);
-    if (!user || 'error' in user) {
-      throw new BadRequestException('Пользователь не найден');
+
+    if (!user || "error" in user) {
+      throw new BadRequestException("Пользователь не найден");
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const newAccessToken = await this.jwtService.signAsync({ sub: user });
+    const accessPayload: AccessTokenPayload = {
+      sub: {
+        id: user.id,
+        role: {
+          roleName: user.role.roleName,
+        },
+      },
+    };
 
-    return { token: newAccessToken };
+    const newAccessToken = await this.jwtService.signAsync(accessPayload);
+
+    return {
+      token: newAccessToken,
+    };
   }
 
   async logout(dto: PostlogoutDto): Promise<SuccessResponseDto> {
     const res = await this.refreshRepo.delete({ token: dto.token });
 
     if (res.affected == 0) {
-      throw new UnauthorizedException('Вы не авторизованы в системе!');
+      throw new UnauthorizedException("Вы не авторизованы в системе!");
     }
     return {
       statusCode: HttpStatus.OK,
-      message: 'Успешный выход из системы',
+      message: "Успешный выход из системы",
     };
   }
 }

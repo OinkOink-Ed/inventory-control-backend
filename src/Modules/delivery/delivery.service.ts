@@ -1,22 +1,22 @@
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
-import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
-import { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
-import { Delivery } from '@Modules/delivery/entities/Delivery';
-import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateCartridgeDelivery';
-import { ServiceCreateDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateDelivery';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { GetDeliveryByWarehouseIdService } from './ClassesForMapped/GetDeliveryByWarehouseIdService';
-import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
-import { UserData } from '@common/decorators/types/UserType';
-import { AccessControlService } from '@Modules/access-control/access-control.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DeliveryCartridgeEventType } from '@Modules/events/types/DeliveryCartridgeEventType';
+import { Mapper } from "@automapper/core";
+import { InjectMapper } from "@automapper/nestjs";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { ServiceDeliveryCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge";
+import { PostCreateDeliveryDto } from "@Modules/delivery/dto/PostCreateDeliveryDto";
+import { CartridgeDelivery } from "@Modules/delivery/entities/CartridgeDelivery";
+import { Delivery } from "@Modules/delivery/entities/Delivery";
+import { ServiceCreateCartridgeDelivery } from "@Modules/delivery/ClassesForMapped/ServiceCreateCartridgeDelivery";
+import { ServiceCreateDelivery } from "@Modules/delivery/ClassesForMapped/ServiceCreateDelivery";
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { GetDeliveryByWarehouseIdService } from "./ClassesForMapped/GetDeliveryByWarehouseIdService";
+import { GetDeliveryByWarehouseIdDto } from "./dto/GetDeliveryByWarehouseIdDto";
+import { UserData } from "@common/decorators/types/UserType";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { DeliveryCartridgeEventType } from "@Modules/events/types/DeliveryCartridgeEventType";
 
 @Injectable()
 export class DeliveryService {
@@ -32,14 +32,14 @@ export class DeliveryService {
   ) {}
 
   emitDeliveryCartridgeEvent(data: DeliveryCartridgeEventType) {
-    this.eventEmitter.emit('delivery.cartridge', data);
+    this.eventEmitter.emit("delivery.cartridge", data);
   }
 
   //Выдача картриджей на складе
   async create(createDto: PostCreateDeliveryDto, userData: UserData) {
-    await this.accessControlService.getAccessWarehouse(
+    await this.accessControlService.assertDivisionAccess(
+      userData,
       createDto.division.id,
-      userData.id,
     );
 
     const deliveryDto = this.mapper.map(
@@ -90,7 +90,7 @@ export class DeliveryService {
       });
 
       return {
-        message: 'Картриджи успешно выданы',
+        message: "Картриджи успешно выданы",
         statusCode: HttpStatus.CREATED,
       };
     } catch (error) {

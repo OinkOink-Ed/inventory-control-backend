@@ -1,5 +1,8 @@
 import { ROLES_KEY } from "@common/decorators/Roles";
-import { UserData } from "@common/decorators/types/UserType";
+import {
+  AuthenticatedRequest,
+  UserData,
+} from "@common/decorators/types/UserType";
 import {
   CanActivate,
   ExecutionContext,
@@ -22,11 +25,11 @@ export class RoleGuard implements CanActivate {
       throw new ForbiddenException("Роль не определена");
     }
 
-    const request = context.switchToHttp().getRequest();
-    const user: UserData = request.user.sub;
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+
+    const user = request.user.sub;
 
     if (!user || !user.role.roleName) {
-      console.log("Роль пользователя не получена");
       throw new ForbiddenException("Роль пользователя не получена");
     }
 

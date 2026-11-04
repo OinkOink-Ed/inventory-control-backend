@@ -1,14 +1,15 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
-import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { UserData } from '@common/decorators/types/UserType';
-import { UserService } from '@Modules/user/user.service';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { PostCreateWarehouseDto } from "@Modules/warehouse/dto/PostCreateWarehouseDto";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { GetResponseAllWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllWarehouseDto";
+import { GetResponseAllDetailedWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { UserData } from "@common/decorators/types/UserType";
+import { UserService } from "@Modules/user/user.service";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class WarehouseService {
@@ -16,6 +17,7 @@ export class WarehouseService {
     @InjectRepository(Warehouse)
     private readonly repo: Repository<Warehouse>,
     private readonly usersService: UserService,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   async createWarehouse(
@@ -24,7 +26,7 @@ export class WarehouseService {
     await this.repo.save(dto);
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'Модель картриджа успешно добавлена',
+      message: "Модель картриджа успешно добавлена",
     };
   }
 
@@ -36,7 +38,7 @@ export class WarehouseService {
       name: true,
     };
 
-    if (userData.role.roleName !== 'user') {
+    if (userData.role.roleName !== "user") {
       return await this.repo.find({
         select,
       });
@@ -55,26 +57,33 @@ export class WarehouseService {
     warehouseId: number,
     userData: UserData,
   ): Promise<GetResponseAllDetailedWarehouseDto | null> {
+    await this.accessControlService.assertWarehouseAccess(
+      userData,
+      warehouseId,
+    );
+
     const select: RequiredFindOptionsSelect<GetResponseAllDetailedWarehouseDto> =
       {
         id: true,
-        division: { id: true, kabinets: { id: true, number: true } },
+        division: {
+          id: true,
+          kabinets: {
+            id: true,
+            number: true,
+          },
+        },
       };
 
-    if (userData.role.roleName !== 'user') {
-      return this.repo.findOne({
-        select,
-        where: { id: warehouseId },
-        relations: { division: { kabinets: true } },
-      });
-    }
-
-    const divisionIds = await this.usersService.getDivisionOfUser(userData.id);
-
-    return this.repo.findOne({
+    return await this.repo.findOne({
       select,
-      where: { division: { id: In(divisionIds) } },
-      relations: { division: { kabinets: true } },
+      where: {
+        id: warehouseId,
+      },
+      relations: {
+        division: {
+          kabinets: true,
+        },
+      },
     });
   }
 }
