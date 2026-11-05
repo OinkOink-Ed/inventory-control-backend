@@ -1,27 +1,21 @@
+import type { Role } from "@Modules/role/entities/Role";
+import type { User } from "@Modules/user/entities/User";
 import type { Request } from "express";
 
-export type UserData = {
-  id: number;
-  role: {
-    roleName: string;
-  };
+export type TokenPayload = {
+  sub: User["id"];
+  roleName: Role["roleName"];
 };
 
-export type AccessTokenPayload = {
-  sub: UserData;
-};
-
-export type RefreshTokenPayload = {
-  sub: {
-    id: UserData["id"];
-  };
-};
-
-export type JwtAccessPayload = AccessTokenPayload & {
+export type AccessTokenPayload = TokenPayload & {
   iat: number;
   exp: number;
 };
 
+export type RefreshTokenPayload = {
+  sub: User["id"];
+};
+
 export interface AuthenticatedRequest extends Request {
-  user: JwtAccessPayload;
+  user: TokenPayload;
 }

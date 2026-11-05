@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { UserService } from "@Modules/user/user.service";
 import { AuthenticatedRequest } from "@common/decorators/types/UserType";
+import { RoleName } from "@common/enums/RoleName";
 
 @Injectable()
 export class CardEditGuard implements CanActivate {
@@ -17,11 +18,11 @@ export class CardEditGuard implements CanActivate {
     const currentUser = request.user.sub;
     const targetUserId = Number(request.params.id);
 
-    if (currentUser.role.roleName === "admin") {
+    if (currentUser.role.roleName === RoleName.ADMIN) {
       return true;
     }
 
-    if (currentUser.role.roleName !== "user") {
+    if (currentUser.role.roleName !== RoleName.USER) {
       throw new ForbiddenException("Нет прав для редактирования пользователя");
     }
 
@@ -38,7 +39,7 @@ export class CardEditGuard implements CanActivate {
       throw new ForbiddenException("Пользователь не найден");
     }
 
-    if (targetUser.role.roleName !== "staff") {
+    if (targetUser.role.roleName !== RoleName.STAFF) {
       throw new ForbiddenException(
         "Вы можете редактировать только пользователей с ролью staff",
       );

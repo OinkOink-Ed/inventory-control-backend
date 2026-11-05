@@ -1,5 +1,6 @@
 import { Base } from "@common/entities/Base";
 import { UserStatus } from "@common/enums/UserStatus";
+import { RefreshToken } from "@Modules/auth/entities/RefreshToken";
 import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
 import type { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
 import type { Decommissioning } from "@Modules/decommissioning/entities/Decommissioning";
@@ -34,7 +35,7 @@ export class User extends Base {
   declare lastname: string;
 
   @Column({ nullable: true })
-  declare patronimyc: string;
+  declare patronymic: string;
 
   @Column(/*Позже сделать уникальным{ unique: true }*/)
   declare telephone: string;
@@ -45,6 +46,9 @@ export class User extends Base {
     default: UserStatus.ACTIVE,
   })
   declare state: UserStatus;
+
+  @OneToMany(() => RefreshToken, (token) => token.user)
+  declare refreshTokens: RefreshToken[];
 
   @ManyToMany("Kabinet", (kabinet: Kabinet) => kabinet.users)
   @JoinTable({ name: "user_workrooms" })

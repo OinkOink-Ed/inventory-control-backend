@@ -12,11 +12,11 @@ import {
 import { Server, Socket } from "socket.io";
 import { UpdateUserEventType } from "./types/UpdateUserEventType";
 import { CreateKabinetEventType } from "./types/CreateKabinetEventType";
-import { DecomissioningCartrdigeEventType } from "./types/DecomissioningCartrdigeEventType";
 import { DeliveryCartridgeEventType } from "./types/DeliveryCartridgeEventType";
 import { MovementCartridgeEventType } from "./types/MovementCartridgeEventType";
 import { ReceivingCartridgeEventType } from "./types/ReceivingCartridgeEventType";
 import { LogoutUserEventType } from "./types/LogoutUserEventType";
+import { DecommissioningCartridgeEventType } from "./types/DecomissioningCartrdigeEventType";
 
 interface CustomSocket extends Socket {
   data: GetResponseUserCardDto;
@@ -139,7 +139,7 @@ export class EventsGateway implements OnGatewayConnection {
   }
 
   @OnEvent("decomissioning.cartridge")
-  async handleDecomissioningCartridge(data: DecomissioningCartrdigeEventType) {
+  async handleDecomissioningCartridge(data: DecommissioningCartridgeEventType) {
     this.server
       .to(`division:${data.warehouseId}`)
       .emit(`invalidateCartridgesOfDecomissioning`, data);

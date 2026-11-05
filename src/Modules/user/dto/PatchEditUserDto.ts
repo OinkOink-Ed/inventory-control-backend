@@ -43,7 +43,7 @@ export class PatchEditUserDto {
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
-  patronimyc?: User["patronimyc"];
+  patronymic?: User["patronymic"];
 
   @ApiPropertyOptional({
     type: "object",

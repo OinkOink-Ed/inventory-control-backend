@@ -33,5 +33,5 @@ export class PatchEditProfileDto {
   @IsOptional()
   @IsString()
   @Matches(/^\S+$/)
-  patronimyc?: string;
+  patronymic?: string;
 }

@@ -1,5 +1,5 @@
 ﻿PROJECT SOURCE DUMP
-Generated: 11/04/2026 13:08:20
+Generated: 11/05/2026 10:27:50
 
 
 ================================================================================
@@ -115,6 +115,7 @@ FILE: package.json
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build -b swc",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start -b swc",
     "start:dev": "nest start --watch -b swc",
@@ -290,6 +291,7 @@ import configuration from "@common/config/configuration";
 import { validationSchema } from "@common/config/validationShema";
 import { AuthGuard } from "@common/guards/AuthGuard";
 import { NoCacheMiddleware } from "@common/middlewares/no-cache/no-cache.middleware";
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
 import { AccessControlService } from "@Modules/access-control/access-control.service";
 import { AuthModule } from "@Modules/auth/auth.module";
 import { CartridgeModule } from "@Modules/cartridge/cartridge.module";
@@ -348,9 +350,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
     UserModule,
     WarehouseModule,
     EventsModule,
+    AccessControlModule,
   ],
   providers: [
-    AccessControlService,
     {
       provide: "APP_GUARD",
       useClass: AuthGuard,
@@ -4414,12 +4416,17 @@ bootstrap();
 ================================================================================
 FILE: src\Modules\access-control\access-control.module.ts
 ================================================================================
-import { Module } from '@nestjs/common';
-import { AccessControlService } from './access-control.service';
-import { UserModule } from '../user/user.module';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+
+import { UserModule } from "../user/user.module";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+
+import { AccessControlService } from "./access-control.service";
+import { Division } from "@Modules/division/entities/Division";
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, TypeOrmModule.forFeature([Warehouse, Division])],
   providers: [AccessControlService],
   exports: [AccessControlService],
 })
@@ -4429,20 +4436,134 @@ export class AccessControlModule {}
 ================================================================================
 FILE: src\Modules\access-control\access-control.service.ts
 ================================================================================
-import { UserService } from '@Modules/user/user.service';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { UserService } from "@Modules/user/user.service";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { UserData } from "@common/decorators/types/UserType";
+import { Division } from "@Modules/division/entities/Division";
 
 @Injectable()
 export class AccessControlService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
 
-  async getAccessWarehouse(userDtoId: number, userId: number) {
-    const divisionIds = await this.userService.getDivisionOfUser(userId);
+    @InjectRepository(Warehouse)
+    private readonly warehouseRepository: Repository<Warehouse>,
 
-    if (!divisionIds.some((item) => userDtoId === item))
-      throw new ForbiddenException(
-        'У вас нет доступа к складу этого подразделения',
+    @InjectRepository(Division)
+    private readonly divisionRepository: Repository<Division>,
+  ) {}
+
+  async assertDivisionAccess(
+    userData: UserData,
+    divisionId: number,
+  ): Promise<void> {
+    const divisionExists = await this.divisionRepository.exists({
+      where: {
+        id: divisionId,
+      },
+    });
+
+    if (!divisionExists) {
+      throw new NotFoundException("Подразделение не найдено");
+    }
+
+    if (userData.role.roleName === "admin") {
+      return;
+    }
+
+    const userDivisionIds = await this.userService.getDivisionOfUser(
+      userData.id,
+    );
+
+    if (!userDivisionIds.includes(divisionId)) {
+      throw new ForbiddenException("У вас нет доступа к этому подразделению");
+    }
+  }
+
+  async assertWarehouseAccess(
+    userData: UserData,
+    warehouseId: number,
+  ): Promise<void> {
+    const warehouse = await this.warehouseRepository.findOne({
+      where: {
+        id: warehouseId,
+      },
+      select: {
+        id: true,
+        division: {
+          id: true,
+        },
+      },
+      relations: {
+        division: true,
+      },
+    });
+
+    if (!warehouse) {
+      throw new NotFoundException("Склад не найден");
+    }
+
+    if (userData.role.roleName === "admin") {
+      return;
+    }
+
+    await this.assertDivisionAccess(userData, warehouse.division.id);
+  }
+
+  async assertUserCanAcceptWarehouse(
+    userId: number,
+    warehouseId: number,
+  ): Promise<void> {
+    const [user, warehouse] = await Promise.all([
+      this.userService.findUserForEditAccess(userId),
+
+      this.warehouseRepository.findOne({
+        where: {
+          id: warehouseId,
+        },
+        select: {
+          id: true,
+          division: {
+            id: true,
+          },
+        },
+        relations: {
+          division: true,
+        },
+      }),
+    ]);
+
+    if (!user) {
+      throw new NotFoundException("Принимающий пользователь не найден");
+    }
+
+    if (!warehouse) {
+      throw new NotFoundException("Целевой склад не найден");
+    }
+
+    if (user.role.roleName !== "user") {
+      throw new BadRequestException(
+        "Принимающим должен быть ответственный пользователь подразделения",
       );
+    }
+
+    const belongsToTargetDivision = user.division.some(
+      (division) => division.id === warehouse.division.id,
+    );
+
+    if (!belongsToTargetDivision) {
+      throw new BadRequestException(
+        "Принимающий пользователь не относится к подразделению целевого склада",
+      );
+    }
   }
 }
 
@@ -4806,35 +4927,42 @@ export type RoleType = Omit<Pick<User, 'role'>, 'role'> & {
 ================================================================================
 FILE: src\Modules\cartridge\cartridge.controller.ts
 ================================================================================
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { GetResponseCartridgeCountDto } from './dto/GetResponseCartridgeCountDto';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { GetResponseAllCartridgeInWarehouseDto } from "@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto";
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { GetResponseCartridgeCountDto } from "./dto/GetResponseCartridgeCountDto";
 
-@ApiTags('Cartridges')
-@Controller('cartridges')
+@ApiTags("Cartridges")
+@Controller("cartridges")
 @UseGuards(RoleGuard)
 export class CartridgeController {
   constructor(private readonly cartridgeService: CartridgeService) {}
 
-  @Get(':warehouseId')
-  @Roles('admin', 'user')
+  @Get(":warehouseId")
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiOkResponse({
-    description: 'Список картриджей отправлен',
+    description: "Список картриджей отправлен",
     type: () => GetResponseAllCartridgeInWarehouseDto,
     isArray: true,
   })
   @ApiErrorResponses()
   async getCartridgesByWarehouse(
-    @Param('warehouseId') warehouseId: number,
-    @User('sub') userData: UserData,
+    @Param("warehouseId", ParseIntPipe)
+    warehouseId: number,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
     return await this.cartridgeService.getCartridgesByWarehouse(
       warehouseId,
@@ -4843,16 +4971,16 @@ export class CartridgeController {
   }
 
   @Get()
-  @Roles('admin', 'user')
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiOkResponse({
-    description: 'Количество картриджей',
+    description: "Количество картриджей",
     type: () => GetResponseCartridgeCountDto,
     isArray: true,
   })
   @ApiErrorResponses()
   async getCartridgesCount(
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseCartridgeCountDto[]> {
     return await this.cartridgeService.getCartridgesCount(userData);
   }
@@ -4862,15 +4990,20 @@ export class CartridgeController {
 ================================================================================
 FILE: src\Modules\cartridge\cartridge.module.ts
 ================================================================================
-import { CartridgeController } from '@Modules/cartridge/cartridge.controller';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import { UserModule } from '@Modules/user/user.module';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
+import { CartridgeController } from "@Modules/cartridge/cartridge.controller";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import { UserModule } from "@Modules/user/user.module";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cartridge]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Cartridge]),
+    UserModule,
+    AccessControlModule,
+  ],
   controllers: [CartridgeController],
   providers: [CartridgeService],
   exports: [CartridgeService],
@@ -4881,24 +5014,25 @@ export class CartridgeModule {}
 ================================================================================
 FILE: src\Modules\cartridge\cartridge.service.ts
 ================================================================================
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, QueryRunner, Repository } from 'typeorm';
-import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import { ServiceCreateCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceCreateCartridge';
-import { ServiceMoveCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
-import { ServiceDecommissioningCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge';
-import { GetResponseAllCartridgeInWarehouseDto } from '@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { NoCartridgesException } from '@common/filters/types/NoCartridgesException';
-import { InsufficientCartridgesException } from '@common/filters/types/InsufficientCartridgesException';
-import type { Base } from '@common/entities/Base';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { UserData } from '@common/decorators/types/UserType';
-import { UserService } from '@Modules/user/user.service';
-import { ServiceCountCartridgeByModel } from './dto/ServiceCountCartridgeByModel';
-import { GetResponseCartridgeCountDto } from './dto/GetResponseCartridgeCountDto';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, QueryRunner, Repository } from "typeorm";
+import { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import { ServiceCreateCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceCreateCartridge";
+import { ServiceMoveCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge";
+import { ServiceDeliveryCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge";
+import { ServiceDecommissioningCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge";
+import { GetResponseAllCartridgeInWarehouseDto } from "@Modules/cartridge/dto/GetResponseAllCartridgeInWarehouseDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { NoCartridgesException } from "@common/filters/types/NoCartridgesException";
+import { InsufficientCartridgesException } from "@common/filters/types/InsufficientCartridgesException";
+import type { Base } from "@common/entities/Base";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { UserData } from "@common/decorators/types/UserType";
+import { UserService } from "@Modules/user/user.service";
+import { ServiceCountCartridgeByModel } from "./dto/ServiceCountCartridgeByModel";
+import { GetResponseCartridgeCountDto } from "./dto/GetResponseCartridgeCountDto";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class CartridgeService {
@@ -4906,10 +5040,11 @@ export class CartridgeService {
     @InjectRepository(Cartridge)
     private readonly repoCartridges: Repository<Cartridge>,
     private readonly usersService: UserService,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   selectFieldsToUpdate: RequiredFindOptionsSelect<
-    Pick<Base, 'id' | 'createdAt'>
+    Pick<Base, "id" | "createdAt">
   > = {
     id: true,
     createdAt: true,
@@ -4946,148 +5081,171 @@ export class CartridgeService {
   }
 
   async moveMany(dto: ServiceMoveCartridge, queryRunner: QueryRunner) {
-    try {
-      const { count, model, warehouseFrom, warehouseWhere, state } = dto;
+    const { count, model, warehouseFrom, warehouseWhere, state } = dto;
 
-      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+    const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
-      const cartridgeToUpdate = await cartridgeRepo.find({
-        select: this.selectFieldsToUpdate,
-        where: {
-          model: { id: model.id },
-          warehouse: { id: warehouseFrom.id },
-          state: CartridgeStatus.RECEIVED,
+    const cartridgeToUpdate = await cartridgeRepo.find({
+      select: this.selectFieldsToUpdate,
+      where: {
+        model: {
+          id: model.id,
         },
-        order: {
-          createdAt: 'ASC',
+        warehouse: {
+          id: warehouseFrom.id,
         },
-        take: count,
-      });
+        state: CartridgeStatus.RECEIVED,
+      },
+      order: {
+        createdAt: "ASC",
+      },
+      take: count,
+      lock: {
+        mode: "pessimistic_write",
+      },
+    });
 
-      if (cartridgeToUpdate.length === 0) {
-        throw new BadRequestException(
-          'Такого количества картриджей нет на складе',
-        );
-      }
-
-      const updatesIds: Array<number> = cartridgeToUpdate.map((row) => row.id);
-
-      const result = await cartridgeRepo.update(
-        { id: In(updatesIds) },
-        { state: state, warehouse: warehouseWhere },
+    if (cartridgeToUpdate.length !== count) {
+      throw new BadRequestException(
+        "Недостаточно картриджей на складе для перемещения",
       );
-
-      if (result.affected === 0) {
-        throw new BadRequestException(
-          'Ошибка при попытке перемещения картриджа',
-        );
-      }
-
-      return updatesIds;
-    } catch (error) {
-      throw error;
     }
+
+    const updateIds = cartridgeToUpdate.map((cartridge) => cartridge.id);
+
+    const result = await cartridgeRepo.update(
+      {
+        id: In(updateIds),
+      },
+      {
+        state,
+        warehouse: warehouseWhere,
+      },
+    );
+
+    if (result.affected !== updateIds.length) {
+      throw new BadRequestException(
+        "Не удалось переместить все выбранные картриджи",
+      );
+    }
+
+    return updateIds;
   }
 
   async deliveryMany(dto: ServiceDeliveryCartridge, queryRunner: QueryRunner) {
-    try {
-      const { count, model, warehouse, state } = dto;
+    const { count, model, warehouse, state } = dto;
 
-      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+    const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
-      const cartridgeToDelivery = await cartridgeRepo.find({
-        select: this.selectFieldsToUpdate,
-        where: {
-          model: { id: model.id },
-          warehouse: { id: warehouse.id },
-          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
-        },
-        order: {
-          createdAt: 'ASC',
-        },
-        take: count,
-      });
+    const cartridgeToDelivery = await cartridgeRepo.find({
+      select: this.selectFieldsToUpdate,
+      where: {
+        model: { id: model.id },
+        warehouse: { id: warehouse.id },
+        state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
+      },
+      order: {
+        createdAt: "ASC",
+      },
+      take: count,
+      lock: {
+        mode: "pessimistic_write",
+      },
+    });
 
-      if (cartridgeToDelivery.length === 0) {
-        throw new NoCartridgesException();
-      } else if (cartridgeToDelivery.length < count) {
-        throw new InsufficientCartridgesException();
-      }
-
-      const deliveryIds: Array<number> = cartridgeToDelivery.map(
-        (row) => row.id,
-      );
-
-      const result = await cartridgeRepo.update(
-        { id: In(deliveryIds) },
-        { state: state },
-      );
-
-      if (result.affected === 0) {
-        throw new BadRequestException(
-          'Такого количества картриджей нет на складе',
-        );
-      }
-
-      return deliveryIds;
-    } catch (error) {
-      throw error;
+    if (cartridgeToDelivery.length === 0) {
+      throw new NoCartridgesException();
     }
+
+    if (cartridgeToDelivery.length < count) {
+      throw new InsufficientCartridgesException();
+    }
+
+    const deliveryIds = cartridgeToDelivery.map((cartridge) => cartridge.id);
+
+    const result = await cartridgeRepo.update(
+      {
+        id: In(deliveryIds),
+      },
+      {
+        state,
+      },
+    );
+
+    if (result.affected !== deliveryIds.length) {
+      throw new BadRequestException(
+        "Не удалось выдать все выбранные картриджи",
+      );
+    }
+
+    return deliveryIds;
   }
 
   async decommissioningMany(
     dto: ServiceDecommissioningCartridge,
     queryRunner: QueryRunner,
   ) {
-    try {
-      const { count, model, warehouse, state } = dto;
+    const { count, model, warehouse, state } = dto;
 
-      const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
+    const cartridgeRepo = queryRunner.manager.getRepository(Cartridge);
 
-      const cartridgeToDecommissioning = await cartridgeRepo.find({
-        select: this.selectFieldsToUpdate,
-        where: {
-          model: { id: model.id },
-          warehouse: { id: warehouse.id },
-          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
-        },
-        order: {
-          createdAt: 'ASC',
-        },
-        take: count,
-      });
+    const cartridgeToDecommissioning = await cartridgeRepo.find({
+      select: this.selectFieldsToUpdate,
+      where: {
+        model: { id: model.id },
+        warehouse: { id: warehouse.id },
+        state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
+      },
+      order: {
+        createdAt: "ASC",
+      },
+      take: count,
+      lock: {
+        mode: "pessimistic_write",
+      },
+    });
 
-      if (cartridgeToDecommissioning.length === 0) {
-        throw new BadRequestException('Нет картриджей для списания');
-      } else if (cartridgeToDecommissioning.length < count) {
-        throw new BadRequestException(
-          'Нет такого количества картриджей для списания',
-        );
-      }
-
-      const decommissioningIds: Array<number> = cartridgeToDecommissioning.map(
-        (row) => row.id,
-      );
-
-      const result = await cartridgeRepo.update(
-        { id: In(decommissioningIds) },
-        { state: state },
-      );
-
-      if (result.affected === 0) {
-        throw new Error('Ошибка при попытке списания картриджа');
-      }
-
-      return decommissioningIds;
-    } catch (error) {
-      throw error;
+    if (cartridgeToDecommissioning.length === 0) {
+      throw new BadRequestException("Нет картриджей для списания");
     }
+
+    if (cartridgeToDecommissioning.length < count) {
+      throw new BadRequestException(
+        "Нет такого количества картриджей для списания",
+      );
+    }
+
+    const decommissioningIds = cartridgeToDecommissioning.map(
+      (cartridge) => cartridge.id,
+    );
+
+    const result = await cartridgeRepo.update(
+      {
+        id: In(decommissioningIds),
+      },
+      {
+        state,
+      },
+    );
+
+    if (result.affected !== decommissioningIds.length) {
+      throw new BadRequestException(
+        "Не удалось списать все выбранные картриджи",
+      );
+    }
+
+    return decommissioningIds;
   }
 
   async getCartridgesByWarehouse(
     warehouseId: number,
     userData: UserData,
   ): Promise<GetResponseAllCartridgeInWarehouseDto[]> {
+    await this.accessControlService.assertWarehouseAccess(
+      userData,
+      warehouseId,
+    );
+
     const select: RequiredFindOptionsSelect<GetResponseAllCartridgeInWarehouseDto> =
       {
         id: true,
@@ -5097,47 +5255,39 @@ export class CartridgeService {
         createdAt: true,
       };
 
-    if (userData.role.roleName !== 'user') {
-      return await this.repoCartridges.find({
-        where: {
-          warehouse: { id: warehouseId },
-          state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
-        },
-        select,
-        relations: { warehouse: true, model: true },
-      });
-    }
-
-    const divisionsId = await this.usersService.getDivisionOfUser(userData.id);
-
     return await this.repoCartridges.find({
       where: {
-        warehouse: { division: { id: In(divisionsId) } },
+        warehouse: {
+          id: warehouseId,
+        },
         state: In([CartridgeStatus.RECEIVED, CartridgeStatus.MOVED]),
       },
       select,
-      relations: { warehouse: true, model: true },
+      relations: {
+        warehouse: true,
+        model: true,
+      },
     });
   }
 
   async getCartridgesCount(
     userData: UserData,
   ): Promise<GetResponseCartridgeCountDto[]> {
-    if (userData.role.roleName !== 'user') {
+    if (userData.role.roleName !== "user") {
       const rawResults: ServiceCountCartridgeByModel[] =
         await this.repoCartridges
-          .createQueryBuilder('cartridge')
-          .select('model.id AS modelId')
-          .addSelect('model.name AS modelName')
-          .addSelect('COUNT(cartridge.id) AS totalCount')
-          .innerJoin('cartridge.warehouse', 'warehouse')
-          .innerJoin('cartridge.model', 'model')
-          .where('cartridge.state IN (:...states)', {
+          .createQueryBuilder("cartridge")
+          .select("model.id AS modelId")
+          .addSelect("model.name AS modelName")
+          .addSelect("COUNT(cartridge.id) AS totalCount")
+          .innerJoin("cartridge.warehouse", "warehouse")
+          .innerJoin("cartridge.model", "model")
+          .where("cartridge.state IN (:...states)", {
             states: [CartridgeStatus.RECEIVED, CartridgeStatus.MOVED],
           })
-          .groupBy('model.id')
-          .addGroupBy('model.name')
-          .orderBy('model.name')
+          .groupBy("model.id")
+          .addGroupBy("model.name")
+          .orderBy("model.name")
           .getRawMany();
 
       const totalByModel = rawResults.map((row) => ({
@@ -5151,22 +5301,22 @@ export class CartridgeService {
     const divisionsId = await this.usersService.getDivisionOfUser(userData.id);
 
     const rawResults: ServiceCountCartridgeByModel[] = await this.repoCartridges
-      .createQueryBuilder('cartridge')
-      .select('model.id AS modelId')
-      .addSelect('model.name AS modelName')
-      .addSelect('COUNT(cartridge.id) AS totalCount')
-      .innerJoin('cartridge.warehouse', 'warehouse')
-      .innerJoin('cartridge.model', 'model')
-      .innerJoin('warehouse.division', 'division')
-      .where('cartridge.state IN (:...states)', {
+      .createQueryBuilder("cartridge")
+      .select("model.id AS modelId")
+      .addSelect("model.name AS modelName")
+      .addSelect("COUNT(cartridge.id) AS totalCount")
+      .innerJoin("cartridge.warehouse", "warehouse")
+      .innerJoin("cartridge.model", "model")
+      .innerJoin("warehouse.division", "division")
+      .where("cartridge.state IN (:...states)", {
         states: [CartridgeStatus.RECEIVED, CartridgeStatus.MOVED],
       })
-      .andWhere('division.id IN (:...divisionIds)', {
+      .andWhere("division.id IN (:...divisionIds)", {
         divisionIds: divisionsId,
       })
-      .groupBy('model.id')
-      .addGroupBy('model.name')
-      .orderBy('model.name')
+      .groupBy("model.id")
+      .addGroupBy("model.name")
+      .orderBy("model.name")
       .getRawMany();
 
     const totalByModel = rawResults.map((row) => ({
@@ -5750,19 +5900,19 @@ export class ServiceCreateDecommissioning {
 ================================================================================
 FILE: src\Modules\decommissioning\decommissioning.controller.ts
 ================================================================================
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { DecommissioningService } from '@Modules/decommissioning/decommissioning.service';
-import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { DecommissioningService } from "@Modules/decommissioning/decommissioning.service";
+import { PostCreateDecommissioningDto } from "@Modules/decommissioning/dto/PostCreateDecommissioningDto";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiCreatedResponse } from "@nestjs/swagger";
 
-@Controller('decommissioning')
+@Controller("decommissioning")
 @UseGuards(RoleGuard)
 export class DecommissioningController {
   constructor(
@@ -5770,20 +5920,20 @@ export class DecommissioningController {
   ) {}
 
   @Post()
-  @Roles('admin', 'user')
+  @Roles("admin", "user")
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    description: 'Картриджи успешно списаны',
+    description: "Картриджи успешно списаны",
     type: () => SuccessResponseDto,
   })
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateDecommissioningDto,
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<SuccessResponseDto> {
     createDto.creator = { id: userData.id };
     createDto.state = CartridgeStatus.DECOMMISSIONED;
-    return await this.decommissioningService.create(createDto);
+    return await this.decommissioningService.create(createDto, userData);
   }
 }
 
@@ -5821,21 +5971,22 @@ export class DecommissioningModule {}
 ================================================================================
 FILE: src\Modules\decommissioning\decommissioning.service.ts
 ================================================================================
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceDecommissioningCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge';
-import { PostCreateDecommissioningDto } from '@Modules/decommissioning/dto/PostCreateDecommissioningDto';
-import { CartridgeDecommissioning } from '@Modules/decommissioning/entities/CartridgeDecommissioning';
-import { Decommissioning } from '@Modules/decommissioning/entities/Decommissioning';
-import { ServiceCreateCartridgeDecommissioning } from '@Modules/decommissioning/interfaces/ServiceCreateCartridgeMovement';
-import { ServiceCreateDecommissioning } from '@Modules/decommissioning/ClassesForMapped/ServiceCreateDecommissioning';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { AccessControlService } from '@Modules/access-control/access-control.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DecomissioningCartrdigeEventType } from '@Modules/events/types/DecomissioningCartrdigeEventType';
+import { Mapper } from "@automapper/core";
+import { InjectMapper } from "@automapper/nestjs";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { ServiceDecommissioningCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceDecommissioningCartridge";
+import { PostCreateDecommissioningDto } from "@Modules/decommissioning/dto/PostCreateDecommissioningDto";
+import { CartridgeDecommissioning } from "@Modules/decommissioning/entities/CartridgeDecommissioning";
+import { Decommissioning } from "@Modules/decommissioning/entities/Decommissioning";
+import { ServiceCreateCartridgeDecommissioning } from "@Modules/decommissioning/interfaces/ServiceCreateCartridgeMovement";
+import { ServiceCreateDecommissioning } from "@Modules/decommissioning/ClassesForMapped/ServiceCreateDecommissioning";
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { DataSource } from "typeorm";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { DecomissioningCartrdigeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
+import { UserData } from "@common/decorators/types/UserType";
 
 @Injectable()
 export class DecommissioningService {
@@ -5850,10 +6001,11 @@ export class DecommissioningService {
 
   async create(
     createDto: PostCreateDecommissioningDto,
+    userData: UserData,
   ): Promise<SuccessResponseDto> {
-    await this.accessControlService.getAccessWarehouse(
-      createDto.creator.id,
-      createDto.creator.id,
+    await this.accessControlService.assertWarehouseAccess(
+      userData,
+      createDto.warehouse.id,
     );
 
     //Маппинг dto для правильной передачи параметров для создания сущности
@@ -5908,10 +6060,10 @@ export class DecommissioningService {
         warehouseId: createDto.warehouse.id,
       };
 
-      this.eventEmitter.emit('decomissioning.cartridge', data);
+      this.eventEmitter.emit("decomissioning.cartridge", data);
 
       return {
-        message: 'Картриджи успешно списаны',
+        message: "Картриджи успешно списаны",
         statusCode: HttpStatus.CREATED,
       };
     } catch (error) {
@@ -6317,25 +6469,25 @@ export class DeliveryModule {}
 ================================================================================
 FILE: src\Modules\delivery\delivery.service.ts
 ================================================================================
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceDeliveryCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge';
-import { PostCreateDeliveryDto } from '@Modules/delivery/dto/PostCreateDeliveryDto';
-import { CartridgeDelivery } from '@Modules/delivery/entities/CartridgeDelivery';
-import { Delivery } from '@Modules/delivery/entities/Delivery';
-import { ServiceCreateCartridgeDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateCartridgeDelivery';
-import { ServiceCreateDelivery } from '@Modules/delivery/ClassesForMapped/ServiceCreateDelivery';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { GetDeliveryByWarehouseIdService } from './ClassesForMapped/GetDeliveryByWarehouseIdService';
-import { GetDeliveryByWarehouseIdDto } from './dto/GetDeliveryByWarehouseIdDto';
-import { UserData } from '@common/decorators/types/UserType';
-import { AccessControlService } from '@Modules/access-control/access-control.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DeliveryCartridgeEventType } from '@Modules/events/types/DeliveryCartridgeEventType';
+import { Mapper } from "@automapper/core";
+import { InjectMapper } from "@automapper/nestjs";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { ServiceDeliveryCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceDeliveryCartridge";
+import { PostCreateDeliveryDto } from "@Modules/delivery/dto/PostCreateDeliveryDto";
+import { CartridgeDelivery } from "@Modules/delivery/entities/CartridgeDelivery";
+import { Delivery } from "@Modules/delivery/entities/Delivery";
+import { ServiceCreateCartridgeDelivery } from "@Modules/delivery/ClassesForMapped/ServiceCreateCartridgeDelivery";
+import { ServiceCreateDelivery } from "@Modules/delivery/ClassesForMapped/ServiceCreateDelivery";
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { GetDeliveryByWarehouseIdService } from "./ClassesForMapped/GetDeliveryByWarehouseIdService";
+import { GetDeliveryByWarehouseIdDto } from "./dto/GetDeliveryByWarehouseIdDto";
+import { UserData } from "@common/decorators/types/UserType";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { DeliveryCartridgeEventType } from "@Modules/events/types/DeliveryCartridgeEventType";
 
 @Injectable()
 export class DeliveryService {
@@ -6351,14 +6503,14 @@ export class DeliveryService {
   ) {}
 
   emitDeliveryCartridgeEvent(data: DeliveryCartridgeEventType) {
-    this.eventEmitter.emit('delivery.cartridge', data);
+    this.eventEmitter.emit("delivery.cartridge", data);
   }
 
   //Выдача картриджей на складе
   async create(createDto: PostCreateDeliveryDto, userData: UserData) {
-    await this.accessControlService.getAccessWarehouse(
+    await this.accessControlService.assertDivisionAccess(
+      userData,
       createDto.division.id,
-      userData.id,
     );
 
     const deliveryDto = this.mapper.map(
@@ -6409,7 +6561,7 @@ export class DeliveryService {
       });
 
       return {
-        message: 'Картриджи успешно выданы',
+        message: "Картриджи успешно выданы",
         statusCode: HttpStatus.CREATED,
       };
     } catch (error) {
@@ -6691,15 +6843,15 @@ export type Assert = AssertTManyProperty<Delivery, UserType> &
 ================================================================================
 FILE: src\Modules\division\division.controller.ts
 ================================================================================
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { DivisionService } from '@Modules/division/division.service';
-import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
-import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { DivisionService } from "@Modules/division/division.service";
+import { GetReponseAllDivisionDto } from "@Modules/division/dto/GetReponseAllDivisionDto";
+import { PostCreateDivisionDto } from "@Modules/division/dto/PostCreateDivisionDto";
 import {
   Body,
   Controller,
@@ -6708,22 +6860,22 @@ import {
   ParseIntPipe,
   Post,
   UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { GetResponseDivisionByWarehouseIdDto } from './dto/GetResponseDivisionByWarehouseIdDto';
+} from "@nestjs/swagger";
+import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionByWarehouseIdDto";
 
-@ApiTags('Division')
-@Controller('division')
+@ApiTags("Division")
+@Controller("division")
 @UseGuards(RoleGuard)
 export class DivisionController {
   constructor(private readonly divisionService: DivisionService) {}
 
-  @Roles('admin')
+  @Roles("admin")
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -6738,7 +6890,7 @@ export class DivisionController {
     return await this.divisionService.create(createDto);
   }
 
-  @Roles('admin', 'user', 'staff')
+  @Roles("admin", "user", "staff")
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -6747,22 +6899,23 @@ export class DivisionController {
   })
   @ApiErrorResponses()
   async getDivisions(
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<GetReponseAllDivisionDto[]> {
     return await this.divisionService.getDivisions(userData);
   }
 
-  @Roles('admin', 'user')
-  @Get('warehouse/:id')
+  @Roles("admin", "user")
+  @Get("warehouse/:id")
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseDivisionByWarehouseIdDto,
   })
   @ApiErrorResponses()
   async getDivision(
-    @Param('id', ParseIntPipe) warehouseId: number,
+    @Param("id", ParseIntPipe) warehouseId: number,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseDivisionByWarehouseIdDto | null> {
-    return await this.divisionService.getDivision(warehouseId);
+    return await this.divisionService.getDivision(warehouseId, userData);
   }
 }
 
@@ -6770,15 +6923,20 @@ export class DivisionController {
 ================================================================================
 FILE: src\Modules\division\division.module.ts
 ================================================================================
-import { DivisionController } from '@Modules/division/division.controller';
-import { DivisionService } from '@Modules/division/division.service';
-import { Division } from '@Modules/division/entities/Division';
-import { UserModule } from '@Modules/user/user.module';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
+import { DivisionController } from "@Modules/division/division.controller";
+import { DivisionService } from "@Modules/division/division.service";
+import { Division } from "@Modules/division/entities/Division";
+import { UserModule } from "@Modules/user/user.module";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Division]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Division]),
+    UserModule,
+    AccessControlModule,
+  ],
   controllers: [DivisionController],
   providers: [DivisionService],
 })
@@ -6788,17 +6946,18 @@ export class DivisionModule {}
 ================================================================================
 FILE: src\Modules\division\division.service.ts
 ================================================================================
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Division } from '@Modules/division/entities/Division';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { PostCreateDivisionDto } from '@Modules/division/dto/PostCreateDivisionDto';
-import { GetReponseAllDivisionDto } from '@Modules/division/dto/GetReponseAllDivisionDto';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { UserService } from '@Modules/user/user.service';
-import { UserData } from '@common/decorators/types/UserType';
-import { GetResponseDivisionByWarehouseIdDto } from './dto/GetResponseDivisionByWarehouseIdDto';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Division } from "@Modules/division/entities/Division";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { PostCreateDivisionDto } from "@Modules/division/dto/PostCreateDivisionDto";
+import { GetReponseAllDivisionDto } from "@Modules/division/dto/GetReponseAllDivisionDto";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { UserService } from "@Modules/user/user.service";
+import { UserData } from "@common/decorators/types/UserType";
+import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionByWarehouseIdDto";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class DivisionService {
@@ -6806,13 +6965,14 @@ export class DivisionService {
     @InjectRepository(Division)
     private readonly repo: Repository<Division>,
     private readonly usersService: UserService,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   async create(dto: PostCreateDivisionDto): Promise<SuccessResponseDto> {
     await this.repo.insert(dto);
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'Подразделение успешно добавлено',
+      message: "Подразделение успешно добавлено",
     };
   }
 
@@ -6824,8 +6984,8 @@ export class DivisionService {
     };
 
     if (
-      userData.role.roleName !== 'user' &&
-      userData.role.roleName !== 'staff'
+      userData.role.roleName !== "user" &&
+      userData.role.roleName !== "staff"
     ) {
       return await this.repo.find({
         select,
@@ -6844,7 +7004,13 @@ export class DivisionService {
 
   async getDivision(
     warehouseId: number,
+    userData: UserData,
   ): Promise<GetResponseDivisionByWarehouseIdDto | null> {
+    await this.accessControlService.assertWarehouseAccess(
+      userData,
+      warehouseId,
+    );
+
     const select: RequiredFindOptionsSelect<GetResponseDivisionByWarehouseIdDto> =
       {
         id: true,
@@ -6854,7 +7020,9 @@ export class DivisionService {
     return await this.repo.findOne({
       select,
       where: {
-        warehouse: { id: warehouseId },
+        warehouse: {
+          id: warehouseId,
+        },
       },
     });
   }
@@ -7489,6 +7657,7 @@ import {
   Get,
   Injectable,
   Param,
+  ParseIntPipe,
   PipeTransform,
   Post,
   Query,
@@ -7505,30 +7674,27 @@ import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserI
 import { GetKabinetsByDivisionIdsForCreateUserDto } from "./dto/GetKabinetsByDivisionIdsForCreateUserDto";
 
 @Injectable()
-export class DivisionIdsToNumberArrayPipe implements PipeTransform {
+export class DivisionIdsToNumberArrayPipe implements PipeTransform<
+  string,
+  number[]
+> {
   transform(value: string): number[] {
-    try {
-      if (!value) return [];
-
-      const decodedValue = decodeURIComponent(value);
-      const parsed: any[] = JSON.parse(decodedValue);
-
-      if (!Array.isArray(parsed)) {
-        throw new BadRequestException("divisionIds must be an array");
-      }
-
-      return parsed
-        .map((item) => item?.id)
-        .filter(
-          (id): id is number =>
-            id !== undefined && id !== null && !isNaN(Number(id)),
-        )
-        .map(Number);
-    } catch (error) {
-      throw new BadRequestException("Invalid divisionIds format", {
-        cause: error,
-      });
+    if (!value?.trim()) {
+      throw new BadRequestException("divisionIds is required");
     }
+
+    const ids = value
+      .split(",")
+      .map((item) => item.trim())
+      .map(Number);
+
+    if (ids.some((id) => !Number.isInteger(id) || id <= 0)) {
+      throw new BadRequestException(
+        "divisionIds must contain positive integer IDs",
+      );
+    }
+
+    return [...new Set(ids)];
   }
 }
 
@@ -7562,7 +7728,7 @@ export class KabinetController {
   })
   @ApiErrorResponses()
   async getKabinetsByDivisionId(
-    @Param("id") divisionId: number,
+    @Param("id", ParseIntPipe) divisionId: number,
     @User("sub") userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
     return await this.kabinetService.getKabinetsByDivisionId(
@@ -7572,11 +7738,13 @@ export class KabinetController {
   }
 
   @Get("for-create-user")
-  @Roles("admin", "user", "staff")
+  @Roles("admin", "user")
   @ApiQuery({
     name: "divisionIds",
     type: String,
     required: true,
+    example: "1,2,3",
+    description: "ID подразделений через запятую",
   })
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -7614,15 +7782,20 @@ export class KabinetController {
 ================================================================================
 FILE: src\Modules\kabinet\kabinet.module.ts
 ================================================================================
-import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import { KabinetController } from '@Modules/kabinet/kabinet.controller';
-import { KabinetService } from '@Modules/kabinet/kabinet.service';
-import { UserModule } from '@Modules/user/user.module';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
+import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
+import { KabinetController } from "@Modules/kabinet/kabinet.controller";
+import { KabinetService } from "@Modules/kabinet/kabinet.service";
+import { UserModule } from "@Modules/user/user.module";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Kabinet]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Kabinet]),
+    UserModule,
+    AccessControlModule,
+  ],
   controllers: [KabinetController],
   providers: [KabinetService],
 })
@@ -7632,20 +7805,21 @@ export class KabinetModule {}
 ================================================================================
 FILE: src\Modules\kabinet\kabinet.service.ts
 ================================================================================
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Kabinet } from '@Modules/kabinet/entities/Kabinet';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { GetResponseKabinetsDto } from '@Modules/kabinet/dto/GetResponseKabinetsDto';
-import { PostCreateKabinetDto } from '@Modules/kabinet/dto/PostCreateKabinetDto';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { UserData } from '@common/decorators/types/UserType';
-import { UserService } from '@Modules/user/user.service';
-import { GetResponseKabinetsByUserIdDto } from './dto/GetResponseKabinetsByUserIdDto';
-import { GetKabinetsByDivisionIdsForCreateUserDto } from './dto/GetKabinetsByDivisionIdsForCreateUserDto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateKabinetEventType } from '@Modules/events/types/CreateKabinetEventType';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { GetResponseKabinetsDto } from "@Modules/kabinet/dto/GetResponseKabinetsDto";
+import { PostCreateKabinetDto } from "@Modules/kabinet/dto/PostCreateKabinetDto";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { UserData } from "@common/decorators/types/UserType";
+import { UserService } from "@Modules/user/user.service";
+import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserIdDto";
+import { GetKabinetsByDivisionIdsForCreateUserDto } from "./dto/GetKabinetsByDivisionIdsForCreateUserDto";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { CreateKabinetEventType } from "@Modules/events/types/CreateKabinetEventType";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class KabinetService {
@@ -7653,11 +7827,12 @@ export class KabinetService {
     @InjectRepository(Kabinet)
     private readonly repo: Repository<Kabinet>,
     private readonly usersService: UserService,
+    private readonly accessControlService: AccessControlService,
     private eventEmitter: EventEmitter2,
   ) {}
 
   emitCreateKabinetEvent(data: CreateKabinetEventType) {
-    this.eventEmitter.emit('delivery.cartridge', data);
+    this.eventEmitter.emit("delivery.cartridge", data);
   }
 
   async create(dto: PostCreateKabinetDto): Promise<SuccessResponseDto> {
@@ -7671,35 +7846,35 @@ export class KabinetService {
 
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'Кабинет успешно добавлен',
+      message: "Кабинет успешно добавлен",
     };
   }
 
   async getKabinetsByDivisionId(
-    divisionid: number,
+    divisionId: number,
     userData: UserData,
   ): Promise<GetResponseKabinetsDto[]> {
+    await this.accessControlService.assertDivisionAccess(userData, divisionId);
+
     const select: RequiredFindOptionsSelect<GetResponseKabinetsDto> = {
       id: true,
-      division: { name: true },
+      division: {
+        name: true,
+      },
       number: true,
       createdAt: true,
     };
 
-    if (userData.role.roleName !== 'user') {
-      return await this.repo.find({
-        where: { division: { id: divisionid } },
-        select,
-        relations: { division: true },
-      });
-    }
-
-    const divisionIds = await this.usersService.getDivisionOfUser(userData.id);
-
     return await this.repo.find({
-      where: { division: { id: In(divisionIds) } },
+      where: {
+        division: {
+          id: divisionId,
+        },
+      },
       select,
-      relations: { division: true },
+      relations: {
+        division: true,
+      },
     });
   }
 
@@ -7720,33 +7895,35 @@ export class KabinetService {
   async getKabinetsByDivisionIdForCreateUser(
     divisionIds: number[],
     userData: UserData,
-  ): Promise<any> {
+  ): Promise<GetKabinetsByDivisionIdsForCreateUserDto[]> {
+    const uniqueDivisionIds = [...new Set(divisionIds)];
+
+    await Promise.all(
+      uniqueDivisionIds.map((divisionId) =>
+        this.accessControlService.assertDivisionAccess(userData, divisionId),
+      ),
+    );
+
     const select: RequiredFindOptionsSelect<GetKabinetsByDivisionIdsForCreateUserDto> =
       {
         id: true,
-        division: { id: true, name: true },
+        division: {
+          id: true,
+          name: true,
+        },
         number: true,
       };
 
-    if (
-      userData.role.roleName !== 'user' &&
-      userData.role.roleName !== 'staff'
-    ) {
-      return await this.repo.find({
-        where: { division: { id: In(divisionIds) } },
-        select,
-        relations: { division: true },
-      });
-    }
-
-    const divisionIdsByUser = await this.usersService.getDivisionOfUser(
-      userData.id,
-    );
-
     return await this.repo.find({
-      where: { division: { id: In(divisionIdsByUser) } },
+      where: {
+        division: {
+          id: In(uniqueDivisionIds),
+        },
+      },
       select,
-      relations: { division: true },
+      relations: {
+        division: true,
+      },
     });
   }
 }
@@ -7829,12 +8006,10 @@ import {
   StrictModelType,
   StrictUserType,
   StrictWarehouseFromType,
-  StrictWarehouseType,
   StrictWarehouseWhereType,
   StrictWhoAcceptedType,
   UserType,
   WarehouseFromType,
-  WarehouseType,
   WarehouseWhereType,
   WhoAcceptedType,
 } from "@Modules/movement/types/PostCreateMovementTypes";
@@ -7846,7 +8021,6 @@ export class PostCreateMovementDto
   implements
     Pick<Assert & Cartridge, "state">,
     ModelType,
-    WarehouseType,
     WarehouseFromType,
     WarehouseWhereType,
     WhoAcceptedType,
@@ -7862,17 +8036,6 @@ export class PostCreateMovementDto
   @Type(() => ObjectIdDto)
   @ValidateNested()
   model!: StrictModelType;
-
-  @ApiProperty({
-    type: "object",
-    properties: {
-      id: { type: "number" },
-    },
-    required: ["id"],
-  })
-  @Type(() => ObjectIdDto)
-  @ValidateNested()
-  warehouse!: StrictWarehouseType;
 
   @ApiProperty({
     type: "object",
@@ -7985,37 +8148,38 @@ export interface ServiceCreateCartridgeMovement {
 ================================================================================
 FILE: src\Modules\movement\movement.controller.ts
 ================================================================================
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
-import { MovementService } from '@Modules/movement/movement.service';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { PostCreateMovementDto } from "@Modules/movement/dto/PostCreateMovementDto";
+import { MovementService } from "@Modules/movement/movement.service";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiCreatedResponse } from "@nestjs/swagger";
 
-@Controller('movement')
+@Controller("movement")
 @UseGuards(RoleGuard)
 export class MovementController {
   constructor(private readonly movementService: MovementService) {}
 
-  @Roles('admin')
+  @Roles("admin")
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
-    description: 'Картриджи успешно перемещены',
+    description: "Картриджи успешно перемещены",
     type: () => SuccessResponseDto,
   })
   @ApiErrorResponses()
   async create(
     @Body() createDto: PostCreateMovementDto,
-    @User() userData: { sub: { id: number } },
+    @User("sub") userData: UserData,
   ): Promise<SuccessResponseDto> {
-    createDto.creator = { id: userData.sub.id };
+    createDto.creator = { id: userData.id };
     createDto.state = CartridgeStatus.MOVED;
-    return await this.movementService.create(createDto);
+    return await this.movementService.create(createDto, userData);
   }
 }
 
@@ -8023,16 +8187,17 @@ export class MovementController {
 ================================================================================
 FILE: src\Modules\movement\movement.module.ts
 ================================================================================
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
-import { Movement } from '@Modules/movement/entities/Movement';
-import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
-import { CartridgeModule } from '@Modules/cartridge/cartridge.module';
-import { MovementController } from '@Modules/movement/movement.controller';
-import { MovementService } from '@Modules/movement/movement.service';
-import { MapperProfile } from '@common/MapperProfile';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AutomapperModule } from "@automapper/nestjs";
+import { classes } from "@automapper/classes";
+import { Movement } from "@Modules/movement/entities/Movement";
+import { CartridgeMovement } from "@Modules/movement/entities/CartridgeMovement";
+import { CartridgeModule } from "@Modules/cartridge/cartridge.module";
+import { MovementController } from "@Modules/movement/movement.controller";
+import { MovementService } from "@Modules/movement/movement.service";
+import { MapperProfile } from "@common/MapperProfile";
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
 
 @Module({
   imports: [
@@ -8041,6 +8206,7 @@ import { MapperProfile } from '@common/MapperProfile';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    AccessControlModule,
   ],
   controllers: [MovementController],
   providers: [MovementService, MapperProfile],
@@ -8051,20 +8217,22 @@ export class MovementModule {}
 ================================================================================
 FILE: src\Modules\movement\movement.service.ts
 ================================================================================
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { CartridgeService } from '@Modules/cartridge/cartridge.service';
-import { ServiceMoveCartridge } from '@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge';
-import { PostCreateMovementDto } from '@Modules/movement/dto/PostCreateMovementDto';
-import { CartridgeMovement } from '@Modules/movement/entities/CartridgeMovement';
-import { Movement } from '@Modules/movement/entities/Movement';
-import { ServiceCreateCartridgeMovement } from '@Modules/movement/interfaces/ServiceCreateCartridgeMovement';
-import { ServiceCreateMovement } from '@Modules/movement/ClassesForMapped/ServiceCreateMovement';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MovementCartridgeEventType } from '@Modules/events/types/MovementCartridgeEventType';
+import { Mapper } from "@automapper/core";
+import { InjectMapper } from "@automapper/nestjs";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { CartridgeService } from "@Modules/cartridge/cartridge.service";
+import { ServiceMoveCartridge } from "@Modules/cartridge/ClassesForMapping/ServiceMoveCartridge";
+import { PostCreateMovementDto } from "@Modules/movement/dto/PostCreateMovementDto";
+import { CartridgeMovement } from "@Modules/movement/entities/CartridgeMovement";
+import { Movement } from "@Modules/movement/entities/Movement";
+import { ServiceCreateCartridgeMovement } from "@Modules/movement/interfaces/ServiceCreateCartridgeMovement";
+import { ServiceCreateMovement } from "@Modules/movement/ClassesForMapped/ServiceCreateMovement";
+import { BadRequestException, HttpStatus, Injectable } from "@nestjs/common";
+import { DataSource } from "typeorm";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { MovementCartridgeEventType } from "@Modules/events/types/MovementCartridgeEventType";
+import { UserData } from "@common/decorators/types/UserType";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class MovementService {
@@ -8074,8 +8242,34 @@ export class MovementService {
     private readonly cartridgeService: CartridgeService,
     private readonly dataSourse: DataSource,
     private eventEmitter: EventEmitter2,
+    private readonly accessControlService: AccessControlService,
   ) {}
-  async create(createDto: PostCreateMovementDto): Promise<SuccessResponseDto> {
+  async create(
+    createDto: PostCreateMovementDto,
+    userData: UserData,
+  ): Promise<SuccessResponseDto> {
+    if (createDto.warehouseFrom.id === createDto.warehouseWhere.id) {
+      throw new BadRequestException(
+        "Исходный и целевой склады должны отличаться",
+      );
+    }
+
+    await Promise.all([
+      this.accessControlService.assertWarehouseAccess(
+        userData,
+        createDto.warehouseFrom.id,
+      ),
+      this.accessControlService.assertWarehouseAccess(
+        userData,
+        createDto.warehouseWhere.id,
+      ),
+    ]);
+
+    await this.accessControlService.assertUserCanAcceptWarehouse(
+      createDto.whoAccepted.id,
+      createDto.warehouseWhere.id,
+    );
+
     //Маппинг dto для правильной передачи параметров для создания сущности
     const movementDto = this.mapper.map(
       createDto,
@@ -8124,10 +8318,10 @@ export class MovementService {
         oldDivisionId: cartridgeDto.warehouseFrom.id,
       };
 
-      this.eventEmitter.emit('movement.cartridge', data);
+      this.eventEmitter.emit("movement.cartridge", data);
 
       return {
-        message: 'Картриджи успешно пермещены',
+        message: "Картриджи успешно пермещены",
         statusCode: HttpStatus.CREATED,
       };
     } catch (error) {
@@ -8143,56 +8337,50 @@ export class MovementService {
 ================================================================================
 FILE: src\Modules\movement\types\PostCreateMovementTypes.ts
 ================================================================================
-import { AssertTManyProperty } from '@common/utils/typesUtils';
-import type { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import type { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
-import type { Movement } from '@Modules/movement/entities/Movement';
-import type { User } from '@Modules/user/entities/User';
-import type { Warehouse } from '@Modules/warehouse/entities/Warehouse';
+import { AssertTManyProperty } from "@common/utils/typesUtils";
+import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import type { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
+import type { Movement } from "@Modules/movement/entities/Movement";
+import type { User } from "@Modules/user/entities/User";
+import type { Warehouse } from "@Modules/warehouse/entities/Warehouse";
 
 export type Assert = AssertTManyProperty<Cartridge, ModelType> &
-  AssertTManyProperty<Cartridge, WarehouseType> &
   AssertTManyProperty<Movement, WarehouseFromType> &
   AssertTManyProperty<Movement, WarehouseWhereType> &
   AssertTManyProperty<Movement, WhoAcceptedType> &
   AssertTManyProperty<Movement, UserType>;
 
-export type StrictModelType = Pick<CartridgeModel, 'id'>;
-export type ModelType = Omit<Pick<Cartridge, 'model'>, 'model'> & {
+export type StrictModelType = Pick<CartridgeModel, "id">;
+export type ModelType = Omit<Pick<Cartridge, "model">, "model"> & {
   model: StrictModelType;
 };
 
-export type StrictWarehouseType = Pick<Warehouse, 'id'>;
-export type WarehouseType = Omit<Pick<Cartridge, 'warehouse'>, 'warehouse'> & {
-  warehouse: StrictWarehouseType;
-};
-
-export type StrictWarehouseFromType = Pick<Warehouse, 'id'>;
+export type StrictWarehouseFromType = Pick<Warehouse, "id">;
 export type WarehouseFromType = Omit<
-  Pick<Movement, 'warehouseFrom'>,
-  'warehouseFrom'
+  Pick<Movement, "warehouseFrom">,
+  "warehouseFrom"
 > & {
   warehouseFrom: StrictWarehouseFromType;
 };
 
-export type StrictWarehouseWhereType = Pick<Warehouse, 'id'>;
+export type StrictWarehouseWhereType = Pick<Warehouse, "id">;
 export type WarehouseWhereType = Omit<
-  Pick<Movement, 'warehouseWhere'>,
-  'warehouseWhere'
+  Pick<Movement, "warehouseWhere">,
+  "warehouseWhere"
 > & {
   warehouseWhere: StrictWarehouseWhereType;
 };
 
-export type StrictWhoAcceptedType = Pick<User, 'id'>;
+export type StrictWhoAcceptedType = Pick<User, "id">;
 export type WhoAcceptedType = Omit<
-  Pick<Movement, 'whoAccepted'>,
-  'whoAccepted'
+  Pick<Movement, "whoAccepted">,
+  "whoAccepted"
 > & {
   whoAccepted: StrictWhoAcceptedType;
 };
 
-export type StrictUserType = Pick<User, 'id'>;
-export type UserType = Omit<Pick<Movement, 'creator'>, 'creator'> & {
+export type StrictUserType = Pick<User, "id">;
+export type UserType = Omit<Pick<Movement, "creator">, "creator"> & {
   creator: StrictUserType;
 };
 
@@ -10754,15 +10942,20 @@ export class WarehouseController {
 ================================================================================
 FILE: src\Modules\warehouse\warehouse.module.ts
 ================================================================================
-import { UserModule } from '@Modules/user/user.module';
-import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { WarehouseController } from '@Modules/warehouse/warehouse.controller';
-import { WarehouseService } from '@Modules/warehouse/warehouse.service';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccessControlModule } from "@Modules/access-control/access-control.module";
+import { UserModule } from "@Modules/user/user.module";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { WarehouseController } from "@Modules/warehouse/warehouse.controller";
+import { WarehouseService } from "@Modules/warehouse/warehouse.service";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Warehouse]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Warehouse]),
+    UserModule,
+    AccessControlModule,
+  ],
   controllers: [WarehouseController],
   providers: [WarehouseService],
 })
@@ -10772,17 +10965,18 @@ export class WarehouseModule {}
 ================================================================================
 FILE: src\Modules\warehouse\warehouse.service.ts
 ================================================================================
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { PostCreateWarehouseDto } from '@Modules/warehouse/dto/PostCreateWarehouseDto';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { GetResponseAllWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllWarehouseDto';
-import { GetResponseAllDetailedWarehouseDto } from '@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto';
-import { RequiredFindOptionsSelect } from '@common/utils/typesUtils';
-import { UserData } from '@common/decorators/types/UserType';
-import { UserService } from '@Modules/user/user.service';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { PostCreateWarehouseDto } from "@Modules/warehouse/dto/PostCreateWarehouseDto";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { GetResponseAllWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllWarehouseDto";
+import { GetResponseAllDetailedWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto";
+import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { UserData } from "@common/decorators/types/UserType";
+import { UserService } from "@Modules/user/user.service";
+import { AccessControlService } from "@Modules/access-control/access-control.service";
 
 @Injectable()
 export class WarehouseService {
@@ -10790,6 +10984,7 @@ export class WarehouseService {
     @InjectRepository(Warehouse)
     private readonly repo: Repository<Warehouse>,
     private readonly usersService: UserService,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   async createWarehouse(
@@ -10798,7 +10993,7 @@ export class WarehouseService {
     await this.repo.save(dto);
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'Модель картриджа успешно добавлена',
+      message: "Модель картриджа успешно добавлена",
     };
   }
 
@@ -10810,7 +11005,7 @@ export class WarehouseService {
       name: true,
     };
 
-    if (userData.role.roleName !== 'user') {
+    if (userData.role.roleName !== "user") {
       return await this.repo.find({
         select,
       });
@@ -10829,26 +11024,33 @@ export class WarehouseService {
     warehouseId: number,
     userData: UserData,
   ): Promise<GetResponseAllDetailedWarehouseDto | null> {
+    await this.accessControlService.assertWarehouseAccess(
+      userData,
+      warehouseId,
+    );
+
     const select: RequiredFindOptionsSelect<GetResponseAllDetailedWarehouseDto> =
       {
         id: true,
-        division: { id: true, kabinets: { id: true, number: true } },
+        division: {
+          id: true,
+          kabinets: {
+            id: true,
+            number: true,
+          },
+        },
       };
 
-    if (userData.role.roleName !== 'user') {
-      return this.repo.findOne({
-        select,
-        where: { id: warehouseId },
-        relations: { division: { kabinets: true } },
-      });
-    }
-
-    const divisionIds = await this.usersService.getDivisionOfUser(userData.id);
-
-    return this.repo.findOne({
+    return await this.repo.findOne({
       select,
-      where: { division: { id: In(divisionIds) } },
-      relations: { division: { kabinets: true } },
+      where: {
+        id: warehouseId,
+      },
+      relations: {
+        division: {
+          kabinets: true,
+        },
+      },
     });
   }
 }
@@ -10885,7 +11087,7 @@ FILE: tsconfig.json
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     //Указываем массив путей, где TS будет искать файлы с определениями типов
     "typeRoots": ["node_modules/@types", "src/common/filters/types"],
     "paths": {

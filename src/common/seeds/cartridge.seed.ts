@@ -1,20 +1,20 @@
-import { CartridgeStatus } from '@common/enums/CartridgeStatus';
-import { UserStatus } from '@common/enums/UserStatus';
-import { Cartridge } from '@Modules/cartridge/entities/Cartridge';
-import { CartridgeModel } from '@Modules/cartridgeModel/entities/CartridgeModel';
-import { Role } from '@Modules/role/entities/Role';
-import { User } from '@Modules/user/entities/User';
-import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { DataSource } from 'typeorm';
+import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { UserStatus } from "@common/enums/UserStatus";
+import { Cartridge } from "@Modules/cartridge/entities/Cartridge";
+import { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
+import { Role } from "@Modules/role/entities/Role";
+import { User } from "@Modules/user/entities/User";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { DataSource } from "typeorm";
 
-export async function seedCartridge(dataSourse: DataSource) {
-  const cartrdgeModelRepo = dataSourse.getRepository(CartridgeModel);
-  const userRepo = dataSourse.getRepository(User);
-  const cartridgeRepo = dataSourse.getRepository(Cartridge);
-  const warehouseRepo = dataSourse.getRepository(Warehouse);
-  const roleRepo = dataSourse.getRepository(Role);
+export async function seedCartridge(dataSource: DataSource) {
+  const cartrdgeModelRepo = dataSource.getRepository(CartridgeModel);
+  const userRepo = dataSource.getRepository(User);
+  const cartridgeRepo = dataSource.getRepository(Cartridge);
+  const warehouseRepo = dataSource.getRepository(Warehouse);
+  const roleRepo = dataSource.getRepository(Role);
 
-  const systemUser = await userRepo.findOneBy({ username: 'system' });
+  const systemUser = await userRepo.findOneBy({ username: "system" });
 
   const warehouses = await warehouseRepo.find();
   const warehouseIds = warehouses.map((warehouse) => warehouse.id);
@@ -46,12 +46,12 @@ export async function seedCartridge(dataSourse: DataSource) {
   );
 
   await cartridgeRepo.save(cartridges);
-  console.log('Картриджи успешно добавлены на склады');
+  console.log("Картриджи успешно добавлены на склады");
 
   await userRepo.update(
-    { username: 'system' },
+    { username: "system" },
     { deletedAt: new Date(), state: UserStatus.INACTIVE },
   );
-  await roleRepo.update({ roleName: 'system' }, { deletedAt: new Date() });
-  console.log('Системная сущность и роль soft-deleted');
+  await roleRepo.update({ roleName: "system" }, { deletedAt: new Date() });
+  console.log("Системная сущность и роль soft-deleted");
 }

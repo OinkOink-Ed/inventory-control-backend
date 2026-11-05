@@ -8,7 +8,7 @@ import {
 
 export class GetProfileDto
   implements
-    Pick<Assert & User, "id" | "name" | "lastname" | "patronimyc">,
+    Pick<Assert & User, "id" | "name" | "lastname" | "patronymic">,
     RoleType
 {
   @ApiProperty()
@@ -21,7 +21,7 @@ export class GetProfileDto
   name!: string;
 
   @ApiProperty()
-  patronimyc!: string;
+  patronymic!: string;
 
   @ApiProperty({
     type: "object",

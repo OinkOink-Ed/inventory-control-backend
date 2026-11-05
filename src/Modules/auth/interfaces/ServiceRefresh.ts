@@ -1,5 +1,7 @@
+import type { RefreshToken } from "../entities/RefreshToken";
+
 export interface ServiceRefresh {
   token: string;
-  user: { id: number };
+  user: Pick<NonNullable<RefreshToken["user"]>, "id">;
   expiresAt: Date;
 }

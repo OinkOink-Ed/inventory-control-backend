@@ -16,7 +16,7 @@ import { ServiceRefresh } from "./interfaces/ServiceRefresh";
 import { PostlogoutDto } from "./dto/PostLogoutDto";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { PostRefreshDto } from "./dto/PostRefreshDto";
-import { ServiceForAuthFindUser } from "@Modules/user/service/ServiceForAuthFindUser";
+import { ServiceForAuthFindUser } from "@Modules/user/service/UserForAuth ";
 import {
   AccessTokenPayload,
   RefreshTokenPayload,
@@ -38,9 +38,7 @@ export class AuthService {
     const access_token = await this.jwtService.signAsync(payload);
 
     const refreshPayload: RefreshTokenPayload = {
-      sub: {
-        id: payload.sub.id,
-      },
+      sub: payload.sub,
     };
 
     const refresh_token = await this.jwtService.signAsync(refreshPayload, {
@@ -50,9 +48,7 @@ export class AuthService {
 
     const refreshTokenEntity: ServiceRefresh = {
       token: refresh_token,
-      user: {
-        id: payload.sub.id,
-      },
+      user: { id: payload.sub },
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
 
@@ -79,7 +75,7 @@ export class AuthService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, lastname, name, patronimyc, ...profile } = user;
+    const { password, lastname, name, patronymic, ...profile } = user;
     return await this.generateToken({ sub: profile });
   }
 

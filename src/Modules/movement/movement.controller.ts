@@ -4,6 +4,7 @@ import { UserData } from "@common/decorators/types/UserType";
 import { User } from "@common/decorators/User";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { RoleName } from "@common/enums/RoleName";
 import { RoleGuard } from "@common/guards/RoleGuard";
 import { PostCreateMovementDto } from "@Modules/movement/dto/PostCreateMovementDto";
 import { MovementService } from "@Modules/movement/movement.service";
@@ -15,7 +16,7 @@ import { ApiBearerAuth, ApiCreatedResponse } from "@nestjs/swagger";
 export class MovementController {
   constructor(private readonly movementService: MovementService) {}
 
-  @Roles("admin")
+  @Roles(RoleName.ADMIN)
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({

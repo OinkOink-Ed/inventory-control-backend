@@ -1,5 +1,11 @@
-import type { User } from "@Modules/user/entities/User";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "@Modules/user/entities/User";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class RefreshToken {
@@ -9,7 +15,10 @@ export class RefreshToken {
   @Column({ type: "text" })
   declare token: string;
 
-  @ManyToOne("User", (user: User) => user.id)
+  @ManyToOne(() => User, (user) => user.refreshTokens, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "userId" })
   declare user: User;
 
   @Column()

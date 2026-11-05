@@ -1,14 +1,14 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { AllExceptionFilter } from "@common/filters/AllExeptionFilter";
+import { AllExceptionFilter } from "@common/filters/AllExceptionFilter";
 import { CreateKabinetEventType } from "@Modules/events/types/CreateKabinetEventType";
-import { DecomissioningCartrdigeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
 import { DeliveryCartridgeEventType } from "@Modules/events/types/DeliveryCartridgeEventType";
 import { MovementCartridgeEventType } from "@Modules/events/types/MovementCartridgeEventType";
 import { ReceivingCartridgeEventType } from "@Modules/events/types/ReceivingCartridgeEventType";
 import { UpdateUserEventType } from "@Modules/events/types/UpdateUserEventType";
 import { AppModule } from "./app.module";
+import { DecommissioningCartridgeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -38,14 +38,14 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    extraModels: [
-      CreateKabinetEventType,
-      DecomissioningCartrdigeEventType,
-      DeliveryCartridgeEventType,
-      MovementCartridgeEventType,
-      ReceivingCartridgeEventType,
-      UpdateUserEventType,
-    ],
+    // extraModels: [
+    //   CreateKabinetEventType,
+    //   DecommissioningCartridgeEventType,
+    //   DeliveryCartridgeEventType,
+    //   MovementCartridgeEventType,
+    //   ReceivingCartridgeEventType,
+    //   UpdateUserEventType,
+    // ],
   });
   SwaggerModule.setup("docs", app, document);
 

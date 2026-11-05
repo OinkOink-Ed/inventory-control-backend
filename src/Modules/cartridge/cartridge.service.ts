@@ -11,7 +11,7 @@ import { CartridgeStatus } from "@common/enums/CartridgeStatus";
 import { NoCartridgesException } from "@common/filters/types/NoCartridgesException";
 import { InsufficientCartridgesException } from "@common/filters/types/InsufficientCartridgesException";
 import type { Base } from "@common/entities/Base";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { RequiredFindOptionsSelect } from "@common/types/typesUtils";
 import { UserData } from "@common/decorators/types/UserType";
 import { UserService } from "@Modules/user/user.service";
 import { ServiceCountCartridgeByModel } from "./dto/ServiceCountCartridgeByModel";

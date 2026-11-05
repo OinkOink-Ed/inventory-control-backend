@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class DecomissioningCartrdigeEventType {
+export class DecommissioningCartridgeEventType {
   @ApiProperty()
   warehouseId!: number;
 }

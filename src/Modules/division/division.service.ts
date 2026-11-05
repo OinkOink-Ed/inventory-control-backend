@@ -5,7 +5,7 @@ import { Division } from "@Modules/division/entities/Division";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { PostCreateDivisionDto } from "@Modules/division/dto/PostCreateDivisionDto";
 import { GetReponseAllDivisionDto } from "@Modules/division/dto/GetReponseAllDivisionDto";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { RequiredFindOptionsSelect } from "@common/types/typesUtils";
 import { UserService } from "@Modules/user/user.service";
 import { UserData } from "@common/decorators/types/UserType";
 import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionByWarehouseIdDto";

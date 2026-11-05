@@ -1,27 +1,28 @@
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { Roles } from '@common/decorators/Roles';
-import { UserData } from '@common/decorators/types/UserType';
-import { User } from '@common/decorators/User';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { RoleGuard } from '@common/guards/RoleGuard';
-import { GetResponseAllRole } from '@Modules/role/dto/GetResponseAllRole';
-import { PostCreateroleDto } from '@Modules/role/dto/PostCreateRoleDto';
-import { RoleService } from '@Modules/role/role.service';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { Roles } from "@common/decorators/Roles";
+import { UserData } from "@common/decorators/types/UserType";
+import { User } from "@common/decorators/User";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { RoleName } from "@common/enums/RoleName";
+import { RoleGuard } from "@common/guards/RoleGuard";
+import { GetResponseAllRole } from "@Modules/role/dto/GetResponseAllRole";
+import { PostCreateroleDto } from "@Modules/role/dto/PostCreateRoleDto";
+import { RoleService } from "@Modules/role/role.service";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
-} from '@nestjs/swagger';
+} from "@nestjs/swagger";
 
-@ApiTags('Role')
-@Controller('role')
+@ApiTags("Role")
+@Controller("role")
 @UseGuards(RoleGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Roles('admin')
+  @Roles(RoleName.ADMIN)
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -37,7 +38,7 @@ export class RoleController {
   }
 
   @Get()
-  @Roles('admin', 'user', 'staff')
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseAllRole,
@@ -45,7 +46,7 @@ export class RoleController {
   })
   @ApiErrorResponses()
   async getRoles(
-    @User('sub') userData: UserData,
+    @User("sub") userData: UserData,
   ): Promise<GetResponseAllRole[]> {
     return await this.roleService.getRoles(userData);
   }

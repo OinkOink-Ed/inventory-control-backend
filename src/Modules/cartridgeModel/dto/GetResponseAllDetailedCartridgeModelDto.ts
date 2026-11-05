@@ -23,9 +23,9 @@ export class GetResponseAllDetailedCartridgeModelDto
       id: { type: "number" },
       lastname: { type: "string" },
       name: { type: "string" },
-      patronimyc: { type: "string" },
+      patronymic: { type: "string" },
     },
-    required: ["id", "lastname", "name", "patronimyc"],
+    required: ["id", "lastname", "name", "patronymic"],
   })
   creator!: StrictCreatorType;
 

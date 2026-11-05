@@ -29,6 +29,7 @@ import {
 } from "@nestjs/swagger";
 import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserIdDto";
 import { GetKabinetsByDivisionIdsForCreateUserDto } from "./dto/GetKabinetsByDivisionIdsForCreateUserDto";
+import { RoleName } from "@common/enums/RoleName";
 
 @Injectable()
 export class DivisionIdsToNumberArrayPipe implements PipeTransform<
@@ -62,7 +63,7 @@ export class KabinetController {
   constructor(private readonly kabinetService: KabinetService) {}
 
   @Post()
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
@@ -77,7 +78,7 @@ export class KabinetController {
   }
 
   @Get("division/:id")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseKabinetsDto,
@@ -95,7 +96,7 @@ export class KabinetController {
   }
 
   @Get("for-create-user")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiQuery({
     name: "divisionIds",
     type: String,
@@ -121,7 +122,7 @@ export class KabinetController {
   }
 
   @Get("user/:id")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => GetResponseKabinetsByUserIdDto,

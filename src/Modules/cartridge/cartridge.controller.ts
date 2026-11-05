@@ -14,6 +14,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { GetResponseCartridgeCountDto } from "./dto/GetResponseCartridgeCountDto";
+import { RoleName } from "@common/enums/RoleName";
 
 @ApiTags("Cartridges")
 @Controller("cartridges")
@@ -22,7 +23,7 @@ export class CartridgeController {
   constructor(private readonly cartridgeService: CartridgeService) {}
 
   @Get(":warehouseId")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiOkResponse({
     description: "Список картриджей отправлен",
@@ -42,7 +43,7 @@ export class CartridgeController {
   }
 
   @Get()
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiOkResponse({
     description: "Количество картриджей",

@@ -10,7 +10,7 @@ import { ServiceCreateDelivery } from "@Modules/delivery/ClassesForMapped/Servic
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { RequiredFindOptionsSelect } from "@common/types/typesUtils";
 import { GetDeliveryByWarehouseIdService } from "./ClassesForMapped/GetDeliveryByWarehouseIdService";
 import { GetDeliveryByWarehouseIdDto } from "./dto/GetDeliveryByWarehouseIdDto";
 import { UserData } from "@common/decorators/types/UserType";
@@ -26,7 +26,7 @@ export class DeliveryService {
     private readonly cartridgeService: CartridgeService,
     @InjectRepository(Delivery)
     private readonly repoDelivery: Repository<Delivery>,
-    private readonly dataSourse: DataSource,
+    private readonly dataSource: DataSource,
     private readonly accessControlService: AccessControlService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -54,7 +54,7 @@ export class DeliveryService {
       ServiceDeliveryCartridge,
     );
 
-    const queryRunner = this.dataSourse.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -110,8 +110,8 @@ export class DeliveryService {
       id: true,
       division: { name: true },
       kabinet: { number: true },
-      accepting: { lastname: true, name: true, patronimyc: true },
-      creator: { lastname: true, name: true, patronimyc: true },
+      accepting: { lastname: true, name: true, patronymic: true },
+      creator: { lastname: true, name: true, patronymic: true },
       warehouse: { name: true },
       action: { id: true, cartridge: { id: true, model: { name: true } } },
       createdAt: true,

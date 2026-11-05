@@ -8,7 +8,7 @@ import {
 
 export class GetResponseAllUsersByDivisionsDto
   implements
-    Pick<User & Assert, "id" | "name" | "lastname" | "patronimyc">,
+    Pick<User & Assert, "id" | "name" | "lastname" | "patronymic">,
     RoleType
 {
   @ApiProperty()
@@ -18,7 +18,7 @@ export class GetResponseAllUsersByDivisionsDto
   name!: string;
 
   @ApiProperty()
-  patronimyc!: string;
+  patronymic!: string;
 
   @ApiProperty()
   lastname!: string;

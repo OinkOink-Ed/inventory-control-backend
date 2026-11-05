@@ -61,9 +61,9 @@ export class GetDeliveryByWarehouseIdService
     properties: {
       name: { type: "string" },
       lastname: { type: "string" },
-      patronimyc: { type: "string" },
+      patronymic: { type: "string" },
     },
-    required: ["name", "lastname", "patronimyc"],
+    required: ["name", "lastname", "patronymic"],
   })
   creator!: StrictUserType;
 
@@ -72,9 +72,9 @@ export class GetDeliveryByWarehouseIdService
     properties: {
       name: { type: "string" },
       lastname: { type: "string" },
-      patronimyc: { type: "string" },
+      patronymic: { type: "string" },
     },
-    required: ["name", "lastname", "patronimyc"],
+    required: ["name", "lastname", "patronymic"],
   })
   accepting!: StrictStaffType;
 

@@ -1,4 +1,4 @@
-import { AssertTManyProperty } from "@common/utils/typesUtils";
+import { AssertTManyProperty } from "@common/types/typesUtils";
 import type { Cartridge } from "@Modules/cartridge/entities/Cartridge";
 import type { CartridgeModel } from "@Modules/cartridgeModel/entities/CartridgeModel";
 import type { Movement } from "@Modules/movement/entities/Movement";

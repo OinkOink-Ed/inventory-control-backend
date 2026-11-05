@@ -4,6 +4,7 @@ import { UserData } from "@common/decorators/types/UserType";
 import { User } from "@common/decorators/User";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { CartridgeStatus } from "@common/enums/CartridgeStatus";
+import { RoleName } from "@common/enums/RoleName";
 import { RoleGuard } from "@common/guards/RoleGuard";
 import { DecommissioningService } from "@Modules/decommissioning/decommissioning.service";
 import { PostCreateDecommissioningDto } from "@Modules/decommissioning/dto/PostCreateDecommissioningDto";
@@ -18,7 +19,7 @@ export class DecommissioningController {
   ) {}
 
   @Post()
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     description: "Картриджи успешно списаны",

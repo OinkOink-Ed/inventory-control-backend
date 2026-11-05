@@ -1,15 +1,15 @@
-import { WarehouseStatus } from '@common/enums/WarehouseStatus';
-import { Division } from '@Modules/division/entities/Division';
-import { User } from '@Modules/user/entities/User';
-import { Warehouse } from '@Modules/warehouse/entities/Warehouse';
-import { DataSource } from 'typeorm';
+import { WarehouseStatus } from "@common/enums/WarehouseStatus";
+import { Division } from "@Modules/division/entities/Division";
+import { User } from "@Modules/user/entities/User";
+import { Warehouse } from "@Modules/warehouse/entities/Warehouse";
+import { DataSource } from "typeorm";
 
-export async function seedWarehouse(dataSourse: DataSource) {
-  const warehouseRepo = dataSourse.getRepository(Warehouse);
-  const divisionRepo = dataSourse.getRepository(Division);
-  const userRepo = dataSourse.getRepository(User);
+export async function seedWarehouse(dataSource: DataSource) {
+  const warehouseRepo = dataSource.getRepository(Warehouse);
+  const divisionRepo = dataSource.getRepository(Division);
+  const userRepo = dataSource.getRepository(User);
 
-  const systemUser = await userRepo.findOneBy({ username: 'system' });
+  const systemUser = await userRepo.findOneBy({ username: "system" });
   const divisions = await divisionRepo.find();
 
   const warehouses = divisions.map((division) => ({
@@ -23,5 +23,5 @@ export async function seedWarehouse(dataSourse: DataSource) {
   // Я не буду давать проверку на существование Склада
 
   await warehouseRepo.save(warehouses);
-  console.log('Склады успешно созданы и связаны с подразделениями');
+  console.log("Склады успешно созданы и связаны с подразделениями");
 }

@@ -23,6 +23,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionByWarehouseIdDto";
+import { RoleName } from "@common/enums/RoleName";
 
 @ApiTags("Division")
 @Controller("division")
@@ -30,7 +31,7 @@ import { GetResponseDivisionByWarehouseIdDto } from "./dto/GetResponseDivisionBy
 export class DivisionController {
   constructor(private readonly divisionService: DivisionService) {}
 
-  @Roles("admin")
+  @Roles(RoleName.ADMIN)
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({
@@ -45,7 +46,7 @@ export class DivisionController {
     return await this.divisionService.create(createDto);
   }
 
-  @Roles("admin", "user", "staff")
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -59,7 +60,7 @@ export class DivisionController {
     return await this.divisionService.getDivisions(userData);
   }
 
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @Get("warehouse/:id")
   @ApiBearerAuth()
   @ApiOkResponse({

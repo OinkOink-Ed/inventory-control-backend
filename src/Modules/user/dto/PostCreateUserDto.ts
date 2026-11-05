@@ -21,57 +21,59 @@ import {
 import type { User } from "../entities/User";
 import { Type } from "class-transformer";
 import { ObjectIdDto } from "@common/dto/ObjectIdDto";
+import { Role } from "@Modules/role/entities/Role";
+import { Division } from "@Modules/division/entities/Division";
+import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
 
-export class PostCreateUserDto
-  implements
-    Pick<
-      Assert & User,
-      | "username"
-      | "password"
-      | "name"
-      | "lastname"
-      | "patronimyc"
-      | "telephone"
-      | "state"
-    >,
-    CreatorType,
-    RoleType,
-    Divisiontype,
-    Kabinetstype
-{
+export class PostCreateUserDto {
+  // implements
+  //   Pick<
+  //     Assert & User,
+  //     | "username"
+  //     | "password"
+  //     | "name"
+  //     | "lastname"
+  //     | "patronymic"
+  //     | "telephone"
+  //     | "state"
+  //   >,
+  //   CreatorType,
+  //   RoleType,
+  //   Divisiontype,
+  //   Kabinetstype
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  username!: string;
+  username!: User["username"];
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(8)
-  password!: string;
+  password!: User["password"];
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  name!: string;
+  name!: User["name"];
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
   @MinLength(4)
-  lastname!: string;
+  lastname!: User["lastname"];
 
   @ApiProperty()
   @IsString()
   @Matches(/^\S+$/)
-  patronimyc!: string;
+  patronymic!: User["patronymic"];
 
   @ApiProperty()
   @IsString()
   @Matches(/^\+7[0-9]{10}$/)
-  telephone!: string;
+  telephone!: User["telephone"];
 
   @ApiProperty({
     type: "object",
@@ -82,7 +84,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested()
-  role!: StrictRole;
+  role!: User["role"] & { roleName: Role["roleName"] };
 
   @ApiProperty({
     type: "array",
@@ -95,7 +97,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  division!: StrictDivision[];
+  division!: ObjectIdDto[];
 
   @ApiProperty({
     type: "array",
@@ -108,7 +110,7 @@ export class PostCreateUserDto
   })
   @Type(() => ObjectIdDto)
   @ValidateNested({ each: true })
-  kabinets!: StrictKabinets[];
+  kabinets!: ObjectIdDto[];
 
   @ApiProperty({
     enum: UserStatus,
@@ -116,5 +118,5 @@ export class PostCreateUserDto
   @IsIn([UserStatus.ACTIVE])
   state!: UserStatus.ACTIVE;
 
-  creator!: StrictCreator;
+  creator!: ObjectIdDto;
 }

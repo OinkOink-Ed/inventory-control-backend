@@ -12,8 +12,8 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { AccessControlService } from "@Modules/access-control/access-control.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { DecomissioningCartrdigeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
 import { UserData } from "@common/decorators/types/UserType";
+import { DecommissioningCartridgeEventType } from "@Modules/events/types/DecomissioningCartrdigeEventType";
 
 @Injectable()
 export class DecommissioningService {
@@ -21,7 +21,7 @@ export class DecommissioningService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
-    private readonly dataSourse: DataSource,
+    private readonly dataSource: DataSource,
     private readonly accessControlService: AccessControlService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -48,7 +48,7 @@ export class DecommissioningService {
       ServiceDecommissioningCartridge,
     );
 
-    const queryRunner = this.dataSourse.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -83,7 +83,7 @@ export class DecommissioningService {
       await cartridgeDecommissioningRepo.insert(cartridgeDecommissioningDtos);
       await queryRunner.commitTransaction();
 
-      const data: DecomissioningCartrdigeEventType = {
+      const data: DecommissioningCartridgeEventType = {
         warehouseId: createDto.warehouse.id,
       };
 

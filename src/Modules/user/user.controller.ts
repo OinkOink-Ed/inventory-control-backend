@@ -31,6 +31,7 @@ import { GetResponseUserCardDto } from "./dto/GetResponseUserCardDto";
 import { GetResponseAcceptedCartridgeByUserDto } from "./dto/GetResponseAcceptedCartridgeByUserDto";
 import { GetProfileDto } from "./dto/GetProfileDto";
 import { PatchEditUserDto } from "./dto/PatchEditUserDto";
+import { RoleName } from "@common/enums/RoleName";
 
 @Controller("users")
 @UseGuards(RoleGuard)
@@ -39,7 +40,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post("create")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => SuccessResponseDto,
@@ -54,7 +55,7 @@ export class UserController {
   }
 
   @Get("/:id/can-edit")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @UseGuards(CardEditGuard)
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -70,7 +71,7 @@ export class UserController {
   }
 
   @Patch("edit/:id")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @UseGuards(CardEditGuard)
   @ApiBearerAuth()
   @ApiOkResponse({
@@ -86,7 +87,7 @@ export class UserController {
   }
 
   @Get("profile")
-  @Roles("admin", "user", "staff")
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetProfileDto,
@@ -99,7 +100,7 @@ export class UserController {
   }
 
   @Patch("edit-profile")
-  @Roles("admin", "user", "staff")
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @ApiBearerAuth()
   @ApiOkResponse({
     type: () => SuccessResponseDto,
@@ -113,7 +114,7 @@ export class UserController {
   }
 
   @Get()
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllUserDto,
@@ -127,7 +128,7 @@ export class UserController {
   }
 
   @Get("profile-card")
-  @Roles("admin", "user", "staff")
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseUserCardDto,
@@ -140,7 +141,7 @@ export class UserController {
   }
 
   @Get("profile-card/accepted")
-  @Roles("admin", "user", "staff")
+  @Roles(RoleName.ADMIN, RoleName.USER, RoleName.STAFF)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAcceptedCartridgeByUserDto,
@@ -154,7 +155,7 @@ export class UserController {
   }
 
   @Get(":warehouseId")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAllUsersByDivisionsDto,
@@ -169,7 +170,7 @@ export class UserController {
   }
 
   @Get("card/:id")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseUserCardDto,
@@ -182,7 +183,7 @@ export class UserController {
   }
 
   @Get("card/:id/accepted")
-  @Roles("admin", "user")
+  @Roles(RoleName.ADMIN, RoleName.USER)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: () => GetResponseAcceptedCartridgeByUserDto,

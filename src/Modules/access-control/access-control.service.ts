@@ -10,6 +10,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserData } from "@common/decorators/types/UserType";
 import { Division } from "@Modules/division/entities/Division";
+import { RoleName } from "@common/enums/RoleName";
 
 @Injectable()
 export class AccessControlService {
@@ -37,7 +38,7 @@ export class AccessControlService {
       throw new NotFoundException("Подразделение не найдено");
     }
 
-    if (userData.role.roleName === "admin") {
+    if (userData.role.roleName === RoleName.ADMIN) {
       return;
     }
 
@@ -73,7 +74,7 @@ export class AccessControlService {
       throw new NotFoundException("Склад не найден");
     }
 
-    if (userData.role.roleName === "admin") {
+    if (userData.role.roleName === RoleName.ADMIN) {
       return;
     }
 
@@ -111,7 +112,7 @@ export class AccessControlService {
       throw new NotFoundException("Целевой склад не найден");
     }
 
-    if (user.role.roleName !== "user") {
+    if (user.role.roleName !== RoleName.USER) {
       throw new BadRequestException(
         "Принимающим должен быть ответственный пользователь подразделения",
       );

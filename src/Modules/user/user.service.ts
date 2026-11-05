@@ -11,9 +11,11 @@ import * as bcrypt from "bcrypt";
 import { User } from "@Modules/user/entities/User";
 import { PostCreateUserDto } from "@Modules/user/dto/PostCreateUserDto";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
-import { ServiceForAuthFindUser } from "@Modules/user/service/ServiceForAuthFindUser";
+import {
+  ServiceForAuthFindUser,
+  UserForAuth,
+} from "@Modules/user/types/UserForAuth";
 import { GetResponseAllUserDto } from "@Modules/user/dto/GetResponseAllUserDto";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
 import { ServiceForFindUser } from "./service/ServiceFindUser";
 import { ServiceFindUserForChoiseWarehouse } from "./service/ServiceFindUserForChoiseWarehouse";
 import { GetResponseAllUsersByDivisionsDto } from "@Modules/user/dto/GetResponseAllUsersByDivisionsDto";
@@ -24,7 +26,7 @@ import { UserData } from "@common/decorators/types/UserType";
 import { RoleService } from "@Modules/role/role.service";
 import { PatchEditUserDto } from "./dto/PatchEditUserDto";
 import { PatchEditProfileDto } from "./dto/PatchEditProfileDto";
-import { Role } from "@Modules/role/entities/Role";
+import type { Role } from "@Modules/role/entities/Role";
 import { Division } from "@Modules/division/entities/Division";
 import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
 import { GetResponseAcceptedCartridgeByUserService } from "./ClassesForMapped/GetResponseAcceptedCartridgeByUserService";
@@ -33,6 +35,7 @@ import { GetResponseUserCardService } from "./ClassesForMapped/GetResponseUserCa
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { UpdateUserEventType } from "@Modules/events/types/UpdateUserEventType";
 import { GetProfileDto } from "./dto/GetProfileDto";
+import { StrictFindOptionsSelect } from "@common/types";
 
 @Injectable()
 export class UserService {
@@ -117,8 +120,8 @@ export class UserService {
       user.lastname = dto.lastname;
     }
 
-    if (dto.patronimyc !== undefined) {
-      user.patronimyc = dto.patronimyc;
+    if (dto.patronymic !== undefined) {
+      user.patronymic = dto.patronymic;
     }
 
     if (dto.telephone !== undefined) {
@@ -177,8 +180,8 @@ export class UserService {
       user.lastname = dto.lastname;
     }
 
-    if (dto.patronimyc !== undefined) {
-      user.patronimyc = dto.patronimyc;
+    if (dto.patronymic !== undefined) {
+      user.patronymic = dto.patronymic;
     }
 
     if (dto.telephone !== undefined) {
@@ -197,34 +200,13 @@ export class UserService {
     };
   }
 
-  async findOneForAuth(
-    username: string,
-  ): Promise<ServiceForAuthFindUser | null> {
-    const select: RequiredFindOptionsSelect<ServiceForAuthFindUser> = {
-      id: true,
-      password: true,
-      role: { roleName: true },
-      lastname: true,
-      name: true,
-      patronimyc: true,
-    };
-
-    return await this.repo.findOne({
-      where: {
-        username: `${username}`,
-      },
-      select,
-      relations: ["role"],
-    });
-  }
-
   async findOneGetProfile(id: number): Promise<GetProfileDto | null> {
     const select: RequiredFindOptionsSelect<GetProfileDto> = {
       id: true,
       role: { roleName: true },
       lastname: true,
       name: true,
-      patronimyc: true,
+      patronymic: true,
     };
 
     return await this.repo.findOne({
@@ -291,7 +273,7 @@ export class UserService {
       id: true,
       name: true,
       lastname: true,
-      patronimyc: true,
+      patronymic: true,
       username: true,
       state: true,
       division: { id: true, name: true },
@@ -330,7 +312,7 @@ export class UserService {
         id: true,
         lastname: true,
         name: true,
-        patronimyc: true,
+        patronymic: true,
         role: { id: true, roleName: true },
       };
 
@@ -434,7 +416,7 @@ export class UserService {
       id: true,
       lastname: true,
       name: true,
-      patronimyc: true,
+      patronymic: true,
       telephone: true,
       username: true,
       role: { id: true, roleName: true },
@@ -463,7 +445,7 @@ export class UserService {
       id: true,
       lastname: true,
       name: true,
-      patronimyc: true,
+      patronymic: true,
       telephone: true,
       username: true,
       role: { id: true, roleName: true },
@@ -499,7 +481,7 @@ export class UserService {
       "username",
       "name",
       "lastname",
-      "patronimyc",
+      "patronymic",
       "telephone",
       "kabinets",
     ]);
@@ -561,5 +543,21 @@ export class UserService {
     }
 
     return kabinets;
+  }
+
+  // Ниже будут методы без endpoint
+
+  async findOneForAuthById(userId: User["id"]): Promise<UserForAuth | null> {
+    const select: StrictFindOptionsSelect<UserForAuth> = {
+      role: { roleName: true },
+    };
+
+    return this.repo.findOne({
+      where: {
+        id: userId,
+      },
+      select,
+      relations: ["role"],
+    });
   }
 }

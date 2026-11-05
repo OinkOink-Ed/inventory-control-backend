@@ -21,7 +21,7 @@ export class MovementService {
     @InjectMapper()
     private readonly mapper: Mapper,
     private readonly cartridgeService: CartridgeService,
-    private readonly dataSourse: DataSource,
+    private readonly dataSource: DataSource,
     private eventEmitter: EventEmitter2,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -64,7 +64,7 @@ export class MovementService {
       ServiceMoveCartridge,
     );
 
-    const queryRunner = this.dataSourse.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();

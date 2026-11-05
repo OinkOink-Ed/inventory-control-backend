@@ -18,7 +18,7 @@ export class GetResponseUserCardService
       | "id"
       | "name"
       | "lastname"
-      | "patronimyc"
+      | "patronymic"
       | "username"
       | "telephone"
       | "state"
@@ -37,7 +37,7 @@ export class GetResponseUserCardService
   lastname!: string;
 
   @ApiProperty()
-  patronimyc!: string;
+  patronymic!: string;
 
   @ApiProperty()
   telephone!: string;

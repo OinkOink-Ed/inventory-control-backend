@@ -10,14 +10,16 @@ import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "@common/decorators/SkipAuth";
 import {
   AuthenticatedRequest,
-  JwtAccessPayload,
+  JwtTokenPayload,
 } from "@common/decorators/types/UserType";
+import { UserService } from "@Modules/user/user.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
+    private readonly userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -38,10 +40,19 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload =
-        await this.jwtService.verifyAsync<JwtAccessPayload>(token);
+      const payload = await this.jwtService.verifyAsync<JwtTokenPayload>(token);
+      const roleNameUser = await this.userService.findOneForAuthById(
+        payload.sub,
+      );
 
-      request.user = payload;
+      if (!roleNameUser) {
+        throw new UnauthorizedException("Пользователь не авторизован");
+      }
+
+      request.user = {
+        sub: payload.sub,
+        roleName: roleNameUser?.role.roleName,
+      };
     } catch {
       throw new UnauthorizedException("Пользователь не авторизован");
     }

@@ -1,8 +1,8 @@
-import { ApiErrorResponses } from '@common/decorators/ApiErrorResponse';
-import { SkipAuth } from '@common/decorators/SkipAuth';
-import { AuthService } from '@Modules/auth/auth.service';
-import { PostAuthDto } from '@Modules/auth/dto/PostAuthDto';
-import { PostResponseAuthDto } from '@Modules/auth/dto/PostResponseAuthDto';
+import { ApiErrorResponses } from "@common/decorators/ApiErrorResponse";
+import { SkipAuth } from "@common/decorators/SkipAuth";
+import { AuthService } from "@Modules/auth/auth.service";
+import { PostAuthDto } from "@Modules/auth/dto/PostAuthDto";
+import { PostResponseAuthDto } from "@Modules/auth/dto/PostResponseAuthDto";
 import {
   Body,
   Controller,
@@ -10,13 +10,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-} from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
-import { PostlogoutDto } from './dto/PostLogoutDto';
-import { SuccessResponseDto } from '@common/dto/SuccessResponseDto';
-import { PostRefreshDto } from './dto/PostRefreshDto';
+} from "@nestjs/common";
+import { ApiOkResponse } from "@nestjs/swagger";
+import { PostlogoutDto } from "./dto/PostLogoutDto";
+import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
+import { PostRefreshDto } from "./dto/PostRefreshDto";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   @SkipAuth()
-  @Post('refresh')
+  @Post("refresh")
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: () => PostRefreshDto,
@@ -47,7 +47,7 @@ export class AuthController {
     return await this.authService.refreshToken(refreshToken);
   }
 
-  @Delete('logout')
+  @Delete("logout")
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: () => SuccessResponseDto,

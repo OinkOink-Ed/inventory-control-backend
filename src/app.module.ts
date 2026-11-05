@@ -1,5 +1,5 @@
 import configuration from "@common/config/configuration";
-import { validationSchema } from "@common/config/validationShema";
+import { validationSchema } from "@common/config/validationSchema";
 import { AuthGuard } from "@common/guards/AuthGuard";
 import { NoCacheMiddleware } from "@common/middlewares/no-cache/no-cache.middleware";
 import { AccessControlModule } from "@Modules/access-control/access-control.module";

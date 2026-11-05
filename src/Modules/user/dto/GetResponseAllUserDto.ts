@@ -13,7 +13,7 @@ export class GetResponseAllUserDto
   implements
     Pick<
       User & Assert,
-      "id" | "name" | "username" | "patronimyc" | "lastname" | "state"
+      "id" | "name" | "username" | "patronymic" | "lastname" | "state"
     >,
     RoleType,
     Divisiontype
@@ -28,7 +28,7 @@ export class GetResponseAllUserDto
   username!: string;
 
   @ApiProperty()
-  patronimyc!: string;
+  patronymic!: string;
 
   @ApiProperty()
   lastname!: string;

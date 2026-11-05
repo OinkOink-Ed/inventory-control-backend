@@ -5,7 +5,7 @@ import { Kabinet } from "@Modules/kabinet/entities/Kabinet";
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { GetResponseKabinetsDto } from "@Modules/kabinet/dto/GetResponseKabinetsDto";
 import { PostCreateKabinetDto } from "@Modules/kabinet/dto/PostCreateKabinetDto";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { RequiredFindOptionsSelect } from "@common/types/typesUtils";
 import { UserData } from "@common/decorators/types/UserType";
 import { UserService } from "@Modules/user/user.service";
 import { GetResponseKabinetsByUserIdDto } from "./dto/GetResponseKabinetsByUserIdDto";

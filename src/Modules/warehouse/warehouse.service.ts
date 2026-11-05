@@ -6,7 +6,7 @@ import { PostCreateWarehouseDto } from "@Modules/warehouse/dto/PostCreateWarehou
 import { SuccessResponseDto } from "@common/dto/SuccessResponseDto";
 import { GetResponseAllWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllWarehouseDto";
 import { GetResponseAllDetailedWarehouseDto } from "@Modules/warehouse/dto/GetResponseAllDetailedWarehouseDto";
-import { RequiredFindOptionsSelect } from "@common/utils/typesUtils";
+import { RequiredFindOptionsSelect } from "@common/types/typesUtils";
 import { UserData } from "@common/decorators/types/UserType";
 import { UserService } from "@Modules/user/user.service";
 import { AccessControlService } from "@Modules/access-control/access-control.service";
@@ -26,7 +26,7 @@ export class WarehouseService {
     await this.repo.save(dto);
     return {
       statusCode: HttpStatus.CREATED,
-      message: "Модель картриджа успешно добавлена",
+      message: "Склад успешно создан",
     };
   }
 
